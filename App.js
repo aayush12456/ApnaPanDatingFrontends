@@ -16,6 +16,9 @@ import store from './src/Redux/Store/store';
 import LoginPage from './src/Pages/loginPage/loginPage';
 import HeaderPage from './src/Pages/headerPage/headerPage';
 import EditProfilePage from './src/Pages/editProfilePage/editProfilePage';
+import EditRelationPage from './src/Pages/editRelationPage/editRelationPage';
+import EditLookingForPage from './src/Pages/editLookingForPage/editLookingForPage';
+import EditEducationPage from './src/Pages/editEducationPage/editEducationPage';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -80,7 +83,21 @@ export default function App() {
               component={EditProfilePage}
               options={{ headerShown: false }}
             />
-            
+            <Stack.Screen
+              name="EditRelationPage"
+              component={EditRelationPage}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="EditLookingForPage"
+              component={EditLookingForPage}
+              options={{ headerShown: false }}
+            />
+              <Stack.Screen
+              name="EditEducationPage"
+              component={EditEducationPage}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
         <StatusBar style="auto" />
