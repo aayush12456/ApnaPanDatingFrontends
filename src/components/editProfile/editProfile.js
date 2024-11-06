@@ -29,10 +29,7 @@ const EditProfile=({navigation})=>{
   let currentYear = currentDate.getFullYear();
   const age = year ? currentYear - parseInt(year) : "";
 
-  const rows=[]
-  for(let i=0;i<completeLoginObj.interest.length;i+=2){
-    rows.push(completeLoginObj.interest.slice(i,i+2))
-  }
+
 
   console.log('about user us',completeLoginObj.aboutUser)
 
@@ -49,13 +46,44 @@ const EditProfile=({navigation})=>{
   }
   },[updatePersonalInfoSelector,completeLoginObj])
 
+  const rows=[]
+  for(let i=0;i<loginObj?.interest?.length;i+=2){
+    rows.push(loginObj.interest.slice(i,i+2))
+  }
+
+  const openImageHandler=()=>{
+    navigation.navigate('MyPhotoPage')
+   }
   const editLookingForHandler=()=>{
     navigation.navigate('EditLookingForPage')
    }
    const editEducationHandler=()=>{
     navigation.navigate('EditEducationPage')
    }
-
+   const editProfessionHandler=()=>{
+    navigation.navigate('EditProfessionPage')
+   }
+   const editDrinkingHandler=()=>{
+    navigation.navigate('EditDrinkingPage')
+   }
+   const editSmokingHandler=()=>{
+    navigation.navigate('EditSmokingPage')
+   }
+   const editEatingHandler=()=>{
+    navigation.navigate('EditEatingPage')
+   }
+   const editZodiacHandler=()=>{
+    navigation.navigate('EditZodiacPage')
+   }
+   const editAboutMeHandler=()=>{
+    navigation.navigate('EditAboutMePage')
+   }
+   const editLanguageHandler=()=>{
+    navigation.navigate('EditLanguagePage')
+   }
+   const editInterestHandler=()=>{
+    navigation.navigate('EditInterestPage')
+   }
 return (
     <>
     <Card style={{marginLeft:8,marginRight:8,marginTop:20,backgroundColor:'white'}}>
@@ -69,6 +97,7 @@ horizontal
 onScroll={change}
 showsHorizontalScrollIndicator={false}
 style={{width,height}}
+onTouchEnd={openImageHandler} 
 >
 {
   completeLoginObj.images.map((image,index)=>{
@@ -79,6 +108,7 @@ key={index}
 source={{uri:image}}
 style={{width,height,resizeMode:'cover'}}
 />
+
       </>
     )
   })
@@ -128,7 +158,7 @@ style={{width,height,resizeMode:'cover'}}
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Interest</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editInterestHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
@@ -153,11 +183,11 @@ style={{width,height,resizeMode:'cover'}}
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>About Me</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editAboutMeHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.aboutUser}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.aboutUser}</Text>
       </View>
 
 
@@ -175,63 +205,63 @@ style={{width,height,resizeMode:'cover'}}
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editProfessionHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.profession}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.profession}</Text>
       </View>
 
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editDrinkingHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.drinking}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.drinking}</Text>
       </View>
 
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editSmokingHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.smoking}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.smoking}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editEatingHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.eating}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.eating}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Zodiac Sign</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editZodiacHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.zodiac}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.zodiac}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>languages I know</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={editLanguageHandler}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.language}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.language}</Text>
       </View>
 
       <View>

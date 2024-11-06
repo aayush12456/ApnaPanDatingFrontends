@@ -4,7 +4,9 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice';
 import rightTik from '../../../assets/myProfileIcons/rightTik.png'
+import { useEffect,useState } from "react";
 const EditEducation=({navigation})=>{
+    const [updateEducation,setUpdateEducation]=useState({})
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
@@ -18,6 +20,14 @@ const EditEducation=({navigation})=>{
   dispatch(updatePersonalDataAsync(updateEducationObj))
   navigation.navigate('EditProfilePage')
     }
+    useEffect(()=>{
+        if(updatePersonalInfoSelector){
+           setUpdateEducation(updatePersonalInfoSelector)
+        }
+        else{
+           setUpdateEducation(completeLoginObj)
+        }
+       },[updatePersonalInfoSelector,completeLoginObj])
 return(
     <>
   <View style={{paddingTop:8,paddingLeft:8}}>
@@ -27,9 +37,9 @@ return(
                         <>
                         <View style={{flexDirection:"row",justifyContent:'space-between'}}>
                         <TouchableOpacity  onPress={()=>selectEducationHandler(education.education)} >
-                         <Text key={index} style={{paddingTop:22,paddingLeft:8,fontSize:15,color:`${updatePersonalInfoSelector?.education==education.education?'blue':'black'}`}}>{education.education}</Text>
+                         <Text key={index} style={{paddingTop:22,paddingLeft:8,fontSize:15,color:`${updateEducation?.education==education?.education?'rgba(0, 150, 255, 1)':'black'}`}}>{education.education}</Text>
                          </TouchableOpacity>
-                       {updatePersonalInfoSelector.education===education.education?  <Image source={rightTik} style={{width:12,height:12,marginTop:24,marginRight:30}} />:null}
+                       {updateEducation?.education===education?.education?  <Image source={rightTik} style={{width:12,height:12,marginTop:24,marginRight:30}} />:null}
                         </View>
                         </>
                     );

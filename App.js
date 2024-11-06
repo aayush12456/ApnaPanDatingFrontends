@@ -19,6 +19,15 @@ import EditProfilePage from './src/Pages/editProfilePage/editProfilePage';
 import EditRelationPage from './src/Pages/editRelationPage/editRelationPage';
 import EditLookingForPage from './src/Pages/editLookingForPage/editLookingForPage';
 import EditEducationPage from './src/Pages/editEducationPage/editEducationPage';
+import EditProfessionPage from './src/Pages/editProfessionPage/editProfessionPage';
+import EditDrinkingPage from './src/Pages/editDrinkingPage/editDrinkingPage';
+import EditSmokingPage from './src/Pages/editSmokingPage/editSmokingPage';
+import EditEatingPage from './src/Pages/editEatingPage/editEatingPage';
+import EditZodiacPage from './src/Pages/editZodiacPage/editZodiacPage';
+import EditAboutMePage from './src/Pages/editAboutMePage/editAboutMePage';
+import EditLanguagePage from './src/Pages/editLanguagePage/editLanguagePage';
+import EditInterestPage from './src/Pages/editInterestPage/editInterestPage';
+import MyPhotoPage from './src/Pages/myPhotoPage/myPhotoPage';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -78,6 +87,11 @@ export default function App() {
               component={HeaderPage}
               options={{ headerShown: false }}
             />
+              <Stack.Screen
+              name="MyPhotoPage"
+              component={MyPhotoPage}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="EditProfilePage"
               component={EditProfilePage}
@@ -96,6 +110,46 @@ export default function App() {
               <Stack.Screen
               name="EditEducationPage"
               component={EditEducationPage}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="EditProfessionPage"
+              component={EditProfessionPage}
+              options={{ headerShown: false }}
+            />
+              <Stack.Screen
+              name="EditDrinkingPage"
+              component={EditDrinkingPage}
+              options={{ headerShown: false }}
+            />
+              <Stack.Screen
+              name="EditSmokingPage"
+              component={EditSmokingPage}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="EditEatingPage"
+              component={EditEatingPage}
+              options={{ headerShown: false }}
+            />
+              <Stack.Screen
+              name="EditZodiacPage"
+              component={EditZodiacPage}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="EditAboutMePage"
+              component={EditAboutMePage}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="EditLanguagePage"
+              component={EditLanguagePage}
+              options={{ headerShown: false }}
+            />
+              <Stack.Screen
+              name="EditInterestPage"
+              component={EditInterestPage}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

@@ -3,12 +3,12 @@ import EditEducation from "../../components/editEducation/editEducation"
 import { useNavigation } from '@react-navigation/native';
 const EditEducationPage=()=>{
     const navigation = useNavigation();
-    const lookingForObj={
+    const educationObj={
         name:'Select Education'
     }
 return (
     <>
-    <AnotherHeader editObj={lookingForObj} navigation={navigation}/>
+    <AnotherHeader editObj={educationObj} navigation={navigation}/>
     <EditEducation  navigation={navigation}/>
     </>
 )

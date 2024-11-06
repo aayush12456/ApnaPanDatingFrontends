@@ -17,6 +17,36 @@ const AnotherHeader = ({ editObj,navigation }) => {
         else if(name==='Select Education'){
             navigation.navigate('EditProfilePage')
         }
+        else if(name==='Select Profession'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Drinking Habit'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Drinking Habit'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Smoking Habit'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Eating Habit'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Zodiac Sign'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='About Me'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Languages'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='Select Interest'){
+            navigation.navigate('EditProfilePage')
+        }
+        else if(name==='My Photos'){
+            navigation.navigate('EditProfilePage')
+        }
     };
 
     return (

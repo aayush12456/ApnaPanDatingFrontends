@@ -4,7 +4,9 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { updatePersonalDataAsync } from "../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice";
 import rightTik from '../../../assets/myProfileIcons/rightTik.png'
+import { useEffect,useState } from "react";
 const EditRelation = ({navigation}) => {
+    const [updateRelation,setUpdateRelation]=useState({})
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
@@ -18,6 +20,15 @@ const EditRelation = ({navigation}) => {
   dispatch(updatePersonalDataAsync(updateRelationObj))
   navigation.navigate('EditProfilePage')
     }
+
+    useEffect(()=>{
+     if(updatePersonalInfoSelector){
+        setUpdateRelation(updatePersonalInfoSelector)
+     }
+     else{
+        setUpdateRelation(completeLoginObj)
+     }
+    },[updatePersonalInfoSelector,completeLoginObj])
     return (
         <>
         <View style={{paddingTop:8,paddingLeft:8}}>
@@ -27,9 +38,9 @@ const EditRelation = ({navigation}) => {
                         <>
                           <View style={{flexDirection:"row",justifyContent:'space-between'}}>
                           <TouchableOpacity onPress={()=>selectRelationHandler(relation.relation)}>
-                         <Text key={index} style={{paddingTop:22,paddingLeft:8,fontSize:15,color:`${updatePersonalInfoSelector?.relationship===relation.relation?'blue':'black'}`}}>{relation.relation}</Text>
+                         <Text key={index} style={{paddingTop:22,paddingLeft:8,fontSize:15,color:`${updateRelation?.relationship===relation.relation?'rgba(0, 150, 255, 1)':'black'}`}}>{relation.relation}</Text>
                          </TouchableOpacity>
-                         {updatePersonalInfoSelector.relationship===relation.relation?  <Image source={rightTik} style={{width:12,height:12,marginTop:24,marginRight:30}} />:null}
+                         {updateRelation?.relationship===relation.relation?  <Image source={rightTik} style={{width:12,height:12,marginTop:24,marginRight:30}} />:null}
                           </View>
                         </>
                     );
