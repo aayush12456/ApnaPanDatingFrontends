@@ -183,7 +183,8 @@ style={{width,height,resizeMode:'cover'}}
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>About Me</Text>
-        <TouchableOpacity onPress={editAboutMeHandler}>
+        <TouchableOpacity onPress={editAboutMeHandler}   activeOpacity={0.7}   
+        style={{ width: 160, height: 160, justifyContent: 'center', alignItems: 'center' }}>
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>

@@ -1,8 +1,8 @@
-import { Text, Image, View, TouchableOpacity} from "react-native";
+import { Text, Image, View} from "react-native";
 import holdingHands from '../../../assets/frontImages/holdingHands.png';
 import love from '../../../assets/frontImages/love.png';
 import { FrontImages } from "../../utils/frontImages";
-
+import { Button } from "react-native-paper";
 const FrontPage = ({navigation}) => {
   return (
     <>
@@ -36,34 +36,38 @@ const FrontPage = ({navigation}) => {
       </Text>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', width:'200', alignItems: 'center', justifyContent: 'center'}}>
-        <View style={{width:'90%' ,overflow:'hidden'}}>
-        <TouchableOpacity 
-          style={{
-            height: 50, // Set the desired height
-            borderRadius:25,
-            backgroundColor: '#007BFF', // Button color
-            justifyContent: 'center', // Center text vertically
-            alignItems: 'center', // Center text horizontally
-          }} 
-          onPress={() => navigation.navigate('SignUpPage')}
-        >
-          <Text style={{ color: '#FFFFFF', fontSize: 16 }}>SIGN UP NOW</Text>
-        </TouchableOpacity>
-        
-        {/* Login Button */}
-        <TouchableOpacity 
-          style={{
-            height: 50, // Set the desired height
-            borderRadius:25,
-            backgroundColor: '#28a745', // Button color
-            justifyContent: 'center', // Center text vertically
-            alignItems: 'center', // Center text horizontally
-            marginTop: 20, // Space between buttons
-          }} 
-          onPress={() => navigation.navigate('LoginPage')}
-        >
-          <Text style={{ color: '#FFFFFF', fontSize: 16 }}>LOGIN</Text>
-        </TouchableOpacity>
+        <View style={{width:'90%' }}>
+         <Button
+                      mode="contained"
+                      onPress={() => navigation.navigate('SignUpPage')}
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:25,
+                        color: '#FFFFFF',
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         width:'100%'
+                      }}
+                      buttonColor="#007BFF"
+                    >
+                     SIGN UP NOW
+                    </Button>
+        <Button
+                      mode="contained"
+                      onPress={() => navigation.navigate('LoginPage')}
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:25,
+                        color: '#FFFFFF',
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         width:'100%',
+                         marginTop: 20
+                      }}
+                      buttonColor="#28a745"
+                    >
+               LOGIN
+                    </Button>
         </View>
       </View>
     </>

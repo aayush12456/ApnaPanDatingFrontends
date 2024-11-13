@@ -1,6 +1,7 @@
-import {View,Text} from 'react-native'
-import { Card } from 'react-native-paper';
+
+import {  Text} from 'react-native-paper';
 const Matches=()=>{
+
 return (
     <>
     {/* <View style={{marginLeft:'4%',marginRight:'4%'}}>
@@ -12,6 +13,7 @@ return (
   </Card>
     </View> */}
     <Text>hello matches</Text>
+   
     </>
 )
 }

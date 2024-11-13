@@ -4,6 +4,7 @@ import Matches from '../../matches/matches.js'
 import NewAndOnline from '../../newAndOnline/newAndOnline';
 import matches from '../../../../assets/sidebarIcons/profileMatch.png'
 import girl from '../../../../assets/sidebarIcons/girl.png'
+import boy from '../../../../assets/sidebarIcons/boy.png'
 import search from '../../../../assets/sidebarIcons/search.png'
 import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
@@ -14,7 +15,6 @@ import MyProfile from '../../myProfile/myProfile.js';
 const Header=()=>{
     const Drawer = createDrawerNavigator();
     const [loginData, setLoginData] = useState(null);
-
     // useEffect(() => {
     //   // Using an IIFE (Immediately Invoked Function Expression) to use await directly
     //   (async () => {
@@ -31,6 +31,7 @@ const Header=()=>{
           getLoginData()
     },[])
         console.log('data of login in obj',loginData)
+ const newIcon=loginData?.gender === 'Female' ? boy : girl
 return (
     <>
      <Drawer.Navigator>
@@ -73,7 +74,7 @@ return (
         options={{ 
             drawerLabel: 'New And Online',
             drawerIcon:()=>(
-                <Image  source={girl}
+                <Image  source={newIcon}
                 style={{ width: 32, height: 32 }}/>
             ),
             drawerLabelStyle: {

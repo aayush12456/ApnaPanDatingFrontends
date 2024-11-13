@@ -1,4 +1,5 @@
 import { Text, View, TouchableOpacity, Image } from "react-native";
+import { Button } from "react-native-paper";
 import { uploadImages } from "../../utils/uploadImageData";
 import bulb from '../../../assets/signUpFormIcon/bulb.png';
 import * as ImagePicker from 'expo-image-picker';
@@ -164,14 +165,23 @@ const ImageUpload = ({ imageUpload }) => {
         </Text>
       </View>
       <View style={{ width: '100%', overflow: 'hidden' }}>
-        <TouchableOpacity onPress={imageSubmitHandler}
-          style={{
-            height: 50, backgroundColor: '#F00000', justifyContent: 'center',
-            alignItems: 'center', marginTop: 20, marginLeft: 12, marginRight: 20, borderRadius: 11
-          }}
-        >
-          <Text style={{ color: '#FFFFFF', fontSize: 16 }}>SUBMIT</Text>
-        </TouchableOpacity>
+         <Button
+                      mode="contained"
+                      onPress={imageSubmitHandler}
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:11,
+                        color: '#FFFFFF',
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         marginTop: 20,
+                         marginLeft: 12,
+                         marginRight: 20,
+                      }}
+                      buttonColor="rgba(234, 88, 12, 1)"
+                    >
+           SUBMIT
+                    </Button>
       </View>
     
     </>

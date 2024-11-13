@@ -1,4 +1,5 @@
-import { Text, View, TouchableOpacity, Image } from "react-native"
+import { Text, View, Image } from "react-native"
+import { Button } from "react-native-paper";
 import { Dropdown } from 'react-native-paper-dropdown';
 import { Drinking, Eating, Smoking, education,relationshipStatus,lookingFor } from "../../utils/personalInfo";
 import { profession } from "../../utils/personalInfo";
@@ -139,7 +140,7 @@ const AdditonalForm = ({ formData,navigation }) => {
             </View>
           </View> 
           <View style={{ width: '100%', overflow: 'hidden' }}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 height: 50,
                 backgroundColor: '#F00000',
@@ -153,7 +154,24 @@ const AdditonalForm = ({ formData,navigation }) => {
               onPress={handleSubmit}
             >
               <Text style={{ color: '#FFFFFF', fontSize: 16 }}>SUBMIT</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+              <Button
+                      mode="contained"
+                      onPress={handleSubmit}
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:11,
+                        color: '#FFFFFF',
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         marginTop: 20,
+                         marginLeft: 12,
+                         marginRight: 20,
+                      }}
+                      buttonColor="rgba(234, 88, 12, 1)"
+                    >
+           SUBMIT
+                    </Button>
           </View>
           </View>
          

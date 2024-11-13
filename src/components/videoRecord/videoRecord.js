@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Image,Button } from 'react-native';
+import { Text, View, TouchableOpacity} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system'
 import {ShareAsync, shareAsync} from 'expo-sharing'

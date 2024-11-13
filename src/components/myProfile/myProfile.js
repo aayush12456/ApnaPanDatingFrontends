@@ -1,5 +1,5 @@
 
-import {Image,View,Text,TouchableOpacity} from 'react-native'
+import {Image,View,Text,TouchableOpacity,Pressable} from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import edit from '../../../assets/myProfileIcons/edit.png'
@@ -23,9 +23,9 @@ return (
  
     <View style={{flexDirection:"row",justifyContent:'center',marginTop:"20%"}}>
     <View>
-    <TouchableOpacity onPress={editProfileHandler}>
+    <Pressable onPress={editProfileHandler}>
     <Image  source={{ uri: loginData?.image }}  style={{ width:150, height:150,borderRadius:70 }}/>
-    </TouchableOpacity>
+    </Pressable>
     </View>
     <View style={{borderRadius:50,backgroundColor:'white',width:40,height:40,marginTop:100,marginLeft:-40}}>
         <Image source={edit} style={{marginLeft:8,marginRight:2,marginTop:7}} />

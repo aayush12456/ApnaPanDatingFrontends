@@ -1,4 +1,5 @@
 import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { Button } from 'react-native-paper';
 import arrow from '../../../assets/signUpFormIcon/back.png';
 
 const AnotherHeader = ({ editObj,navigation }) => {
@@ -51,9 +52,10 @@ const AnotherHeader = ({ editObj,navigation }) => {
 
     return (
         <View style={{ backgroundColor: 'white', height: 50, marginTop: 40, flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={()=>backArrowHandler(editObj?.name)} style={{marginLeft: 18}} >
-                <Image source={arrow} style={{ width: 15, height: 15 }} />
-            </TouchableOpacity>
+           
+                <Button onPress={()=>backArrowHandler(editObj?.name)} style={{marginLeft:7}}
+                ><Image source={arrow} style={{ width: 15, height: 15 }} /></Button>
+          
             <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: '600', color: 'black', flex: 1}}>
                 {editObj?.name }
             </Text>

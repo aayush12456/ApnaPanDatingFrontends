@@ -28,9 +28,12 @@ import EditAboutMePage from './src/Pages/editAboutMePage/editAboutMePage';
 import EditLanguagePage from './src/Pages/editLanguagePage/editLanguagePage';
 import EditInterestPage from './src/Pages/editInterestPage/editInterestPage';
 import MyPhotoPage from './src/Pages/myPhotoPage/myPhotoPage';
+import NewAndOnlinePageContent from './src/Pages/newAndOnlinePageContent/newAndOnlinePageContent';
+import { LogBox } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  LogBox.ignoreLogs(['Warning: VideoPlayer: Support for defaultProps will be removed']);
   return (
     <>
     <Provider store={store}>
@@ -150,6 +153,11 @@ export default function App() {
               <Stack.Screen
               name="EditInterestPage"
               component={EditInterestPage}
+              options={{ headerShown: false }}
+            />
+              <Stack.Screen
+              name="NewAndOnlinePageContent"
+              component={NewAndOnlinePageContent}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

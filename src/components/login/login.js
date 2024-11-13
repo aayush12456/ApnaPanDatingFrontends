@@ -1,6 +1,7 @@
 
 import { TextInput } from 'react-native-paper';
-import { Image, View, TouchableOpacity, Text, Button } from "react-native";
+import { Image, View, TouchableOpacity, Text } from "react-native";
+import { Button } from 'react-native-paper';
 import { Formik } from 'formik';
 import { loginSchema } from '../../schemas';
 import { useDispatch } from 'react-redux';
@@ -83,21 +84,23 @@ return (
               </View>
 
               <View style={{ width: '100%', overflow: 'hidden' }}>
-            <TouchableOpacity
-              style={{
-                height: 50,
-                backgroundColor: '#F00000',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 20,
-                marginLeft: 12,
-                marginRight: 20,
-                borderRadius: 11
-              }}
-              onPress={handleSubmit}
-            >
-              <Text style={{ color: '#FFFFFF', fontSize: 16 }}>SUBMIT</Text>
-            </TouchableOpacity>
+               <Button
+                      mode="contained"
+                      onPress={handleSubmit}
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:11,
+                        color: '#FFFFFF',
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         marginTop: 20,
+                         marginLeft: 12,
+                         marginRight: 20,
+                      }}
+                      buttonColor="rgba(234, 88, 12, 1)"
+                    >
+           SUBMIT
+                    </Button>
           </View>
 
              </>
