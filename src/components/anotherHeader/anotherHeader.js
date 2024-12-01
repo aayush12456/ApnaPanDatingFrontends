@@ -1,8 +1,11 @@
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import arrow from '../../../assets/signUpFormIcon/back.png';
-
+import { useSelector } from 'react-redux';
 const AnotherHeader = ({ editObj,navigation }) => {
+    const objSelector=useSelector((state)=>state.anotherPassData.anotherPassData)
+    const anotherObjSelector=useSelector((state)=>state.passMatchData.passMatchData)
+    console.log('another obj in another header',anotherObjSelector)
     const backArrowHandler = (name) => {
         console.log('name is',name)
         console.log('Back arrow clicked');
@@ -48,6 +51,12 @@ const AnotherHeader = ({ editObj,navigation }) => {
         else if(name==='My Photos'){
             navigation.navigate('EditProfilePage')
         }
+        else if(name===objSelector?.firstName){
+            navigation.navigate('NewAndOnlinePageContent',{formData:objSelector})
+        }
+        else if(name===anotherObjSelector?.firstName){
+            navigation.navigate('Matches')
+        }
     };
 
     return (
@@ -56,9 +65,12 @@ const AnotherHeader = ({ editObj,navigation }) => {
                 <Button onPress={()=>backArrowHandler(editObj?.name)} style={{marginLeft:7}}
                 ><Image source={arrow} style={{ width: 15, height: 15 }} /></Button>
           
-            <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: '600', color: 'black', flex: 1}}>
+           { (editObj?.name===objSelector?.firstName)|| (editObj?.name===anotherObjSelector?.firstName)?<Text style={{ textAlign: 'center', fontSize: 19, fontWeight: '600', color: 'black', flex: 1}}>
+                {`${editObj?.name} photos` }
+            </Text>:
+           <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: '600', color: 'black', flex: 1}}>
                 {editObj?.name }
-            </Text>
+            </Text>}
         </View>
     );
 };

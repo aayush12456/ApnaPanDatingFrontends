@@ -1,5 +1,5 @@
 import { Text, Card ,Button} from "react-native-paper";
-import { ScrollView, View, Dimensions, Image,StyleSheet,TouchableOpacity,Pressable } from "react-native";
+import { ScrollView, View, Dimensions, Image,StyleSheet } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import like from '../../../../assets/matchIcons/rightTiks.png'
@@ -10,6 +10,7 @@ import PlayVideo from "../playVideo/playVideo";
 import { playVideoModalActions } from "../../../Redux/Slice/playVideoModalSlice/playVideoModalSlice";
 import back from '../../../../assets/signUpFormIcon/back.png'
 import { useNavigation } from "@react-navigation/native";
+import { anotherPassDataSliceActions } from "../../../Redux/Slice/anotherPassDataSlice/anotherPassDataSlice";
 const LargeCard = ({ newAndOnlineContent }) => {
   const dispatch = useDispatch()
   const navigation=useNavigation()
@@ -47,6 +48,15 @@ const LargeCard = ({ newAndOnlineContent }) => {
   const backHandler=()=>{
 navigation.navigate('New And Online')
   }
+
+  const openImageHandler=(image)=>{
+    const imageObj={
+      name:newAndOnlineContent?.firstName,
+      images:image
+    }
+    navigation.navigate('MyPhotoPage',{formData:imageObj})
+    dispatch(anotherPassDataSliceActions.anotherPassDatas(newAndOnlineContent))
+   }
   return (
     <>
       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
@@ -68,6 +78,7 @@ navigation.navigate('New And Online')
                 horizontal
                 onScroll={change}
                 showsHorizontalScrollIndicator={false}
+                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images)}
               >
                 {newAndOnlineContent?.images.map((image, index) => {
                   return (
@@ -106,6 +117,17 @@ navigation.navigate('New And Online')
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
         <Text style={{fontSize:16 ,paddingTop:2 }}>{mainNumber}</Text>
+      </View>
+
+            
+      <View  style={{paddingLeft:10,paddingTop:18}}>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.relationship}</Text>
+      </View>
+
+      <View  style={{paddingLeft:10,paddingTop:18}}>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>

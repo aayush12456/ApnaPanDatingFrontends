@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from '../../axios/axios'
+import * as SecureStore from 'expo-secure-store';
 export const userLoginAsync = createAsyncThunk(
   'userLogin/userLoginAsync',
   async (loginObj, { rejectWithValue }) => {
@@ -14,29 +15,15 @@ export const userLoginAsync = createAsyncThunk(
     
 
       const Responedata = response.data;
-      console.log( 'login response data ',Responedata)
-            const token = response.data.token;
-        //  const personalSignUpData={
-        //   firstName:response.data.user.firstName,
-        //   DOB:response.data.user.DOB,
-        //   aboutUser:response.data.user.aboutUser,
-        //   city:response.data.user.city,
-        //   drinking:response.data.user.drinking,
-        //   eating:response.data.user.eating,
-        //   education:response.data.user.education,
-        //   phone:response.data.user.phone,
-        //   gender:response.data.user.gender,
-        //   profession:response.data.user.profession,
-        //   smoking:response.data.user.smoking,
-        //   images:response.data.user.images,
-        //   interest:response.data.user.interest,
-        //   looking:response.data.user.looking,
-        //   relationship:response.data.user.relationship,
-        //   zodiac:response.data.user.zodiac,
-        //   language:response.data.user.language,
-        //   videoUrl:response.data.user.videoUrl
-        // }
-        // sessionStorage.setItem('signupObject',JSON.stringify(personalSignUpData))
+      console.log( 'login response data in loginSlice',Responedata)
+          if (Responedata?.token) {
+        await SecureStore.setItemAsync('loginToken', Responedata?.token);
+        console.log('Token stored securely in SecureStore',Responedata?.token);
+      }
+      if(Responedata?.loginData?._id){
+        await SecureStore.setItemAsync('loginId', Responedata?.loginData?._id);
+        console.log('loginId stored securely in SecureStore',Responedata?.loginData?._id);
+      }
       return Responedata;
       
     } catch (error) {

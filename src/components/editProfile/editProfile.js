@@ -31,7 +31,7 @@ const EditProfile=({navigation})=>{
 
 
 
-  console.log('about user us',completeLoginObj.aboutUser)
+  console.log('about user us',completeLoginObj?.aboutUser)
 
   const editRelationHandler=()=>{
    navigation.navigate('EditRelationPage')
@@ -51,8 +51,12 @@ const EditProfile=({navigation})=>{
     rows.push(loginObj.interest.slice(i,i+2))
   }
 
-  const openImageHandler=()=>{
-    navigation.navigate('MyPhotoPage')
+  const openImageHandler=(image)=>{
+    const imageObj={
+      name:'My Photos',
+      images:image
+    }
+    navigation.navigate('MyPhotoPage',{formData:imageObj})
    }
   const editLookingForHandler=()=>{
     navigation.navigate('EditLookingForPage')
@@ -97,7 +101,7 @@ horizontal
 onScroll={change}
 showsHorizontalScrollIndicator={false}
 style={{width,height}}
-onTouchEnd={openImageHandler} 
+onTouchEnd={()=>openImageHandler(completeLoginObj?.images)} 
 >
 {
   completeLoginObj.images.map((image,index)=>{
@@ -179,19 +183,16 @@ style={{width,height,resizeMode:'cover'}}
        </View>
       </View>
       
-
-      <View>
+   <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
-        <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>About Me</Text>
-        <TouchableOpacity onPress={editAboutMeHandler}   activeOpacity={0.7}   
-        style={{ width: 160, height: 160, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>About Me </Text>
+        <TouchableOpacity onPress={editAboutMeHandler}   >
           <Image source={edit} style={{marginRight:7,marginTop:18}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{loginObj?.aboutUser}</Text>
       </View>
-
-
+ 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Education</Text>

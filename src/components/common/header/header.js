@@ -1,4 +1,4 @@
-import {Image} from 'react-native'
+import {Image,Text} from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Matches from '../../matches/matches.js'
 import NewAndOnline from '../../newAndOnline/newAndOnline';
@@ -12,6 +12,8 @@ import visitors from '../../../../assets/sidebarIcons/interest.png'
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import MyProfile from '../../myProfile/myProfile.js';
+import Likes from '../../likes/likes.js';
+import FrontPage from '../../frontPage/frontPage.js';
 const Header=()=>{
     const Drawer = createDrawerNavigator();
     const [loginData, setLoginData] = useState(null);
@@ -95,7 +97,7 @@ return (
       />
          <Drawer.Screen
         name="Likes"
-        component={NewAndOnline}
+        component={Likes}
         options={{ 
             drawerLabel: 'Likes',
             drawerIcon:()=>(
@@ -126,6 +128,7 @@ return (
             ),
          }}
       />
+          
      </Drawer.Navigator>
     </>
 )

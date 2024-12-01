@@ -35,7 +35,7 @@ const FrontPage = ({navigation}) => {
         Meet Millions of Awesome Singles Near You
       </Text>
       </View>
-      <View style={{ flex: 1, flexDirection: 'row', width:'200', alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
         <View style={{width:'90%' }}>
          <Button
                       mode="contained"
