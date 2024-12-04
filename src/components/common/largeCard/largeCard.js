@@ -11,7 +11,7 @@ import { playVideoModalActions } from "../../../Redux/Slice/playVideoModalSlice/
 import back from '../../../../assets/signUpFormIcon/back.png'
 import { useNavigation } from "@react-navigation/native";
 import { anotherPassDataSliceActions } from "../../../Redux/Slice/anotherPassDataSlice/anotherPassDataSlice";
-const LargeCard = ({ newAndOnlineContent }) => {
+const LargeCard = ({ newAndOnlineContent,likeContent }) => {
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
@@ -25,7 +25,7 @@ const LargeCard = ({ newAndOnlineContent }) => {
     }
   };
 
-  const getProfile = () =>newAndOnlineContent
+  const getProfile = () =>newAndOnlineContent || likeContent
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");
   const year = dobBreak?.[2];
@@ -33,29 +33,48 @@ const LargeCard = ({ newAndOnlineContent }) => {
   let currentYear = currentDate.getFullYear();
   const age = year ? currentYear - parseInt(year) : "";
 
-  const number=newAndOnlineContent?.phone
+  const number=newAndOnlineContent?.phone || likeContent?.phone
   const mainNumber = number.substring(0, 4) + 'X'.repeat(number.length - 4);
-
+  const allImages = [...(newAndOnlineContent?.images || []), ...(likeContent?.images || [])];
   const rows=[]
+  const likeRows=[]
   for(let i=0;i<newAndOnlineContent?.interest?.length;i+=2){
     rows.push(newAndOnlineContent.interest.slice(i,i+2))
   }
-
+  for(let i=0;i<likeContent?.interest?.length;i+=2){
+    likeRows.push(likeContent.interest.slice(i,i+2))
+  }
   const playVideoHandler=()=>{
-  dispatch(passVideoDataSliceActions.passVideoDatas(newAndOnlineContent))
-  dispatch(playVideoModalActions.playVideoModalToggle())
+    if(newAndOnlineContent){
+      dispatch(passVideoDataSliceActions.passVideoDatas(newAndOnlineContent))
+      dispatch(playVideoModalActions.playVideoModalToggle())
+    }
+    else if(likeContent){
+      dispatch(passVideoDataSliceActions.passVideoDatas(likeContent))
+      dispatch(playVideoModalActions.playVideoModalToggle())
+    }
   }
   const backHandler=()=>{
-navigation.navigate('New And Online')
+    if(newAndOnlineContent){
+      navigation.navigate('New And Online')
+    }
+    else if(likeContent){
+      navigation.navigate('Likes')
+    }
   }
 
   const openImageHandler=(image)=>{
     const imageObj={
-      name:newAndOnlineContent?.firstName,
+      name:newAndOnlineContent?.firstName || likeContent?.firstName,
       images:image
     }
     navigation.navigate('MyPhotoPage',{formData:imageObj})
-    dispatch(anotherPassDataSliceActions.anotherPassDatas(newAndOnlineContent))
+    if(newAndOnlineContent){
+      dispatch(anotherPassDataSliceActions.anotherPassDatas(newAndOnlineContent))
+    }
+    else if(likeContent){
+      dispatch(anotherPassDataSliceActions.anotherPassDatas(likeContent))
+    }
    }
   return (
     <>
@@ -78,9 +97,9 @@ navigation.navigate('New And Online')
                 horizontal
                 onScroll={change}
                 showsHorizontalScrollIndicator={false}
-                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images)}
+                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images || likeContent?.images)}
               >
-                {newAndOnlineContent?.images.map((image, index) => {
+                {allImages.map((image, index) => {
                   return (
                     <Image
                       key={index}
@@ -89,11 +108,12 @@ navigation.navigate('New And Online')
                     />
                   );
                 })}
+                     
               </ScrollView>
               <View style={styles.pagination}>
-                  {newAndOnlineContent.images.map((_, k) => (
-                    <Text key={k} style={k === active ? styles.activeDot : styles.dot}>•</Text>
-                  ))}
+              {allImages.map((_, index) => (
+              <Text key={index} style={index === active ? styles.activeDot : styles.dot}>•</Text>
+            ))}
                 </View>
             </View>
 
@@ -104,14 +124,14 @@ navigation.navigate('New And Online')
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:"black"}}>{newAndOnlineContent?.firstName}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:"black"}}>{newAndOnlineContent?.firstName || likeContent?.firstName}</Text>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black'}}>{age}</Text>
-        <Text style={{fontSize:16,fontWeight:'semibold',color:'black'}}>{newAndOnlineContent?.city}</Text>
+        <Text style={{fontSize:16,fontWeight:'semibold',color:'black'}}>{newAndOnlineContent?.city || likeContent?.city}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text>Working as {newAndOnlineContent?.profession} </Text>
-<Text style={{paddingTop:2}}>Studied {newAndOnlineContent?.education} </Text>
+<Text>Working as {newAndOnlineContent?.profession || likeContent?.profession} </Text>
+<Text style={{paddingTop:2}}>Studied {newAndOnlineContent?.education || likeContent?.education} </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
@@ -122,12 +142,12 @@ navigation.navigate('New And Online')
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.relationship}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.relationship || likeContent?.relationship}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.looking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.looking || likeContent?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -143,6 +163,21 @@ navigation.navigate('New And Online')
           </View>
         ))
       }
+      
+    </View>
+  ))
+}
+{
+  likeRows.map((likeRow, rowIndex) => (
+    <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 10 }}>
+      {
+        likeRow.map((rowItem, itemIndex) => (
+          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          </View>
+        ))
+      }
+      
     </View>
   ))
 }
@@ -151,30 +186,30 @@ navigation.navigate('New And Online')
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.education}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.education || likeContent?.education}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.profession}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.profession || likeContent?.profession}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.drinking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.drinking || likeContent?.drinking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.smoking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.smoking || likeContent?.smoking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.eating}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.eating || likeContent?.eating}</Text>
       </View>
 
           </ScrollView>

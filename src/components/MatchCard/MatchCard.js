@@ -15,9 +15,10 @@ import { playVideoModalActions } from "../../Redux/Slice/playVideoModalSlice/pla
 import { addCrossMatchAsync } from "../../Redux/Slice/addCrossMatchSlice/addCrossMatchSlice";
 import { passDataSliceActions } from "../../Redux/Slice/passDataSlice/passDataSlice";
 import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { addMatchUserAsync } from "../../Redux/Slice/addMatchUserSlice/addMatchUserSlice";
 import axios from 'axios'
+import { addLikeSmsSenderAsync } from "../../Redux/Slice/addLikeSmsSlice/addLikeSmsSlice";
 const socket = io.connect("http://192.168.29.169:4000")
 const MatchCard=({matchObj})=>{
   const [loginData, setLoginData] = useState(null);
@@ -103,6 +104,7 @@ const MatchCard=({matchObj})=>{
           }
   //  dispatch(addMatchUserAsync(addLikeObj))
        dispatch(passDataSliceActions.passDatas(id))
+      //  dispatch(addLikeSmsSenderAsync(addLikeObj))
        try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
         console.log('response in match card is',response?.data?.anotherMatchUser)
@@ -110,6 +112,15 @@ const MatchCard=({matchObj})=>{
     } catch (error) {
         console.error('Error sending message:', error);
     }
+
+    try {
+      const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${addLikeObj.id}`, addLikeObj);
+      console.log('response in add like count user',response?.data?.userObj)
+      socket.emit('addLikeCountUser', response?.data?.userObj)
+
+  } catch (error) {
+      console.error('Error sending message:', error);
+  }
         }
 return (
     <>

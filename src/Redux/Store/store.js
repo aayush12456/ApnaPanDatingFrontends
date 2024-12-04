@@ -14,6 +14,7 @@ import addCrossMatchSlice from "../Slice/addCrossMatchSlice/addCrossMatchSlice"
 import addMatchUserSlice from "../Slice/addMatchUserSlice/addMatchUserSlice"
 import getMatchUserSlice from "../Slice/getMatchUserSlice/getMatchUserSlice"
 import passMatchArrayDataSlice from "../Slice/passMatchArrayDataSlice/passMatchArrayDataSlice"
+import addLikeSmsSlice from "../Slice/addLikeSmsSlice/addLikeSmsSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -30,7 +31,8 @@ const store=configureStore({
         addCrossMatchData:addCrossMatchSlice,
         addMatchUserData:addMatchUserSlice,
         getMatchUserData:getMatchUserSlice,
-        passMatchArrayData:passMatchArrayDataSlice
+        passMatchArrayData:passMatchArrayDataSlice,
+        addSmsLikeText:addLikeSmsSlice
     }
 })
 export default store

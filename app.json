@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ApnaPanDating",
-    "slug": "ApnaPanDating",
+    "slug": "datingapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/adaptive-icon.png",
@@ -27,5 +27,6 @@
       "expo-video",
       "expo-secure-store"
     ]
+   
   }
 }

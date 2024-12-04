@@ -1,4 +1,4 @@
-import {Image,Text} from 'react-native'
+import {Image,Text,Pressable,View} from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Matches from '../../matches/matches.js'
 import NewAndOnline from '../../newAndOnline/newAndOnline';
@@ -10,13 +10,20 @@ import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
 import visitors from '../../../../assets/sidebarIcons/interest.png'
 import * as SecureStore from 'expo-secure-store';
+import io from "socket.io-client";
 import { useEffect, useState } from 'react';
 import MyProfile from '../../myProfile/myProfile.js';
 import Likes from '../../likes/likes.js';
 import FrontPage from '../../frontPage/frontPage.js';
+import Message from '../../message/message.js';
+import {useSelector} from 'react-redux'
+import axios from 'axios'
+const socket = io.connect("http://192.168.29.169:4000")
 const Header=()=>{
     const Drawer = createDrawerNavigator();
     const [loginData, setLoginData] = useState(null);
+    const [loginId,setLoginId]=useState('')
+    const [likeCountObj,setLikeCountObj]=useState('')
     // useEffect(() => {
     //   // Using an IIFE (Immediately Invoked Function Expression) to use await directly
     //   (async () => {
@@ -34,6 +41,66 @@ const Header=()=>{
     },[])
         console.log('data of login in obj',loginData)
  const newIcon=loginData?.gender === 'Female' ? boy : girl
+ 
+ const loginResponse=useSelector((state)=>state.loginData.loginData.token)
+
+ useEffect(()=>{
+    if(loginResponse){
+      const getLoginId = async () => {
+        const loginIdData = await SecureStore.getItemAsync('loginId');
+        setLoginId(loginIdData)
+      };
+      getLoginId()
+    }
+  },[loginResponse])
+  console.log('login id in header',loginId)
+ useEffect(() => {
+    const fetchLikeCountId = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getLikeCount/${loginId}`
+          );
+     setLikeCountObj(response?.data?.userObj)
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+  
+    fetchLikeCountId();
+  
+    socket.on("getLikeCountUser", (newUser) => {
+  
+      setLikeCountObj(newUser)
+    });
+  
+    return () => {
+      socket.off("getLikeCountUser");
+
+    };
+  }, [loginId]);
+  console.log('like count id is',likeCountObj)
+
+const deleteFunction = async () => {
+    console.log('delete func invoked');
+    try {
+        if (!loginId) {
+            console.error('loginId is not set');
+            return;
+        }
+
+        const response = await axios.post(
+            `http://192.168.29.169:4000/user/deleteLikeCount`,
+             {loginId} 
+        );
+        console.log('Response in delete like count user', response?.data?.userObj);
+        setLikeCountObj(response?.data?.userObj);
+    } catch (error) {
+        console.error('Error deleting like count:', error?.response?.data || error.message);
+    }
+};
+
 return (
     <>
      <Drawer.Navigator>
@@ -95,20 +162,50 @@ return (
             ),
          }}
       />
-         <Drawer.Screen
-        name="Likes"
-        component={Likes}
-        options={{ 
-            drawerLabel: 'Likes',
-            drawerIcon:()=>(
-                <Image  source={likes}
-                style={{ width: 25, height: 25 }}/>
-            ),
-         }}
+<Drawer.Screen
+  name="Likes"
+  component={Likes}
+  options={{
+    drawerLabel: ({ focused }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ color: focused ? 'blue' : 'black' }}>Likes</Text>
+        {likeCountObj?._id === loginId && likeCountObj?.counter!==null && likeCountObj?.counter!==""? (
+          <View
+            style={{
+              marginLeft: 8, // Adjust space between "Likes" and the badge
+              borderRadius: 20,
+              width: 20,
+              height: 20,
+              backgroundColor: 'red',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ color: 'white', textAlign: 'center' }}>{likeCountObj?.counter}</Text>
+          </View>
+        ) : null}
+      </View>
+    ),
+    drawerIcon: () => (
+      <Image
+        source={likes}
+        style={{ width: 25, height: 25 }}
       />
+    ),
+  }}
+  listeners={{
+    focus: () => {
+      deleteFunction();
+    },
+  }}
+/>
+
+
+
+
        <Drawer.Screen
         name="Messages"
-        component={NewAndOnline}
+        component={Message}
         options={{ 
             drawerLabel: 'Messages',
             drawerIcon:()=>(
