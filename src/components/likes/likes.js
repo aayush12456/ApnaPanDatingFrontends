@@ -13,6 +13,7 @@ const Likes=()=>{
   // const getLikesArray=useSelector((state)=>state?.getMatchUserData?.getMatchUserObj?.anotherMatchUser)
   // console.log('get like filter user',getLikesArray)
 const [likesArray,setLikesArray]=useState([])
+const [likeMatchUser,setLikeMatchUser]=useState({})
 const dispatch=useDispatch()
 const completeLoginObj = useSelector(
     (state) => state?.loginData?.loginData?.completeLoginData
@@ -29,6 +30,7 @@ useEffect(()=>{
   }
 },[loginResponse])
 console.log('login id in likes',loginId)
+
 useEffect(() => {
   const fetchMatchUsers = async () => {
     try {
@@ -36,7 +38,7 @@ useEffect(() => {
         const response = await axios.get(
           `http://192.168.29.169:4000/user/getMatchUser/${loginId}`
         );
-        setLikesArray(response?.data?.anotherMatchUser || []);
+        setLikesArray(response?.data?.likesArray || []);
       }
     } catch (error) {
       console.error("Error fetching matches:", error);
@@ -56,16 +58,49 @@ useEffect(() => {
 }, [loginId]);
 console.log('get likes data array',likesArray)
 
+useEffect(() => {
+  const fetchLikeMatchUsers = async () => {
+    try {
+      if (loginId) {
+        const response = await axios.get(
+          `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+        );
+        // setLikesArray(response?.data?.anotherMatchUser || []);
+        console.log('get like match user is',response?.data)
+        setLikeMatchUser(response?.data );
+      }
+    } catch (error) {
+      console.error("Error fetching matches:", error);
+    }
+  };
 
+  fetchLikeMatchUsers();
+
+  socket.on("getLikeMatchUser", (newUser) => {
+
+    setLikeMatchUser(newUser)
+  });
+
+  return () => {
+    socket.off("getLikeMatchUser");
+  };
+}, [loginId]);
+console.log('get like match user in socket',likeMatchUser)
+console.log('get likr another match',likeMatchUser.anotherMatchLikes)
+console.log('get likr  match',likeMatchUser.matchLikes)
+
+const anotherMatchLikesArray=likeMatchUser?.anotherMatchLikes?.length>0?
+likeMatchUser?.anotherMatchLikes?.filter((likeItem)=>likeItem._id!==loginId):[]
+const combineLikeArray=[...likesArray,...anotherMatchLikesArray]
     const chunkArray = (array, chunkSize) => {
       const chunks = [];
-      for (let i = 0; i < array.length; i += chunkSize) {
+      for (let i = 0; i < array?.length; i += chunkSize) {
         chunks.push(array.slice(i, i + chunkSize));
       }
       return chunks;
     };
   
-    const chunkedData = chunkArray(likesArray, 2);
+    const chunkedData = chunkArray(combineLikeArray, 2);
 
   
 return (

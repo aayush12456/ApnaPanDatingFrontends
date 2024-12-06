@@ -107,8 +107,8 @@ const MatchCard=({matchObj})=>{
       //  dispatch(addLikeSmsSenderAsync(addLikeObj))
        try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
-        console.log('response in match card is',response?.data?.anotherMatchUser)
-        socket.emit('addMatchUser', response?.data?.anotherMatchUser)
+        console.log('response in match card is',response?.data?.likesArray)
+        socket.emit('addMatchUser', response?.data?.likesArray)
     } catch (error) {
         console.error('Error sending message:', error);
     }

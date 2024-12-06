@@ -1,7 +1,8 @@
 import { Text, Card ,Button} from "react-native-paper";
-import { ScrollView, View, Dimensions, Image,StyleSheet } from "react-native";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable} from "react-native";
+import { useState,useEffect } from "react";
+import { useDispatch,useSelector } from "react-redux";
+import io from "socket.io-client";
 import like from '../../../../assets/matchIcons/rightTiks.png'
 import dislike from '../../../../assets/matchIcons/crossTik.png'
 import play from '../../../../assets/myProfileIcons/play.png'
@@ -11,10 +12,22 @@ import { playVideoModalActions } from "../../../Redux/Slice/playVideoModalSlice/
 import back from '../../../../assets/signUpFormIcon/back.png'
 import { useNavigation } from "@react-navigation/native";
 import { anotherPassDataSliceActions } from "../../../Redux/Slice/anotherPassDataSlice/anotherPassDataSlice";
+import axios from 'axios'
+import * as SecureStore from 'expo-secure-store';
+import { addOnlineSkipUserAsync } from "../../../Redux/Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice";
+const socket = io.connect("http://192.168.29.169:4000")
 const LargeCard = ({ newAndOnlineContent,likeContent }) => {
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
+  const [loginId,setLoginId]=useState('')
+  const [likeSkipUser,setLikeSkipUser]=useState([])
+  const [likeSkip,setLikeSkip]=useState(true)
+  const [likeMatch,setLikeMatch]=useState(true)
+  const [likeMatchUser,setLikeMatchUser]=useState({})
+  const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
+
+
   const width = Dimensions.get('window').width - 50;
   const height = width * 1.2;
 
@@ -76,6 +89,155 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
       dispatch(anotherPassDataSliceActions.anotherPassDatas(likeContent))
     }
    }
+
+
+   useEffect(()=>{
+    if(loginResponse){
+      const getLoginId = async () => {
+        const loginIdData = await SecureStore.getItemAsync('loginId');
+        setLoginId(loginIdData)
+      };
+      getLoginId()
+    }
+},[loginResponse])
+
+
+   const skipUserHandler=async(likeContent)=>{
+    console.log('user is skipped',likeContent)
+    const likeSkipUserObj={
+      id:loginId,
+      likeSkipUserId:likeContent?._id
+    }
+    const onlineSkipUserObj={
+      id:loginId,
+      onlinePersonSkipUserId:newAndOnlineContent?._id
+    }
+    if(likeSkipUserObj){
+      try {
+        const response = await axios.post(`http://192.168.29.169:4000/user/addLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
+        console.log('response in like skip user is',response?.data?.likeSkip)
+        socket.emit('addLikeSkipUser', response?.data?.likeSkip)
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+    console.log('like skip user is',likeSkipUserObj)
+    }
+    if(onlineSkipUserObj){
+      dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
+      // dispatch( onlinePassDataSliceActions.onlinePassDatas(onlineSkipUserObj.onlinePersonSkipUserId))
+      navigation.navigate('New And Online',{formData:onlineSkipUserObj})
+    }
+   }
+
+
+   useEffect(() => {
+    const fetchLikeSkipUsers = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getLikeSkipUser/${loginId}`
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get like skip user is',response?.data?.likeSkipUserArray)
+          setLikeSkipUser(response?.data?.likeSkipUserArray || []);
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+  
+    fetchLikeSkipUsers();
+  
+    socket.on("getLikeSkipUser", (newUser) => {
+  
+      setLikeSkipUser(newUser)
+    });
+  
+    return () => {
+      socket.off("getLikeSkipUser");
+    };
+  }, [loginId]);
+  console.log('get like skip user array',likeSkipUser)
+
+
+  useEffect(()=>{
+    const likeSkipData= likeSkipUser?.some((likeSkip)=>likeSkip?.firstName===likeContent?.firstName)
+    if(likeSkipData){
+     setLikeSkip(false)
+    }
+     },[likeSkipUser,likeContent])
+
+
+   const likeUserHandler=async(likeUser)=>{
+    console.log('like user handler',likeUser)
+    const likeMatchUserObj={
+      id:loginId,
+      likeMatchId:likeUser._id
+    }
+    const likeMatchCountObj={
+      id:loginId,
+      matchLikeId:likeUser._id
+    }
+    if(likeMatchUserObj){
+      try {
+        const response = await axios.post(`http://192.168.29.169:4000/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
+        console.log('response in like match user is',response?.data)
+        socket.emit('addLikeMatchUser', response?.data)
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+    }
+    if(likeMatchCountObj){
+      try {
+        const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${likeMatchCountObj.id}`,likeMatchCountObj);
+        console.log('response in add like count user',response?.data?.userObj)
+        socket.emit('addLikeCountUser', response?.data?.userObj)
+    
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+    }
+   }
+
+   useEffect(() => {
+    const fetchLikeMatchUsers = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get like match user is',response?.data)
+          setLikeMatchUser(response?.data);
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+  
+    fetchLikeMatchUsers();
+  
+    socket.on("getLikeMatchUser", (newUser) => {
+  
+      setLikeMatchUser(newUser)
+    });
+  
+    return () => {
+      socket.off("getLikeMatchUser");
+    };
+  }, [loginId]);
+  console.log('get like match user obj',likeMatchUser)
+
+
+  useEffect(()=>{
+    const likeMatchData= likeMatchUser?.matchLikes?.some((likeMatch)=>likeMatch?.firstName===likeContent?.firstName)
+    const anotherLikeMatchData= likeMatchUser?.anotherMatchLikes?.some((anotherLikeMatch)=>anotherLikeMatch?.firstName===likeContent?.firstName)
+    if(likeMatchData || anotherLikeMatchData){
+     setLikeMatch(false)
+    }
+     },[likeMatchUser?.matchLikes,likeContent,likeMatchUser?.anotherMatchLikes])
+
+
   return (
     <>
       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
@@ -213,20 +375,30 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
       </View>
 
           </ScrollView>
-          <View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
-            <View style={{flexDirection:"row",gap:12,marginLeft:25}}>
+          {likeSkip===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            You skipped this profile</Text>}
+
+            {likeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            You've both paired</Text>}
+
+       {likeSkip===false || likeMatch===false?null:<View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
+            <Pressable onPress={()=>skipUserHandler(likeContent)}>
+            <View style={{flexDirection:"row",gap:12,marginLeft:25}} >
                 <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'grey'}}>
           <Image source={dislike} style={{ width: 20, height:30,marginLeft:14,marginTop:6,tintColor:'white' }} />
                 </View>
           <Text style={{fontSize:15,paddingTop:10,colour:'grey'}}>SKIP</Text>
             </View>
+            </Pressable>
+            <Pressable onPress={()=>likeUserHandler(likeContent)}>
             <View style={{flexDirection:"row",gap:12,marginRight:25}}>
             <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'rgba(37, 99, 235, 1)'}}>
             <Image source={like} style={{ width:20, height: 30,marginLeft:14,marginTop:6 }} />
             </View>
           <Text style={{fontSize:15,paddingTop:10,color: 'rgba(2, 113, 254, 0.8)'}}>LIKE</Text>
             </View>
-        </View>
+            </Pressable>
+        </View>}
         </Card.Content>
       </Card>
       <PlayVideo/>

@@ -2,14 +2,17 @@ import { Text, View, Image, ScrollView } from "react-native";
 import { Card, Button } from "react-native-paper";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { getAllUserData } from "../../Redux/Slice/getAllUserSlice/getAllUserSlice";
 import { addChatModalActions } from "../../Redux/Slice/addChatModalSilce/addChatModalSlice";
 import AddChat from "../common/addChat/addChat";
 import { passDataSliceActions } from "../../Redux/Slice/passDataSlice/passDataSlice";
 
-const NewAndOnline = () => {
+const NewAndOnline = ({route}) => {
+  const { formData = {} } = route.params || {}; // Fallback to an empty object
+  console.log('form data in new ', formData);
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const completeLoginObj = useSelector(
@@ -19,7 +22,8 @@ const NewAndOnline = () => {
     (state) => state.getAllUserData.getAllUserArray.users
   );
   console.log("get all user array in new ", getAllUserArray);
-
+  const [allUser,setAllUser]=useState(getAllUserArray)
+  
   useEffect(() => {
     if (dispatch) {
       dispatch(getAllUserData(completeLoginObj?._id));
@@ -35,12 +39,22 @@ const NewAndOnline = () => {
     console.log('card pressed', allUser);
     navigation.navigate('NewAndOnlinePageContent', { formData: allUser });
   };
-
+  useEffect(()=>{
+    if(formData?.onlinePersonSkipUserId){
+      let updateArray=allUser.filter((filterItem)=>filterItem?._id!=formData?.onlinePersonSkipUserId)
+      setAllUser(updateArray)
+    }
+    else{
+      setAllUser(getAllUserArray)
+    }
+    
+    },[formData?.onlinePersonSkipUserId,getAllUserArray])
+    
   return (
     <>
       <AddChat />
       <ScrollView>
-        {getAllUserArray?.map((allUser, index) => {
+        {allUser?.map((allUser, index) => {
           const getProfile = () => allUser;
           const dob = getProfile()?.DOB;
           const dobBreak = dob?.split("/");

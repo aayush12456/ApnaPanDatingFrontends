@@ -37,7 +37,7 @@ useEffect(() => {
         const response = await axios.get(
           `http://192.168.29.169:4000/user/getMatchUser/${loginId}`
         );
-        setFilterMatchArray(response?.data?.anotherMatchUser || []);
+        setFilterMatchArray(response?.data?.likesArray || []);
       }
     } catch (error) {
       console.error("Error fetching matches:", error);
@@ -75,7 +75,7 @@ else{
 },[getCrossId,getFilterUser])
 
 useEffect(() => {
-  if (filterMatchArray.length > 0 && matchArray.length > 0) {
+  if (filterMatchArray?.length > 0 && matchArray?.length > 0) {
     const updatedArray = matchArray.filter(
       (user) =>
         !filterMatchArray.some(
