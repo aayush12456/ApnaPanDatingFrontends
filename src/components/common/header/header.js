@@ -18,12 +18,14 @@ import FrontPage from '../../frontPage/frontPage.js';
 import Message from '../../message/message.js';
 import {useSelector} from 'react-redux'
 import axios from 'axios'
+import Visitors from '../../visitors/visitors.js';
 const socket = io.connect("http://192.168.29.169:4000")
 const Header=()=>{
     const Drawer = createDrawerNavigator();
     const [loginData, setLoginData] = useState(null);
     const [loginId,setLoginId]=useState('')
     const [likeCountObj,setLikeCountObj]=useState('')
+    const [visitorCountObj,setVisitorCountObj]=useState('')
     // useEffect(() => {
     //   // Using an IIFE (Immediately Invoked Function Expression) to use await directly
     //   (async () => {
@@ -101,6 +103,51 @@ const deleteFunction = async () => {
     }
 };
 
+useEffect(() => {
+  const fetchVisitorCountId = async () => {
+    try {
+      if (loginId) {
+        const response = await axios.get(
+          `http://192.168.29.169:4000/user/getLikeCount/${loginId}`
+        );
+   setVisitorCountObj(response?.data?.userObj)
+      }
+    } catch (error) {
+      console.error("Error fetching matches:", error);
+    }
+  };
+
+  fetchVisitorCountId();
+
+  socket.on("getVisitorCountUser", (newUser) => {
+
+    setVisitorCountObj(newUser)
+  });
+
+  return () => {
+    socket.off("getVisitorCountUser");
+
+  };
+}, [loginId]);
+
+const deleteVisitorFunction = async () => {
+  console.log('delete visitor func invoked');
+  try {
+      if (!loginId) {
+          console.error('loginId is not set');
+          return;
+      }
+
+      const response = await axios.post(
+          `http://192.168.29.169:4000/user/deleteVisitorCount`,
+           {loginId} 
+      );
+      console.log('Response in delete visitor count user', response?.data?.userObj);
+      setVisitorCountObj(response?.data?.userObj);
+  } catch (error) {
+      console.error('Error deleting visitor count:', error?.response?.data || error.message);
+  }
+};
 return (
     <>
      <Drawer.Navigator>
@@ -214,9 +261,9 @@ return (
             ),
          }}
       />
-       <Drawer.Screen
+       {/* <Drawer.Screen
         name="Visitors"
-        component={NewAndOnline}
+        component={Visitors}
         options={{ 
             drawerLabel: 'Visitors',
             drawerIcon:()=>(
@@ -224,7 +271,44 @@ return (
                 style={{ width: 25, height: 25 }}/>
             ),
          }}
+      /> */}
+      <Drawer.Screen
+  name="Visitors"
+  component={Visitors}
+  options={{
+    drawerLabel: ({ focused }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ color: focused ? 'blue' : 'black' }}>Visitors</Text>
+        {visitorCountObj?._id === loginId && visitorCountObj?.visitorCounter!==null && visitorCountObj?.visitorCounter!==""? (
+          <View
+            style={{
+              marginLeft: 8, // Adjust space between "Likes" and the badge
+              borderRadius: 20,
+              width: 20,
+              height: 20,
+              backgroundColor: 'red',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ color: 'white', textAlign: 'center' }}>{visitorCountObj?.visitorCounter}</Text>
+          </View>
+        ) : null}
+      </View>
+    ),
+    drawerIcon: () => (
+      <Image
+        source={visitors}
+        style={{ width: 25, height: 25 }}
       />
+    ),
+  }}
+  listeners={{
+    focus: () => {
+      deleteVisitorFunction();
+    },
+  }}
+/>
           
      </Drawer.Navigator>
     </>

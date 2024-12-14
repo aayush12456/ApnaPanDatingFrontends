@@ -37,6 +37,7 @@ import NewAndOnlinePageContent from './src/Pages/newAndOnlinePageContent/newAndO
 import AnotherMatchCardPage from './src/Pages/anotherMatchCardPage/anotherMatchCardPage';
 import { LogBox } from 'react-native';
 import LikePageContent from './src/Pages/likePageContent/likePageContent';
+import VisitorPageContent from './src/Pages/visitorPageContent/visitorPageContent';
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
@@ -216,6 +217,11 @@ function AppContent() {
          <Stack.Screen
           name="LikePageContent"
           component={LikePageContent}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="VisitorPageContent"
+          component={VisitorPageContent}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

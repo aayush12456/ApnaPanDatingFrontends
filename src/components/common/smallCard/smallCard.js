@@ -6,26 +6,36 @@ import * as SecureStore from 'expo-secure-store';
 import { useState,useEffect } from 'react';
 import io from "socket.io-client";
 const socket = io.connect("http://192.168.29.169:4000")
-const SmallCard = ({ likesData }) => {
+const SmallCard = ({ likesData,visitorData }) => {
+  console.log('visitor data',visitorData)
     const navigation = useNavigation();
     const [loginId,setLoginId]=useState('')
-    const [likeSkipUser,setLikeSkipUser]=useState([])
+    const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
     const [likeSkip,setLikeSkip]=useState(true)
+    const [visitorSkip,setVisitorSkip]=useState(true)
     const [likeMatch,setLikeMatch]=useState(true)
+    const [matchLikes,setMatchLikes]=useState(true)
     const [likeMatchUser,setLikeMatchUser]=useState({})
+    const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
+    const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     console.log('likes image obj', likesData?.images?.[0]); // Safer logging
 
-    const getProfile = () => likesData || {}; // Fallback to an empty object
+    const getProfile = () => likesData || visitorData?.visitor || {}; // Fallback to an empty object
     const dob = getProfile()?.DOB || ""; // Fallback to an empty string
     const dobBreak = dob?.split("/") || []; // Avoid errors with split
     const year = dobBreak?.[2];
     const currentYear = new Date().getFullYear();
     const age = year ? currentYear - parseInt(year) : ""; // Ensure safe calculation
     
-    const imagePressHandler=(likeData)=>{
+    const imagePressHandler=(likeData,visitorData)=>{
         console.log('image is pressed')
-        navigation.navigate('LikePageContent', { formData:likeData });
+        if(likeData){
+          navigation.navigate('LikePageContent', { formData:likeData })
+        }
+        else if(visitorData){
+          navigation.navigate('VisitorPageContent', { formData:visitorData?.visitor })
+        }
     }
     
     useEffect(()=>{
@@ -40,41 +50,46 @@ const SmallCard = ({ likesData }) => {
 
 
     useEffect(() => {
-        const fetchLikeSkipUsers = async () => {
+        const fetchCommonVisitorLikeSkipUsers = async () => {
           try {
             if (loginId) {
               const response = await axios.get(
-                `http://192.168.29.169:4000/user/getLikeSkipUser/${loginId}`
+                `http://192.168.29.169:4000/user/getCommonVisitorLikeSkipUser/${loginId}`
               );
               // setLikesArray(response?.data?.anotherMatchUser || []);
               console.log('get like skip user is',response?.data?.likeSkipUserArray)
-              setLikeSkipUser(response?.data?.likeSkipUserArray || []);
+              setCommonVisitorLikeSkipUser(response?.data?.likeSkipUserArray || []);
             }
           } catch (error) {
             console.error("Error fetching matches:", error);
           }
         };
       
-        fetchLikeSkipUsers();
+        fetchCommonVisitorLikeSkipUsers();
       
-        socket.on("getLikeSkipUser", (newUser) => {
+        socket.on("getCommonVisitorLikeSkipUser", (newUser) => {
       
-          setLikeSkipUser(newUser)
+          setCommonVisitorLikeSkipUser(newUser)
         });
       
         return () => {
-          socket.off("getLikeSkipUser");
+          socket.off("getCommonVisitorLikeSkipUser");
         };
       }, [loginId]);
-      console.log('get like skip user array',likeSkipUser)
+      console.log('get like skip user array',commonVisitorLikeSkipUser)
       useEffect(()=>{
-        const likeSkipData= likeSkipUser?.some((likeSkip)=>likeSkip?.firstName===likesData?.firstName)
+        const likeSkipData= commonVisitorLikeSkipUser?.some((likeSkip)=>likeSkip?.firstName===likesData?.firstName)
         if(likeSkipData){
          setLikeSkip(false)
         }
-         },[likeSkipUser,likesData])
+         },[commonVisitorLikeSkipUser,likesData])
 
-         
+         useEffect(()=>{
+          const visitorSkipData= commonVisitorLikeSkipUser?.some((likeSkip)=>likeSkip?.firstName===visitorData?.visitor?.firstName)
+          if(visitorSkipData){
+           setVisitorSkip(false)
+          }
+           },[commonVisitorLikeSkipUser,visitorData])
    useEffect(() => {
     const fetchLikeMatchUsers = async () => {
       try {
@@ -106,30 +121,84 @@ const SmallCard = ({ likesData }) => {
 
 
          useEffect(()=>{
-          const likeMatchData= likeMatchUser?.matchLikes?.some((likeMatch)=>likeMatch?.firstName===likesData?.firstName)
+        
           const anotherLikeMatchData= likeMatchUser?.anotherMatchLikes?.some((anotherLikeMatch)=>anotherLikeMatch?.firstName===likesData?.firstName)
-          if(likeMatchData || anotherLikeMatchData){
+          if( anotherLikeMatchData){
            setLikeMatch(false)
           }
-           },[likeMatchUser?.matchLikes,likesData,likeMatchUser?.anotherMatchLikes])
+           },[likesData,likeMatchUser?.anotherMatchLikes])
            
+         useEffect(()=>{
+          const likeMatchData= likeMatchUser?.matchLikes?.some((likeMatch)=>likeMatch?.firstName===likesData?.firstName)
+          if(likeMatchData){
+           setMatchLikes(false)
+          }
+           },[likeMatchUser?.matchLikes,likesData])
+
+
+           useEffect(() => {
+            const fetchVisitorLikeUsers = async () => {
+              try {
+                if (loginId) {
+                  const response = await axios.get(
+                    `http://192.168.29.169:4000/user/getVisitorLikeUser/${loginId}`
+                  );
+                  // setLikesArray(response?.data?.anotherMatchUser || []);
+                  console.log('get visitor user is',response?.data)
+                  setVisitorLikeUserObj(response?.data);
+                }
+              } catch (error) {
+                console.error("Error fetching visitor like user:", error);
+              }
+            };
+          
+            fetchVisitorLikeUsers();
+          
+            socket.on("getVisitorLikeUser", (newUser) => {
+          
+              setVisitorLikeUserObj(newUser)
+            });
+          
+            return () => {
+              socket.off("getVisitorLikeUser");
+            };
+          }, [loginId]);
+          console.log('visitor like user obj in small card',visitorLikeUserObj)
+
+          useEffect(()=>{
+            const selfVisitorLike= visitorLikeUserObj?.visitorLikes?.some((visitorLike)=>visitorLike?.firstName===visitorData?.visitor?.firstName)
+            if(selfVisitorLike){
+              setSelfVisitorLikeMatch(false)
+            }
+             },[visitorLikeUserObj?.visitorLikes,visitorData])
+           console.log('visitor like in small card',selfVisitorLikeMatch)
     return (
         <View>
-            <Pressable onPress={()=>imagePressHandler(likesData)}>
+            <Pressable onPress={()=>imagePressHandler(likesData,visitorData)}>
             <Image
-                source={{ uri: likesData?.images?.[0] || 'default_image_url' }} // Provide a default URI
+                source={{ uri: likesData?.images?.[0] || visitorData?.visitor?.images[0] || 'default_image_url' }} // Provide a default URI
                 style={{ width: "100%", height:300, borderRadius: 10 }}
             />
             </Pressable>
-            <View style={{ flexDirection: 'row', gap: 7, position: 'relative', top: -53, paddingLeft: 20 }}>
-                <Text style={{ color: 'white', fontSize: 16 }}>{likesData?.firstName || "Unknown"}</Text>
+            <View style={{ flexDirection: 'row', gap: 7, position: 'relative', top:`${visitorSkip===false || selfVisitorLikeMatch===false?-70:-53}`, paddingLeft: 20 }}>
+                <Text style={{ color: 'white', fontSize: 16 }}>{likesData?.firstName || visitorData?.visitor?.firstName || "Unknown"}</Text>
                 <Text style={{ color: 'white', fontSize: 16 }}>{age || "N/A"}</Text>
             </View>
+           {visitorData? <View style={{position: 'relative', top:`${visitorSkip===false || selfVisitorLikeMatch===false?-69:-52}`}}>
+            <Text style={{ color: 'white', fontSize: 15,paddingLeft:18 }}>{visitorData?.visitedAt}</Text>
+            </View>:null}
             {likeSkip===false? <View style={{position: 'relative', top: -54 , bottom:20, paddingLeft: 20}}>
                 <Text style={{ color: 'white', fontSize: 16 }}>Skipped</Text>
             </View>:null}
-            {likeMatch===false? <View style={{position: 'relative', top: -54 , bottom:20, paddingLeft: 20}}>
+            {visitorSkip===false? <View style={{position: 'relative', top: -68 , bottom:20, paddingLeft: 20}}>
+                <Text style={{ color: 'white', fontSize: 16 }}>Skipped</Text>
+            </View>:null}
+            
+            {likeMatch===false || matchLikes===false? <View style={{position: 'relative', top: -54 , bottom:20, paddingLeft: 20}}>
                 <Text style={{ color: 'white', fontSize: 16 }}>Paired</Text>
+            </View>:null}
+            {selfVisitorLikeMatch===false? <View style={{position: 'relative', top:-68 , bottom:20, paddingLeft: 20}}>
+                <Text style={{ color: 'white', fontSize: 16 }}>Liked</Text>
             </View>:null}
         </View>
     );

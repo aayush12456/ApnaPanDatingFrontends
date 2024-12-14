@@ -16,15 +16,19 @@ import axios from 'axios'
 import * as SecureStore from 'expo-secure-store';
 import { addOnlineSkipUserAsync } from "../../../Redux/Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice";
 const socket = io.connect("http://192.168.29.169:4000")
-const LargeCard = ({ newAndOnlineContent,likeContent }) => {
+const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
   const [loginId,setLoginId]=useState('')
-  const [likeSkipUser,setLikeSkipUser]=useState([])
-  const [likeSkip,setLikeSkip]=useState(true)
+  const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
+  const [commonVisitorLikeSkip,setCommonVisitorLikeSkip]=useState(true)
   const [likeMatch,setLikeMatch]=useState(true)
   const [likeMatchUser,setLikeMatchUser]=useState({})
+  const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
+  const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
+  const [selfLikeMatch,setSelfLikeMatch]=useState(true)
+  const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
 
 
@@ -38,7 +42,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     }
   };
 
-  const getProfile = () =>newAndOnlineContent || likeContent
+  const getProfile = () =>newAndOnlineContent || likeContent || visitorContent
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");
   const year = dobBreak?.[2];
@@ -46,16 +50,20 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
   let currentYear = currentDate.getFullYear();
   const age = year ? currentYear - parseInt(year) : "";
 
-  const number=newAndOnlineContent?.phone || likeContent?.phone
+  const number=newAndOnlineContent?.phone || likeContent?.phone || visitorContent?.phone
   const mainNumber = number.substring(0, 4) + 'X'.repeat(number.length - 4);
-  const allImages = [...(newAndOnlineContent?.images || []), ...(likeContent?.images || [])];
+  const allImages = [...(newAndOnlineContent?.images || []), ...(likeContent?.images || []),...(visitorContent?.images || [])];
   const rows=[]
   const likeRows=[]
+  const visitorRows=[]
   for(let i=0;i<newAndOnlineContent?.interest?.length;i+=2){
     rows.push(newAndOnlineContent.interest.slice(i,i+2))
   }
   for(let i=0;i<likeContent?.interest?.length;i+=2){
     likeRows.push(likeContent.interest.slice(i,i+2))
+  }
+  for(let i=0;i<visitorContent?.interest?.length;i+=2){
+    visitorRows.push(visitorContent.interest.slice(i,i+2))
   }
   const playVideoHandler=()=>{
     if(newAndOnlineContent){
@@ -66,6 +74,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
       dispatch(passVideoDataSliceActions.passVideoDatas(likeContent))
       dispatch(playVideoModalActions.playVideoModalToggle())
     }
+    else if(visitorContent){
+      dispatch(passVideoDataSliceActions.passVideoDatas(visitorContent))
+      dispatch(playVideoModalActions.playVideoModalToggle())
+    }
   }
   const backHandler=()=>{
     if(newAndOnlineContent){
@@ -74,11 +86,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     else if(likeContent){
       navigation.navigate('Likes')
     }
+    else if(visitorContent){
+      navigation.navigate('Visitors')
+    }
   }
 
   const openImageHandler=(image)=>{
     const imageObj={
-      name:newAndOnlineContent?.firstName || likeContent?.firstName,
+      name:newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName,
       images:image
     }
     navigation.navigate('MyPhotoPage',{formData:imageObj})
@@ -88,6 +103,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     else if(likeContent){
       dispatch(anotherPassDataSliceActions.anotherPassDatas(likeContent))
     }
+    else if(visitorContent){
+      dispatch(anotherPassDataSliceActions.anotherPassDatas(visitorContent))
+    }
+    
    }
 
 
@@ -102,83 +121,98 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
 },[loginResponse])
 
 
-   const skipUserHandler=async(likeContent)=>{
+   const skipUserHandler=async(likeContent,newOnline,visitorContent)=>{
     console.log('user is skipped',likeContent)
-    const likeSkipUserObj={
-      id:loginId,
-      likeSkipUserId:likeContent?._id
-    }
-    const onlineSkipUserObj={
-      id:loginId,
-      onlinePersonSkipUserId:newAndOnlineContent?._id
-    }
-    if(likeSkipUserObj){
+    if(likeContent){
+      const likeSkipUserObj={
+        id:loginId,
+        likeSkipUserId:likeContent?._id
+      }
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
+        const response = await axios.post(`http://192.168.29.169:4000/user/addCommonVisitorLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
         console.log('response in like skip user is',response?.data?.likeSkip)
-        socket.emit('addLikeSkipUser', response?.data?.likeSkip)
+        socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
     } catch (error) {
         console.error('Error sending message:', error);
     }
     console.log('like skip user is',likeSkipUserObj)
     }
-    if(onlineSkipUserObj){
+    else if(newOnline){
+      const onlineSkipUserObj={
+        id:loginId,
+        onlinePersonSkipUserId:newAndOnlineContent?._id
+      }
       dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
       // dispatch( onlinePassDataSliceActions.onlinePassDatas(onlineSkipUserObj.onlinePersonSkipUserId))
       navigation.navigate('New And Online',{formData:onlineSkipUserObj})
+    }
+    else if(visitorContent){
+      const visitorSkipUserObj={
+        id:loginId,
+        likeSkipUserId:visitorContent?._id
+      }
+      try {
+        const response = await axios.post(`http://192.168.29.169:4000/user/addCommonVisitorLikeSkipUser/${visitorSkipUserObj.id}`, visitorSkipUserObj);
+        console.log('response in like skip user is',response?.data?.likeSkip)
+        socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
     }
    }
 
 
    useEffect(() => {
-    const fetchLikeSkipUsers = async () => {
+    const fetchCommonVisitorLikeSkipUsers = async () => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getLikeSkipUser/${loginId}`
+            `http://192.168.29.169:4000/user/getCommonVisitorLikeSkipUser/${loginId}`
           );
           // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get like skip user is',response?.data?.likeSkipUserArray)
-          setLikeSkipUser(response?.data?.likeSkipUserArray || []);
+          setCommonVisitorLikeSkipUser(response?.data?.likeSkipUserArray || []);
         }
       } catch (error) {
         console.error("Error fetching matches:", error);
       }
     };
   
-    fetchLikeSkipUsers();
+    fetchCommonVisitorLikeSkipUsers();
   
-    socket.on("getLikeSkipUser", (newUser) => {
+    socket.on("getCommonVisitorLikeSkipUser", (newUser) => {
   
-      setLikeSkipUser(newUser)
+      setCommonVisitorLikeSkipUser(newUser)
     });
   
     return () => {
-      socket.off("getLikeSkipUser");
+      socket.off("getCommonVisitorLikeSkipUser");
     };
   }, [loginId]);
-  console.log('get like skip user array',likeSkipUser)
+  console.log('get like skip user array',commonVisitorLikeSkipUser)
 
 
   useEffect(()=>{
-    const likeSkipData= likeSkipUser?.some((likeSkip)=>likeSkip?.firstName===likeContent?.firstName)
+    const likeSkipData= commonVisitorLikeSkipUser?.some((likeSkip)=>likeSkip?.firstName===likeContent?.firstName)
     if(likeSkipData){
-     setLikeSkip(false)
+     setCommonVisitorLikeSkip(false)
     }
-     },[likeSkipUser,likeContent])
+     },[commonVisitorLikeSkipUser,likeContent])
 
-
-   const likeUserHandler=async(likeUser)=>{
-    console.log('like user handler',likeUser)
-    const likeMatchUserObj={
-      id:loginId,
-      likeMatchId:likeUser._id
-    }
-    const likeMatchCountObj={
-      id:loginId,
-      matchLikeId:likeUser._id
-    }
-    if(likeMatchUserObj){
+     useEffect(()=>{
+      const visitorSkipData= commonVisitorLikeSkipUser?.some((likeSkip)=>likeSkip?.firstName===visitorContent?.firstName)
+      if(visitorSkipData){
+       setCommonVisitorLikeSkip(false)
+      }
+       },[commonVisitorLikeSkipUser,visitorContent])
+       
+   const likeUserHandler=async(likeUser,newOnline,visitorContent)=>{
+    console.log('new user handler',newOnline)
+    if(likeUser){
+      const likeMatchUserObj={
+        id:loginId,
+        likeMatchId:likeUser._id
+      }
       try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
         console.log('response in like match user is',response?.data)
@@ -186,8 +220,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     } catch (error) {
         console.error('Error sending message:', error);
     }
-    }
-    if(likeMatchCountObj){
+      const likeMatchCountObj={
+        id:loginId,
+        matchLikeId:likeUser._id
+      }
       try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${likeMatchCountObj.id}`,likeMatchCountObj);
         console.log('response in add like count user',response?.data?.userObj)
@@ -196,6 +232,60 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     } catch (error) {
         console.error('Error sending message:', error);
     }
+    }
+    else if(newOnline){
+      const onlineLikeUserObj={
+        id:loginId,
+        onlinePersonLikeUserId:newOnline._id
+      }
+      console.log("Online like user in new", onlineLikeUserObj);
+          try {
+        const response = await axios.post(`http://192.168.29.169:4000/user/addOnlineLikeUser/${onlineLikeUserObj.id}`,onlineLikeUserObj);
+        console.log('response in online like user',response?.data)
+        socket.emit('addOnlineLikeUser', response?.data)
+    
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+    const onlineLikeCountObj={
+      id:loginId,
+      matchLikeId:newOnline._id
+    }
+    try {
+      const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${onlineLikeCountObj.id}`,onlineLikeCountObj);
+      console.log('response in online like count user',response?.data?.userObj)
+      socket.emit('addLikeCountUser', response?.data?.userObj)
+  
+  } catch (error) {
+      console.error('Error sending message:', error);
+  }
+    }
+    else if(visitorContent){
+     const visitorLikeUserObj={
+      id:loginId,
+      visitorPlusLikeUserId:visitorContent._id
+     }
+     const visitorLikeCountObj={
+      id:loginId,
+      matchLikeId:visitorContent._id
+    }
+     try {
+      const response = await axios.post(`http://192.168.29.169:4000/user/addVisitorLikeUser/${visitorLikeUserObj.id}`,visitorLikeUserObj);
+      console.log('response in visitor like  user',response?.data)
+      socket.emit('addVisitorLikeUser', response?.data)
+  
+  } catch (error) {
+      console.error('Error sending message:', error);
+  }
+
+  try {
+    const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${visitorLikeCountObj.id}`,visitorLikeCountObj);
+    console.log('response in add like count user',response?.data?.userObj)
+    socket.emit('addLikeCountUser', response?.data?.userObj)
+
+} catch (error) {
+    console.error('Error sending message:', error);
+}
     }
    }
 
@@ -237,7 +327,104 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     }
      },[likeMatchUser?.matchLikes,likeContent,likeMatchUser?.anotherMatchLikes])
 
+      useEffect(() => {
+    const fetchLikeMatchUsers = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get like match user is',response?.data)
+          setLikeMatchUser(response?.data);
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+  
+    fetchLikeMatchUsers();
+  
+    socket.on("getLikeMatchUser", (newUser) => {
+  
+      setLikeMatchUser(newUser)
+    });
+  
+    return () => {
+      socket.off("getLikeMatchUser");
+    };
+  }, [loginId]);
 
+  useEffect(() => {
+    const fetchOnlineLikeUsers = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getOnlineLikeUser/${loginId}`
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get online like user is',response?.data)
+          setOnlineLikeUserObj(response?.data );
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+  
+    fetchOnlineLikeUsers();
+  
+    socket.on("getOnlineLikeUser", (newUser) => {
+  
+      setOnlineLikeUserObj(newUser)
+    });
+  
+    return () => {
+      socket.off("getOnlineLikeUser");
+    };
+  }, [loginId]);
+
+  useEffect(()=>{
+    const selfOnlineLike= onlineLikeUserObj?.selfOnlineLikeUser?.some((onlineLike)=>onlineLike?.firstName===newAndOnlineContent?.firstName)
+    if(selfOnlineLike){
+      setSelfLikeMatch(false)
+    }
+     },[onlineLikeUserObj?.selfOnlineLikeUser,newAndOnlineContent])
+
+     useEffect(() => {
+      const fetchVisitorLikeUsers = async () => {
+        try {
+          if (loginId) {
+            const response = await axios.get(
+              `http://192.168.29.169:4000/user/getVisitorLikeUser/${loginId}`
+            );
+            // setLikesArray(response?.data?.anotherMatchUser || []);
+            console.log('get visitor user is',response?.data)
+            setVisitorLikeUserObj(response?.data);
+          }
+        } catch (error) {
+          console.error("Error fetching visitor like user:", error);
+        }
+      };
+    
+      fetchVisitorLikeUsers();
+    
+      socket.on("getVisitorLikeUser", (newUser) => {
+    
+        setVisitorLikeUserObj(newUser)
+      });
+    
+      return () => {
+        socket.off("getVisitorLikeUser");
+      };
+    }, [loginId]);
+    console.log('visitor like user obj',visitorLikeUserObj)
+
+    useEffect(()=>{
+      const selfVisitorLike= visitorLikeUserObj?.visitorLikes?.some((visitorLike)=>visitorLike?.firstName===visitorContent?.firstName)
+      if(selfVisitorLike){
+        setSelfVisitorLikeMatch(false)
+      }
+       },[visitorLikeUserObj?.visitorLikes,visitorContent])
   return (
     <>
       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
@@ -259,7 +446,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
                 horizontal
                 onScroll={change}
                 showsHorizontalScrollIndicator={false}
-                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images || likeContent?.images)}
+                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images || likeContent?.images || visitorContent?.images)}
               >
                 {allImages.map((image, index) => {
                   return (
@@ -286,14 +473,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:"black"}}>{newAndOnlineContent?.firstName || likeContent?.firstName}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:"black"}}>{newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName}</Text>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black'}}>{age}</Text>
-        <Text style={{fontSize:16,fontWeight:'semibold',color:'black'}}>{newAndOnlineContent?.city || likeContent?.city}</Text>
+        <Text style={{fontSize:16,fontWeight:'semibold',color:'black'}}>{newAndOnlineContent?.city || likeContent?.city || visitorContent?.city}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text>Working as {newAndOnlineContent?.profession || likeContent?.profession} </Text>
-<Text style={{paddingTop:2}}>Studied {newAndOnlineContent?.education || likeContent?.education} </Text>
+<Text>Working as {newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession} </Text>
+<Text style={{paddingTop:2}}>Studied {newAndOnlineContent?.education || likeContent?.education || visitorContent?.profession} </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
@@ -304,12 +491,12 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.relationship || likeContent?.relationship}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.relationship || likeContent?.relationship || visitorContent?.relationship}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.looking || likeContent?.looking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.looking || likeContent?.looking || visitorContent?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -343,46 +530,68 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
     </View>
   ))
 }
+{
+  visitorRows.map((likeRow, rowIndex) => (
+    <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 10 }}>
+      {
+        likeRow.map((rowItem, itemIndex) => (
+          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          </View>
+        ))
+      }
+      
+    </View>
+  ))
+}
+ 
        </View>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.education || likeContent?.education}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.education || likeContent?.education || visitorContent?.education}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.profession || likeContent?.profession}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.drinking || likeContent?.drinking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.drinking || likeContent?.drinking || visitorContent?.drinking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.smoking || likeContent?.smoking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.smoking || likeContent?.smoking || visitorContent?.smoking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.eating || likeContent?.eating}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
       </View>
 
           </ScrollView>
-          {likeSkip===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+          {commonVisitorLikeSkip===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You skipped this profile</Text>}
 
             {likeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You've both paired</Text>}
 
-       {likeSkip===false || likeMatch===false?null:<View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
-            <Pressable onPress={()=>skipUserHandler(likeContent)}>
+            {selfLikeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            You Like this profile</Text>}
+           
+            {selfVisitorLikeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            You Like this profile</Text>}
+
+       {commonVisitorLikeSkip===false || likeMatch===false ||
+       selfLikeMatch===false || selfVisitorLikeMatch===false  ?null:<View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
+            <Pressable onPress={()=>skipUserHandler(likeContent,newAndOnlineContent,visitorContent)}>
             <View style={{flexDirection:"row",gap:12,marginLeft:25}} >
                 <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'grey'}}>
           <Image source={dislike} style={{ width: 20, height:30,marginLeft:14,marginTop:6,tintColor:'white' }} />
@@ -390,7 +599,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent }) => {
           <Text style={{fontSize:15,paddingTop:10,colour:'grey'}}>SKIP</Text>
             </View>
             </Pressable>
-            <Pressable onPress={()=>likeUserHandler(likeContent)}>
+            <Pressable onPress={()=>likeUserHandler(likeContent, newAndOnlineContent,visitorContent)}>
             <View style={{flexDirection:"row",gap:12,marginRight:25}}>
             <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'rgba(37, 99, 235, 1)'}}>
             <Image source={like} style={{ width:20, height: 30,marginLeft:14,marginTop:6 }} />

@@ -17,6 +17,7 @@ import passMatchArrayDataSlice from "../Slice/passMatchArrayDataSlice/passMatchA
 import addLikeSmsSlice from "../Slice/addLikeSmsSlice/addLikeSmsSlice"
 import addOnlineSkipUserSlice from "../Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice"
 import onlinePassDataSlice from "../Slice/onlinePassDataSlice/onlinePassDataSlice"
+import addVisitorEmailSlice from "../Slice/addVisitorEmailSlice/addVisitorEmailSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -36,7 +37,8 @@ const store=configureStore({
         passMatchArrayData:passMatchArrayDataSlice,
         addSmsLikeText:addLikeSmsSlice,
         onlneSkipUser:addOnlineSkipUserSlice,
-        onlinePassData:onlinePassDataSlice
+        onlinePassData:onlinePassDataSlice,
+        addVisitorEmailData:addVisitorEmailSlice
     }
 })
 export default store
