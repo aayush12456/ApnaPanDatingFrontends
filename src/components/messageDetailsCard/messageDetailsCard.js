@@ -19,10 +19,7 @@ const MessageDetailsCard = ({ messageDetails }) => {
   const [loginObj,setLoginObj]=useState({})
   const [fetchMessages,setFetchMessages]=useState([])
   const [finalMessageArray,setFinalMessageArray]=useState([])
-  const [chatDetailArray, setChatDetailArray] = useState([]);
-
   const [openIndex, setOpenIndex] = useState('')
-  const [finalChatDetailsArray, setFinalChatDetailsArray] = useState([]);
   const windowHeight = Dimensions.get('window').height;
   console.log('window heigth',windowHeight)
   const navigation = useNavigation();

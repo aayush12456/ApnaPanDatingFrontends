@@ -6,9 +6,14 @@ import {useState,useEffect} from 'react'
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import axios from "axios";
+import FilteredChatMessage from "../filteredChatMessage/filteredChatMessage";
 const socket = io.connect("http://192.168.29.169:4000")
 const MessageCard=({finalMessageUser,index})=>{
     const [loginObj,setLoginObj]=useState({})
+    const [chatIdArray, setChatIdArray] = useState([])
+    const [filteredMessages, setFilteredMessages] = useState([])
+    const [fetchMessages,setFetchMessages]=useState([])
+    const [checkMessages, setCheckMessages] = useState(false)
     console.log('final message user in message card',finalMessageUser)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const navigation = useNavigation();
@@ -60,6 +65,99 @@ useEffect(() => {
     }
     }
     }
+    useEffect(() => {
+      const fetchAllChatId = async () => {
+          try {
+              const response = await axios.get(`http://192.168.29.169:4000/chat/getAllChatId`);
+              // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getAllChatId`);
+              console.log('fetch chat id messages is',response.data)
+              setChatIdArray(response.data.chatIdArray)
+
+          } catch (error) {
+              console.error("Error fetching messages:", error);
+          }
+      };
+      fetchAllChatId()
+  }, [])
+
+  useEffect(() => {
+
+    const fetchMessage = async () => {
+        try {
+          if(loginObj._id){
+            const response = await axios.get(`http://192.168.29.169:4000/chat/getMessage/${loginObj._id}`);
+            // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
+            // console.log('fetch messages is', response.data.chatUserArray)
+            // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+            setFetchMessages(response.data.chatUserArray);
+  
+          }
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+        }
+    };
+    fetchMessage()
+    socket.on('recieveMessage', (newMessage) => {
+        setFetchMessages(preMessages => [...preMessages, newMessage])
+    })
+    socket.on('messageDeleted', (deletedMessage) => {
+        setFetchMessages((prevMessages) =>
+            prevMessages.filter((msg) => msg._id !== deletedMessage._id)
+        );
+    });
+  
+    return () => {
+        socket.off('recieveMessage')
+        socket.off('messageDeleted');
+    }
+  }, [loginObj._id])
+  
+  
+
+  useEffect(() => {
+    if (fetchMessages.length && chatIdArray.length) {
+        const currentTime = new Date();
+
+        // Map through chatIdArray to find the closest message for each chatId
+        const closestMessagesArray = chatIdArray.map(chatItem => {
+            // Filter messages matching the current chatId
+            const matchingMessages = fetchMessages.filter(messageItem => messageItem.chatId === chatItem._id);
+
+            // Find the message with the closest timestamp to the current time
+            if (matchingMessages.length > 0) {
+                return matchingMessages.reduce((closest, currentMessage) => {
+                    const currentMessageTime = new Date(currentMessage.timestamp);
+                    const closestMessageTime = new Date(closest.timestamp);
+
+                    // Calculate time differences
+                    const currentTimeDiff = Math.abs(currentTime - currentMessageTime);
+                    const closestTimeDiff = Math.abs(currentTime - closestMessageTime);
+
+                    // Return the message with the smaller time difference
+                    return currentTimeDiff < closestTimeDiff ? currentMessage : closest;
+                }, matchingMessages[0]);
+            }
+            return null;
+        }).filter(message => message !== null); // Filter out any nulls
+
+        // console.log('Array of closest messages for each chatId:', closestMessagesArray);
+        setFilteredMessages(closestMessagesArray)
+    }
+}, [fetchMessages, chatIdArray]);
+console.log('fetch message in message card',filteredMessages)
+
+useEffect(() => {
+  const checkMessage = filteredMessages.some(
+      filterItem => filterItem.senderId === finalMessageUser._id && filterItem.recieverId === loginObj._id
+  );
+  const anotherCheckMessage = filteredMessages.some(
+      filterItem => filterItem.senderId === loginObj._id && filterItem.recieverId === finalMessageUser._id
+  );
+  if (checkMessage || anotherCheckMessage) {
+      setCheckMessages(true);
+  }
+}, [filteredMessages, finalMessageUser._id, loginObj._id]);
+
 return (
     <>
       <Card
@@ -93,9 +191,19 @@ return (
                     </Text>
                   </View>
                   <View>
-                  <Text style={{ color: "black", fontWeight: "500",paddingTop:2 }}>
+                    {
+                      filteredMessages.map(filterMessage=>{
+                      
+                        return (
+                          <>
+                          <FilteredChatMessage filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} />
+                          </>
+                        )
+                      })
+                    }
+                 {checkMessages===false && <Text style={{ color: "black", fontWeight: "500",paddingTop:2 }}>
            You have both paired
-                    </Text>
+                    </Text>}
                   </View>
                     </View>                     
                 </View>
