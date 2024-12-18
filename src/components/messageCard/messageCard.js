@@ -192,11 +192,11 @@ return (
                   </View>
                   <View>
                     {
-                      filteredMessages.map(filterMessage=>{
-                      
+                      filteredMessages.map((filterMessage,index)=>{
+                        const messageUniqueKey = `${filterMessage._id}_${index}`;
                         return (
                           <>
-                          <FilteredChatMessage filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} />
+                          <FilteredChatMessage key={messageUniqueKey} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} index={index} />
                           </>
                         )
                       })

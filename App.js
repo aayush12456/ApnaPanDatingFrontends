@@ -39,6 +39,7 @@ import { LogBox } from 'react-native';
 import LikePageContent from './src/Pages/likePageContent/likePageContent';
 import VisitorPageContent from './src/Pages/visitorPageContent/visitorPageContent';
 import MessageDetailsPageContent from './src/Pages/messageDetailsPageContent/messageDetailsPageContent';
+import MessageProfilePage from './src/Pages/messageProfilePage/messageProfilePage';
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
@@ -228,6 +229,11 @@ function AppContent() {
           <Stack.Screen
           name="MessageDetailsPageContent"
           component={MessageDetailsPageContent}
+          options={{ headerShown: false }}
+        />
+              <Stack.Screen
+          name="MessageProfilePage"
+          component={MessageProfilePage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

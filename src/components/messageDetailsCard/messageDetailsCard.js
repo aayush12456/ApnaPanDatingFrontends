@@ -164,6 +164,7 @@ console.log('final message',finalMessage)
 setOpenIndex(index)
 dispatch(moreChatActions.moreChatToggle())
 }
+
 const deleteChatHandler=async(deleteChatMessage)=>{
   try {
     await axios.post(`http://192.168.29.169:4000/chat/deleteChat`, deleteChatMessage);
@@ -172,6 +173,9 @@ const deleteChatHandler=async(deleteChatMessage)=>{
     console.error('Error sending message:', error);
 }
   dispatch(moreChatActions.moreChatToggle())
+}
+const messageDetailsProfileHandler=(messageDetailProfile)=>{
+  navigation.navigate('MessageProfilePage', { formData: messageDetailProfile });
 }
   return (
     <>
@@ -190,6 +194,7 @@ const deleteChatHandler=async(deleteChatMessage)=>{
               <Image source={back} style={{ width: 15, height: 15 }} />
             </Button>
           </View>
+          <Pressable onPress={()=>messageDetailsProfileHandler(messageDetails)}>
           <View
             style={{
               flexDirection: "row",
@@ -217,6 +222,8 @@ const deleteChatHandler=async(deleteChatMessage)=>{
               {messageDetails?.firstName}
             </Text>
           </View>
+          </Pressable>
+         
           <Image
             source={dots}
             style={{
