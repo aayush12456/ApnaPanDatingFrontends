@@ -38,6 +38,7 @@ import AnotherMatchCardPage from './src/Pages/anotherMatchCardPage/anotherMatchC
 import { LogBox } from 'react-native';
 import LikePageContent from './src/Pages/likePageContent/likePageContent';
 import VisitorPageContent from './src/Pages/visitorPageContent/visitorPageContent';
+import MessageDetailsPageContent from './src/Pages/messageDetailsPageContent/messageDetailsPageContent';
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
@@ -222,6 +223,11 @@ function AppContent() {
          <Stack.Screen
           name="VisitorPageContent"
           component={VisitorPageContent}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="MessageDetailsPageContent"
+          component={MessageDetailsPageContent}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

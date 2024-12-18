@@ -23,7 +23,6 @@ const NewAndOnline = ({route}) => {
   console.log("get all user array in new ", getAllUserArray);
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
   console.log('login response in new and pnline',loginResponse)
-  const isLoading = useSelector((state) => state.getAllUserData.isLoading);
   const [allUser,setAllUser]=useState(getAllUserArray)
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
   const [likeMatchUserObj,setLikeMatchUserObj]=useState({})

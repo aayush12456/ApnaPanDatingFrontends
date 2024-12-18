@@ -24,6 +24,11 @@ export const userLoginAsync = createAsyncThunk(
         await SecureStore.setItemAsync('loginId', Responedata?.loginData?._id);
         console.log('loginId stored securely in SecureStore',Responedata?.loginData?._id);
       }
+      if (Responedata?.loginData) {
+        await SecureStore.setItemAsync('loginObj', JSON.stringify(Responedata?.loginData)); // Stringify the object
+        console.log('login obj stored securely in SecureStore', Responedata?.loginData);
+      }
+      
       return Responedata;
       
     } catch (error) {
