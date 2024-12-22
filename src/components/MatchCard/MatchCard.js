@@ -124,7 +124,7 @@ const MatchCard=({matchObj})=>{
         }
 return (
     <>
-    <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white' }}>
+    <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white'}}>
     <Card.Content>
       <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:30,zIndex:10,left:30}} >
         <Pressable onPress={playVideoHandler}>

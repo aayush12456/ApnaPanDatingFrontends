@@ -40,6 +40,9 @@ import LikePageContent from './src/Pages/likePageContent/likePageContent';
 import VisitorPageContent from './src/Pages/visitorPageContent/visitorPageContent';
 import MessageDetailsPageContent from './src/Pages/messageDetailsPageContent/messageDetailsPageContent';
 import MessageProfilePage from './src/Pages/messageProfilePage/messageProfilePage';
+import SkipProfilePage from './src/Pages/skipProfilePage/skipProfilePage';
+import BlockProfilePage from './src/Pages/blockProfilePage/blockProfilePage';
+
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
@@ -234,6 +237,16 @@ function AppContent() {
               <Stack.Screen
           name="MessageProfilePage"
           component={MessageProfilePage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="SkipProfilePage"
+          component={SkipProfilePage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="BlockProfilePage"
+          component={BlockProfilePage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

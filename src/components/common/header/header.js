@@ -8,6 +8,7 @@ import boy from '../../../../assets/sidebarIcons/boy.png'
 import search from '../../../../assets/sidebarIcons/search.png'
 import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
+import settings from '../../../../assets/sidebarIcons/settings.png'
 import visitors from '../../../../assets/sidebarIcons/interest.png'
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
@@ -17,11 +18,14 @@ import Likes from '../../likes/likes.js';
 import FrontPage from '../../frontPage/frontPage.js';
 import Message from '../../message/message.js';
 import {useSelector} from 'react-redux'
+import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
 import Visitors from '../../visitors/visitors.js';
+import Settings from '../../settings/settings.js';
 const socket = io.connect("http://192.168.29.169:4000")
 const Header=()=>{
     const Drawer = createDrawerNavigator();
+    const navigation = useNavigation();
     const [loginData, setLoginData] = useState(null);
     const [loginId,setLoginId]=useState('')
     const [likeCountObj,setLikeCountObj]=useState('')
@@ -155,7 +159,21 @@ return (
         name='My Profile'
         component={MyProfile}
         options={{ 
-            drawerLabel: loginData?.name||'data',
+          drawerLabel: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {/* User Name */}
+              <Text style={{ fontSize: 16, color: 'black', marginRight: 10 }}>
+                {loginData?.name || 'data'}
+              </Text>
+              {/* Settings Icon */}
+              <Pressable   onPress={() => navigation.navigate('Settings')}>
+              <Image
+                source={settings} // Replace with your settings image path
+                style={{ width: 24, height: 24 }}
+              />
+              </Pressable>
+            </View>
+          ),
             drawerIcon:()=>(
                 <Image source={{ uri: loginData?.image }}
                 style={{ width: 65, height: 65,borderRadius:30 }}/>
@@ -310,6 +328,20 @@ return (
   }}
 />
           
+<Drawer.Screen
+    name="Settings"
+    component={Settings} // Your settings component
+    options={{
+      drawerLabel: () => null, // Remove label
+      drawerIcon: () => null, // Remove icon
+      headerShown: true, // Optional: hide header if needed
+      drawerActiveBackgroundColor: 'transparent', 
+      drawerInactiveBackgroundColor: 'transparent', 
+      drawerItemStyle: { display: 'none' }
+    }}
+  />
+
+
      </Drawer.Navigator>
     </>
 )

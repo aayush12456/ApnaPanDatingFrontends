@@ -19,6 +19,8 @@ import addOnlineSkipUserSlice from "../Slice/addOnlineSkipUserSlice/addOnlineSki
 import onlinePassDataSlice from "../Slice/onlinePassDataSlice/onlinePassDataSlice"
 import addVisitorEmailSlice from "../Slice/addVisitorEmailSlice/addVisitorEmailSlice"
 import moreChatSlice from "../Slice/moreChatSlice/moreChatSlice"
+import dotsOpenModalSlice from "../Slice/dotsOpenModalSlice/dotsOpenModalSlice"
+import passSkipProfileSlice from "../Slice/passSkipProfileSlice/passSkipProfileSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -40,7 +42,9 @@ const store=configureStore({
         onlneSkipUser:addOnlineSkipUserSlice,
         onlinePassData:onlinePassDataSlice,
         addVisitorEmailData:addVisitorEmailSlice,
-        moreChatData:moreChatSlice
+        moreChatData:moreChatSlice,
+        dotsOpenData:dotsOpenModalSlice,
+        passSkipProfile:passSkipProfileSlice
     }
 })
 export default store

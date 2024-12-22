@@ -2,6 +2,7 @@
 import {  Text} from 'react-native-paper';
 import { useDispatch,useSelector } from 'react-redux';
 import { useEffect,useState } from 'react';
+import {ScrollView,RefreshControl} from 'react-native'
 import { getMatchesData } from '../../Redux/Slice/getMatchesSlice/getMatchesSlice';
 import io from "socket.io-client";
 import MatchCard from '../MatchCard/MatchCard';
@@ -10,6 +11,7 @@ const socket = io.connect("http://192.168.29.169:4000")
 const Matches=()=>{
   const [filterMatchArray,setFilterMatchArray]=useState([])
   const [loginId,setLoginId]=useState('')
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch=useDispatch()
   const getFilterUser=useSelector((state)=>state.getMatchesData.getMatchesArray.interestUsers)
 console.log('get match filter user',getFilterUser)
@@ -87,12 +89,23 @@ useEffect(() => {
     setMatchArray(getFilterUser);
   }
 }, [filterMatchArray, getFilterUser]);
+const handleRefresh = () => {
+  setRefreshing(true);
+  dispatch(getMatchesData(completeLoginObj?._id)).finally(() =>
+    setRefreshing(false)
+  );
+};
 return (
     <>
-   {
-    matchArray && matchArray.length>0 
-    &&<MatchCard matchObj={matchArray[0]}/>
-   }
+  <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {matchArray && matchArray.length > 0 && (
+        <MatchCard matchObj={matchArray[0]} />
+      ) }
+    </ScrollView>
     </>
 )
 }

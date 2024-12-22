@@ -13,6 +13,7 @@ const Likes = () => {
   const [likesArray, setLikesArray] = useState([]);
   const [likeMatchUser, setLikeMatchUser] = useState({});
   const [onlineLikeUserObj, setOnlineLikeUserObj] = useState({});
+  const [blockUserObj,setBlockUserObj]=useState({})
   const dispatch = useDispatch();
 
   const completeLoginObj = useSelector(
@@ -153,6 +154,34 @@ const Likes = () => {
 
   console.log("online like user obj", onlineLikeUserObj);
 
+  useEffect(() => {
+    const fetchBlockProfileUser = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getBlockChatIdUser/${loginId}`,
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get block user obj is block profile page', response?.data)
+          setBlockUserObj(response?.data);
+        }
+      } catch (error) {
+        console.error("Error fetching in block user obj:", error);
+      }
+    };
+
+    fetchBlockProfileUser();
+
+    socket.on("getBlockUser", (newUser) => {
+
+        setBlockUserObj(newUser)
+    });
+
+    return () => {
+      socket.off("getBlockUser");
+    };
+  }, [loginId]);  
+
   const finalLikesArray =
     likesArray.length > 0
       ? likesArray.filter((finalLikes) => finalLikes._id !== loginId)
@@ -175,6 +204,11 @@ const Likes = () => {
   console.log("final like array", finalLikesArray);
   console.log("another match like array", anotherMatchLikesArray);
   console.log("online like array", onlineLikeUserArray);
+  
+  const blockUserIds = [
+    ...(blockUserObj?.blockUserArray || []),
+    ...(blockUserObj?.anotherBlockUserArray || [])
+  ].map(user => user._id); // Extract block user IDs
 
   const combineLikeArray = [
     ...finalLikesArray,
@@ -185,7 +219,8 @@ const Likes = () => {
       likeItem?.gender &&
       completeLoginObj?.gender &&
       likeItem.gender.toLowerCase() !== completeLoginObj.gender.toLowerCase()
-  );
+  ).filter((likeItem) => !blockUserIds?.includes(likeItem._id));
+
 
   const chunkArray = (array, chunkSize) => {
     const chunks = [];

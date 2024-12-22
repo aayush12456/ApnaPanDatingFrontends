@@ -10,6 +10,7 @@ const socket = io.connect("http://192.168.29.169:4000")
 const Message=()=>{
     const [loginId,setLoginId]=useState('')
     const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
+    const [blockUserObj,setBlockUserObj]=useState({})
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
   useEffect(()=>{
     if(loginResponse){
@@ -50,11 +51,59 @@ const Message=()=>{
       }, [loginId]);
       console.log('like match user obj in message',likeMatchUserObj)
 
-      const finalMessageArray = [
-        ...(likeMatchUserObj?.matchLikes || []),
-        ...(likeMatchUserObj?.anotherMatchLikes || [])
-      ];
-      console.log('final message array',finalMessageArray)                 
+      useEffect(() => {
+        const fetchBlockProfileUser = async () => {
+          try {
+            if (loginId) {
+              const response = await axios.get(
+                `http://192.168.29.169:4000/user/getBlockChatIdUser/${loginId}`,
+              );
+              // setLikesArray(response?.data?.anotherMatchUser || []);
+              console.log('get block user obj is block profile page', response?.data)
+              setBlockUserObj(response?.data);
+            }
+          } catch (error) {
+            console.error("Error fetching in block user obj:", error);
+          }
+        };
+    
+        fetchBlockProfileUser();
+    
+        socket.on("getBlockUser", (newUser) => {
+    
+            setBlockUserObj(newUser)
+        });
+    
+        return () => {
+          socket.off("getBlockUser");
+        };
+      }, [loginId]);     
+       
+      // const finalMessageArray = [
+      //   ...(likeMatchUserObj?.matchLikes || []),
+      //   ...(likeMatchUserObj?.anotherMatchLikes || [])
+      // ];
+      const blockUserIds = [
+        ...(blockUserObj?.blockUserArray || []),
+        ...(blockUserObj?.anotherBlockUserArray || [])
+      ].map(user => user._id); // Extract block user IDs
+    
+      const filteredMatchLikes = (likeMatchUserObj?.matchLikes || []).filter(
+        (user) => !blockUserIds.includes(user._id)
+      );
+    
+      const filteredAnotherMatchLikes = (likeMatchUserObj?.anotherMatchLikes || []).filter(
+        (user) => !blockUserIds.includes(user._id)
+      );
+    
+      const finalMessageArray = blockUserIds.length
+        ? [...filteredMatchLikes, ...filteredAnotherMatchLikes]
+        : [
+            ...(likeMatchUserObj?.matchLikes || []),
+            ...(likeMatchUserObj?.anotherMatchLikes || []),
+          ];
+      console.log('final message array',finalMessageArray) 
+          
 return (
     <>
     <ScrollView>
