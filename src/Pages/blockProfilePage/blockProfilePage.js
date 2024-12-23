@@ -51,7 +51,7 @@ const BlockProfilePage=({route})=>{
       console.log('block user obj',blockUserObj)
 return (
     <>
-        <CommonHeader skipProfileName={formData.headerName}/>
+        <CommonHeader commonHeaderName={formData.headerName}/>
         {
       blockUserObj?.blockUserArray?.length>0? blockUserObj?.blockUserArray?.map((blockUserData,index)=>{
             console.log('block user data',blockUserData)

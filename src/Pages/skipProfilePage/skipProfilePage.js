@@ -16,6 +16,7 @@ const SkipProfilePage=({route})=>{
     useEffect(()=>{
         if(loginResponse){
           const getLoginId = async () => {
+            
             const loginIdData = await SecureStore.getItemAsync('loginId');
             setLoginId(loginIdData)
           };
@@ -95,7 +96,7 @@ const SkipProfilePage=({route})=>{
     
 return (
     <>
-    <CommonHeader skipProfileName={formData.headerName}/>
+    <CommonHeader commonHeaderName={formData.headerName}/>
     {
       combineSkipUserArray.length>0?  combineSkipUserArray.map((skipUserData,index)=>{
             console.log('skip user data',skipUserData)

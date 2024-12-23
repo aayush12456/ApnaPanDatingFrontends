@@ -42,6 +42,8 @@ import MessageDetailsPageContent from './src/Pages/messageDetailsPageContent/mes
 import MessageProfilePage from './src/Pages/messageProfilePage/messageProfilePage';
 import SkipProfilePage from './src/Pages/skipProfilePage/skipProfilePage';
 import BlockProfilePage from './src/Pages/blockProfilePage/blockProfilePage';
+import AccountSettingsPage from './src/Pages/accountSettingsPage/accountSettingsPage';
+import ChangePasswordPage from './src/Pages/changePasswordPage/changePasswordPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -247,6 +249,16 @@ function AppContent() {
          <Stack.Screen
           name="BlockProfilePage"
           component={BlockProfilePage}
+          options={{ headerShown: false }}
+        />
+            <Stack.Screen
+          name="AccountSettingsPage"
+          component={AccountSettingsPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChangePasswordPage"
+          component={ChangePasswordPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

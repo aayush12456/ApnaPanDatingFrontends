@@ -2,13 +2,16 @@ import {Text,View,Image} from 'react-native'
 import { Button } from 'react-native-paper';
 import back from "../../../../assets/signUpFormIcon/back.png";
 import { useNavigation } from "@react-navigation/native";
-const CommonHeader=({skipProfileName})=>{
+const CommonHeader=({commonHeaderName})=>{
     const navigation = useNavigation();
     const backHandler=()=>{
-     if(skipProfileName='Skipped Profiles' || 'Blocked Users'){
+     if(commonHeaderName==='Skipped Profiles' || 'Blocked Users' || 'Account Settings'){
         navigation.navigate('Settings')
      }
-  
+    if(commonHeaderName==='Change Password'){
+
+      navigation.navigate('AccountSettingsPage',{formData:{headerName:'Account Settings'}})
+    }
     }
 return (
     <>
@@ -26,7 +29,7 @@ return (
             </Button>
           </View>
           <View>
-            <Text style={{textAlign:'center',paddingLeft:5,paddingTop:9, fontSize: 17, fontWeight: '600', color: 'black',paddingBottom:5}}>{skipProfileName}</Text>
+            <Text style={{textAlign:'center',paddingLeft:5,paddingTop:9, fontSize: 17, fontWeight: '600', color: 'black',paddingBottom:5}}>{commonHeaderName}</Text>
           </View>
         </View>
     </>

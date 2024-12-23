@@ -10,13 +10,19 @@ const Settings=()=>{
             headerName:'Skipped Profiles'
         }
         console.log('skip profile')
-        navigation.navigate('SkipProfilePage', {formData:skipProfileObj,});
+        navigation.navigate('SkipProfilePage', {formData:skipProfileObj});
     }
     const blockProfileHandler=()=>{
         const blockProfileObj={
             headerName:'Blocked Users'
         }
-        navigation.navigate('BlockProfilePage', {formData:blockProfileObj,});
+        navigation.navigate('BlockProfilePage', {formData:blockProfileObj});
+    }
+    const accounSettingsHandler=()=>{
+        const accountSettingsObj={
+            headerName:'Account Settings'
+        }
+        navigation.navigate('AccountSettingsPage', {formData:accountSettingsObj});
     }
 return (
     <>
@@ -40,12 +46,14 @@ return (
     </Pressable>
     <View style={{marginTop:20}}>
     <Text style={{paddingLeft:20}}>Account</Text>
+    <Pressable onPress={accounSettingsHandler}>
     <View style={{backgroundColor: '#dcdcdc',width:'90%',marginLeft:20,marginTop:7}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10}}>Account Settings</Text>
         <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10 }}/>
      </View>
     </View>
+    </Pressable>
     </View>
     
     </View>
