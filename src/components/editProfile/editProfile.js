@@ -18,10 +18,14 @@ const EditProfile=({navigation})=>{
     }
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
     console.log('complete  login response data in login',completeLoginObj)
+   
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+
+     const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
 
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
 
-    const getProfile = () =>completeLoginObj
+    const getProfile = () =>completeLoginObjData
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");
   const year = dobBreak?.[2];
@@ -31,7 +35,7 @@ const EditProfile=({navigation})=>{
 
 
 
-  console.log('about user us',completeLoginObj?.aboutUser)
+  console.log('about user us',completeLoginObjData?.aboutUser)
 
   const editRelationHandler=()=>{
    navigation.navigate('EditRelationPage')
@@ -42,9 +46,9 @@ const EditProfile=({navigation})=>{
   setLoginObj(updatePersonalInfoSelector)
   }
   else{
-    setLoginObj(completeLoginObj)
+    setLoginObj(completeLoginObjData)
   }
-  },[updatePersonalInfoSelector,completeLoginObj])
+  },[updatePersonalInfoSelector,completeLoginObjData])
 
   const rows=[]
   for(let i=0;i<loginObj?.interest?.length;i+=2){
@@ -101,10 +105,10 @@ horizontal
 onScroll={change}
 showsHorizontalScrollIndicator={false}
 style={{width,height}}
-onTouchEnd={()=>openImageHandler(completeLoginObj?.images)} 
+onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)} 
 >
 {
-  completeLoginObj.images.map((image,index)=>{
+  completeLoginObjData.images.map((image,index)=>{
     return (
       <>
       <Image 
@@ -120,16 +124,16 @@ style={{width,height,resizeMode:'cover'}}
 
 </ScrollView>
 <View style={styles.pagination}>
-                  {completeLoginObj.images.map((_, k) => (
+                  {completeLoginObjData.images.map((_, k) => (
                     <Text key={k} style={k === active ? styles.activeDot : styles.dot}>•</Text>
                   ))}
                 </View>
       </View>
       <View style={{flexDirection:'row',justifyContent:'space-between'}}>
       <View style={{flexDirection:'row',gap:12, paddingLeft:12,paddingTop:16}}>
-        <Text style={{fontSize:17 ,fontWeight:'semibold'}}>{completeLoginObj?.firstName}</Text>
+        <Text style={{fontSize:17 ,fontWeight:'semibold'}}>{completeLoginObjData?.firstName}</Text>
         <Text style={{fontSize:17 ,fontWeight:'semibold'}}>{age}</Text>
-        <Text style={{fontSize:17,fontWeight:'semibold'}}>{completeLoginObj?.city}</Text>
+        <Text style={{fontSize:17,fontWeight:'semibold'}}>{completeLoginObjData?.city}</Text>
       </View>
       <View>
       <TouchableOpacity>
@@ -273,7 +277,7 @@ style={{width,height,resizeMode:'cover'}}
           <Image source={edit} style={{marginRight:7,marginTop:14}}/>
         </TouchableOpacity>
         </View>
-        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObj?.language}</Text>
+        <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',color:'black'}}>{completeLoginObjData?.language}</Text>
       </View>
       </View>
       </ScrollView>

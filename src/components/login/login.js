@@ -1,6 +1,6 @@
 
 import { TextInput } from 'react-native-paper';
-import { Image, View, TouchableOpacity, Text } from "react-native";
+import { Image, View, TouchableOpacity, Text, Pressable } from "react-native";
 import { Button } from 'react-native-paper';
 import { Formik } from 'formik';
 import { loginSchema } from '../../schemas';
@@ -10,9 +10,11 @@ import back from '../../../assets/signUpFormIcon/back.png';
 import { userLoginAsync } from '../../Redux/Slice/loginSlice/loginSlice';
 import { useEffect,useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import closeEye from '../../../assets/AllIcons/closedeye.png'
+import openEye from '../../../assets/AllIcons/openeye.png'
 const Login=({navigation})=>{
   const [loginToken,setLoginToken]=useState(null)
+    const [showPassword, setShowPassword] = useState(false);
   const dispatch=useDispatch()
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)
   const loginObj=useSelector((state)=>state.loginData.loginData.loginData)
@@ -31,7 +33,7 @@ const Login=({navigation})=>{
       saveToSecureStore();
       // navigation.navigate('HeaderPage');
     }
-  }, [loginResponse, navigation,loginObj]);
+  }, [loginResponse]);
 
   
 //   useEffect(() => {
@@ -72,6 +74,22 @@ useEffect(() => {
   }
 
 }, [loginResponse,navigation]);
+
+const generateNumber=Math.floor(1000 + Math.random() * 9000).toString(); 
+const generateNumberObj={
+  number:generateNumber
+}
+
+const togglePasswordVisibility = () => {
+  setShowPassword(!showPassword);
+};
+const loginWithOtpHandler=()=>{
+  console.log('login with otp')
+  navigation.navigate('LoginWithOtpPage');
+}
+const forgotPasswordHandler=()=>{
+  navigation.navigate('ForgotPasswordPage',{formData:generateNumberObj});
+}
 return (
   <>
   <Formik
@@ -112,18 +130,29 @@ return (
             {touched.email && errors.email && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.email}</Text>}
           </View>
           <View>
-                <TextInput
+            <View style={{flexDirection:'row'}}>
+            <TextInput
                   label="Password"
-                  style={{ marginLeft: 12, marginRight: 20, marginTop: 9 }}
+                  style={{ marginLeft: 12, marginRight: 20, marginTop: 9 ,width:'91%'}}
                   mode="outlined"
-                  secureTextEntry
+                  secureTextEntry={!showPassword}
                   onChangeText={handleChange('password')}
                   onBlur={handleBlur('password')}
                   value={values.password}
+                  type='text'
                 />
+               { !showPassword &&<Pressable onPress={togglePasswordVisibility}>
+                <Image source={closeEye} style={{width:25,height:25,marginLeft:-65,marginTop:30}}/>
+                </Pressable>}
+               {showPassword&& <Pressable onPress={togglePasswordVisibility}>
+                <Image source={openEye} style={{width:25,height:25,marginLeft:-65,marginTop:30}}/>
+                </Pressable>}
+            </View>
                 {touched.password && errors.password && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.password}</Text>}
               </View>
-
+              <Pressable onPress={forgotPasswordHandler}>
+              <Text style={{textAlign:'right',paddingRight:22,paddingTop:4}}>Forgot your password?</Text>
+              </Pressable>
               <View style={{ width: '100%', overflow: 'hidden' }}>
                <Button
                       mode="contained"
@@ -140,13 +169,36 @@ return (
                       }}
                       buttonColor="rgba(234, 88, 12, 1)"
                     >
-           SUBMIT
+         LOGIN
                     </Button>
           </View>
-
+           <Text style={{textAlign:'center',paddingTop:13}}>------   OR   ------</Text>
              </>
           )}
     </Formik>
+    <View style={{ width: '100%', overflow: 'hidden' }}>
+           <Button
+                      mode="outlined"
+                      onPress={loginWithOtpHandler}
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:11,
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         marginTop: 20,
+                         marginLeft: 12,
+                         marginRight: 20,
+                         backgroundColor:"transparent",
+                         borderColor:'black',
+                      }}
+                    labelStyle={{
+                      color:'black'
+                    }}
+                    >
+         LOGIN WITH OTP
+                    </Button>
+
+           </View>
   </>
     
 )

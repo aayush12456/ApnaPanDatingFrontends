@@ -7,6 +7,7 @@ import { getMatchesData } from '../../Redux/Slice/getMatchesSlice/getMatchesSlic
 import io from "socket.io-client";
 import MatchCard from '../MatchCard/MatchCard';
 import axios from 'axios'
+import * as SecureStore from 'expo-secure-store';
 const socket = io.connect("http://192.168.29.169:4000")
 const Matches=()=>{
   const [filterMatchArray,setFilterMatchArray]=useState([])
@@ -19,18 +20,27 @@ const [matchArray,setMatchArray]=useState(getFilterUser)
 const completeLoginObj = useSelector(
   (state) => state.loginData.loginData.completeLoginData
 );
+const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+
+const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+
 const getCrossId=useSelector((state)=>state.passData.passData)
 console.log('cross id is',getCrossId)
 const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
+const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
+console.log('login otp response token',loginOtpResponse)
 useEffect(()=>{
-  if(loginResponse){
+  if(loginResponse  ){
     const getLoginId = async () => {
       const loginIdData = await SecureStore.getItemAsync('loginId');
       setLoginId(loginIdData)
     };
     getLoginId()
   }
+  
 },[loginResponse])
+
+
 console.log('login id in likes',loginId)
 useEffect(() => {
   const fetchMatchUsers = async () => {
@@ -59,10 +69,10 @@ useEffect(() => {
 }, [loginId]);
 console.log('filter match array in matches',filterMatchArray)
 useEffect(()=>{
-if(completeLoginObj?._id){
-  dispatch(getMatchesData(completeLoginObj?._id))
+if(completeLoginObjData?._id){
+  dispatch(getMatchesData(completeLoginObjData._id))
 }
-},[dispatch,completeLoginObj?._id])
+},[dispatch,completeLoginObjData?._id])
 
 
 useEffect(()=>{
@@ -94,6 +104,7 @@ const handleRefresh = () => {
   dispatch(getMatchesData(completeLoginObj?._id)).finally(() =>
     setRefreshing(false)
   );
+
 };
 return (
     <>

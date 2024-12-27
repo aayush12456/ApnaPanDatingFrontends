@@ -33,3 +33,10 @@ export const additonalInformationFormSchema=Yup.object({
 export const AboutMeSchema = Yup.object().shape({
   AboutMe: Yup.string().min(20, 'Minimum 20 characters required').required('Please describe yourself'),
 });
+
+export const updatePasswordSchema=Yup.object({
+  currentPassword:Yup.string().min(6).required("Password is mandatory"),
+  newPassword:Yup.string().min(6).required("New Password is mandatory"),
+  confirmNewPassword:Yup.string().min(6).required("Confirm Password is mandatory"),
+  
+})

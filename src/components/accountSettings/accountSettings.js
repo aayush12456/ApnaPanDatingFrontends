@@ -9,6 +9,9 @@ const AccountSettings=()=>{
     const completeLoginObj = useSelector(
         (state) => state?.loginData?.loginData?.completeLoginData
       );
+      const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+      const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+    
       const logoutHandler=async()=>{
         try {
             await SecureStore.deleteItemAsync('loginObj')
@@ -25,6 +28,13 @@ const AccountSettings=()=>{
         }
         navigation.navigate('ChangePasswordPage', { formData:changePasswordObj });
       }
+
+      const manageAccountHandler=()=>{
+        const manageAccountObj={
+            headerName:'Manage Account'
+        }
+        navigation.navigate('ManageAccountPage', { formData:manageAccountObj });
+      }
 return (
     <>
     <View style={{marginTop:30}}>
@@ -32,13 +42,13 @@ return (
         <View style={{backgroundColor: '#dcdcdc',width:'90%',marginLeft:20,marginTop:7}}>
         <View style={{flexDirection:'row',gap:40}}>
             <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10}}>Email:</Text>
-            <Text  style={{paddingTop:10,paddingBottom:12}}>{completeLoginObj?.email}</Text>
+            <Text  style={{paddingTop:10,paddingBottom:12}}>{completeLoginObjData?.email}</Text>
         </View>
         </View>
         <View style={{backgroundColor: '#dcdcdc',width:'90%',marginLeft:20}}>
         <View style={{flexDirection:'row',gap:40}}>
             <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10}}>Mobile:</Text>
-            <Text style={{paddingTop:10,paddingBottom:12}}>{completeLoginObj?.phone}</Text>
+            <Text style={{paddingTop:10,paddingBottom:12}}>{completeLoginObjData?.phone}</Text>
         </View>
         </View>
 
@@ -52,12 +62,14 @@ return (
      </View>
     </View>
        </Pressable>
-    <View style={{backgroundColor: '#dcdcdc',width:'90%',marginLeft:20}}>
+       <Pressable onPress={manageAccountHandler}>
+       <View style={{backgroundColor: '#dcdcdc',width:'90%',marginLeft:20}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10}}>Manage Account</Text>
         <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10 }}/>
      </View>
     </View>
+       </Pressable>
 <Pressable onPress={logoutHandler}>
 <View style={{backgroundColor: '#dcdcdc',width:'90%',marginLeft:20}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>

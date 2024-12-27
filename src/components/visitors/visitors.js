@@ -10,18 +10,19 @@ const socket = io.connect("http://192.168.29.169:4000")
 const Visitors=()=>{
     const [loginId,setLoginId]=useState('')
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
     const [visitorArray,setVisitorArray]=useState([])
     const [likeMatchUser, setLikeMatchUser] = useState({});
     const processedVisitors = useRef(false); 
     useEffect(()=>{
-        if(loginResponse){
+        if(loginResponse || loginOtpResponse){
           const getLoginId = async () => {
             const loginIdData = await SecureStore.getItemAsync('loginId');
             setLoginId(loginIdData)
           };
           getLoginId()
         }
-      },[loginResponse])
+      },[loginResponse,loginOtpResponse])
       console.log('login id in visitors',loginId)
 
 

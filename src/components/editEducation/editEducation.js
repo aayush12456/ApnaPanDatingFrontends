@@ -10,11 +10,13 @@ const EditEducation = ({ navigation }) => {
     const [updateEducation, setUpdateEducation] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectEducationHandler = (education) => {
         const updateEducationObj = {
-            id: completeLoginObj._id,
+            id: completeLoginObjData._id,
             education: education
         };
         dispatch(updatePersonalDataAsync(updateEducationObj));
@@ -25,9 +27,9 @@ const EditEducation = ({ navigation }) => {
         if (updatePersonalInfoSelector) {
             setUpdateEducation(updatePersonalInfoSelector);
         } else {
-            setUpdateEducation(completeLoginObj);
+            setUpdateEducation(completeLoginObjData);
         }
-    }, [updatePersonalInfoSelector, completeLoginObj]);
+    }, [updatePersonalInfoSelector, completeLoginObjData]);
 
     return (
         <View style={{ paddingTop: 8, paddingLeft: 8 }}>

@@ -30,7 +30,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
   const [selfLikeMatch,setSelfLikeMatch]=useState(true)
   const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
-
+  const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)//ye otp loginToken
 
   const width = Dimensions.get('window').width - 50;
   const height = width * 1.2;
@@ -111,14 +111,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
 
 
    useEffect(()=>{
-    if(loginResponse){
+    if(loginResponse || loginOtpResponse){
       const getLoginId = async () => {
         const loginIdData = await SecureStore.getItemAsync('loginId');
         setLoginId(loginIdData)
       };
       getLoginId()
     }
-},[loginResponse])
+},[loginResponse,loginOtpResponse])
 
 
    const skipUserHandler=async(likeContent,newOnline,visitorContent)=>{

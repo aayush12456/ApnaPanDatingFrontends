@@ -12,15 +12,16 @@ const Message=()=>{
     const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
     const [blockUserObj,setBlockUserObj]=useState({})
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
   useEffect(()=>{
-    if(loginResponse){
+    if(loginResponse || loginOtpResponse){
       const getLoginId = async () => {
         const loginIdData = await SecureStore.getItemAsync('loginId');
         setLoginId(loginIdData)
       };
       getLoginId()
     }
-},[loginResponse])
+},[loginResponse,loginOtpResponse])
 
     useEffect(() => {
         const fetchLikeMatchUsers = async () => {
@@ -95,15 +96,18 @@ const Message=()=>{
       const filteredAnotherMatchLikes = (likeMatchUserObj?.anotherMatchLikes || []).filter(
         (user) => !blockUserIds.includes(user._id)
       );
-    
-      const finalMessageArray = blockUserIds.length
+    let finalMessageArray
+     finalMessageArray = blockUserIds.length
         ? [...filteredMatchLikes, ...filteredAnotherMatchLikes]
         : [
             ...(likeMatchUserObj?.matchLikes || []),
             ...(likeMatchUserObj?.anotherMatchLikes || []),
           ];
-      console.log('final message array',finalMessageArray) 
-          
+      console.log('final message array',finalMessageArray)
+       
+      finalMessageArray = finalMessageArray.filter(
+        (user) => user._id !== loginId
+      );    
 return (
     <>
     <ScrollView>

@@ -5,9 +5,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector } from 'react-redux';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect,useState } from 'react';
 import io from 'socket.io-client';
-
+import * as SecureStore from 'expo-secure-store';
 import store from './src/Redux/Store/store';
 
 import FrontPage from './src/components/frontPage/frontPage';
@@ -44,14 +44,75 @@ import SkipProfilePage from './src/Pages/skipProfilePage/skipProfilePage';
 import BlockProfilePage from './src/Pages/blockProfilePage/blockProfilePage';
 import AccountSettingsPage from './src/Pages/accountSettingsPage/accountSettingsPage';
 import ChangePasswordPage from './src/Pages/changePasswordPage/changePasswordPage';
-
+import { AlertNotificationRoot } from 'react-native-alert-notification';
+import MannageAccountPage from './src/Pages/manageAccountPage/manageAccountPage';
+import DeactivateAccountPage from './src/Pages/deactivateAccountPage/deactivateAccountPage';
+import DeleteAccountPage from './src/Pages/deleteAccountPage/deleteAccountPage';
+import LoginWithOtpPage from './src/Pages/loginWithOtpPage/loginWithOtpPage';
+import LoginWithOtpDataPage from './src/Pages/loginWithOtpDataPage/loginWithOtpDataPage';
+import ForgotPasswordPage from './src/Pages/forgotPasswordPage/forgotPasswordPage';
+import ResetPasswordPage from './src/Pages/resetPasswordPage/resetPasswordPage';
+// import axios from 'axios'
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
   const socketRef = useRef(null);
+  // const [token,setLoginToken]=useState('')
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const completeLoginObj = useSelector(
     (state) => state?.loginData?.loginData?.completeLoginData
   );
+  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const token = await SecureStore.getItemAsync('loginToken');
+  //       console.log("Fetched Token:", token);
+  //       setLoginToken(token);
+
+  //       if (token) {
+  //         const result = await verifyToken(token);
+  //         console.log('Token verification result:', result);
+
+  //         if (result.message === 'Token is valid') {
+  //           setIsAuthenticated(true);
+  //         } else {
+  //           setIsAuthenticated(false);
+  //         }
+  //       } else {
+  //         setIsAuthenticated(false);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching login token:", error);
+  //       setIsAuthenticated(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+//  const verifyToken = async (token) => {
+//     try {
+//       const response = await axios.post(
+//         `http://192.168.29.169:4000/user/verifyToken`, 
+//         {
+//           method: 'POST',
+//         }, // Empty body for POST
+//         {
+//           headers: {
+//             'Content-Type': 'application/json',
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       console.error('Error verifying token:', error.response?.data || error.message);
+//       throw error;
+//     }
+//   };
+
+
 
   useEffect(() => {
     if (!socketRef.current) {
@@ -87,13 +148,27 @@ function AppContent() {
         socketRef.current.disconnect();
       }
     };
-  }, [completeLoginObj?._id]);
+  }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
 
  
+//   const AuthenticatedStack = () => (
+//     <Stack.Navigator>
+//         <Stack.Screen name="HeaderPage" component={HeaderPage} options={{ headerShown: false }} />
+//         {/* Other authenticated screens */}
+//     </Stack.Navigator>
+// );
 
+// const UnauthenticatedStack = () => (
+//     <Stack.Navigator>
+//         <Stack.Screen name="FrontPage" component={FrontPage} options={{ headerShown: false }} />
+
+//         {/* Other unauthenticated screens */}
+//     </Stack.Navigator>
+// );
 
 
   return (
+    <AlertNotificationRoot>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -101,6 +176,7 @@ function AppContent() {
           component={FrontPage}
           options={{ headerShown: false }}
         />
+          {/* {isAuthenticated ? <AuthenticatedStack /> : <UnauthenticatedStack />} */}
         <Stack.Screen
           name="SignUpPage"
           component={SignUpPage}
@@ -139,6 +215,26 @@ function AppContent() {
         <Stack.Screen
           name="LoginPage"
           component={LoginPage}
+          options={{ headerShown: false }}
+        />
+             <Stack.Screen
+          name="LoginWithOtpPage"
+          component={LoginWithOtpPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="LoginWithOtpDataPage"
+          component={LoginWithOtpDataPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="ForgotPasswordPage"
+          component={ForgotPasswordPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="ResetPasswordPage"
+          component={ResetPasswordPage}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -261,9 +357,25 @@ function AppContent() {
           component={ChangePasswordPage}
           options={{ headerShown: false }}
         />
+            <Stack.Screen
+          name="ManageAccountPage"
+          component={MannageAccountPage}
+          options={{ headerShown: false }}
+        />
+           <Stack.Screen
+          name="DeactivateAccountPage"
+          component={DeactivateAccountPage}
+          options={{ headerShown: false }}
+        />
+           <Stack.Screen
+          name="DeleteAccountPage"
+          component={DeleteAccountPage}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
+    </AlertNotificationRoot>
   );
 }
 

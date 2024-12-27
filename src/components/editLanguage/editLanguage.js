@@ -9,6 +9,8 @@ const EditLanguage = ({ navigation }) => {
   const dispatch = useDispatch();
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
   const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
   console.log('update personal language obj', updatePersonalInfoSelector);
@@ -26,7 +28,7 @@ console.log('langusage array in language',selectedLanguages)
   const submitEditLanguage = () => {
     const languageString = selectedLanguages.join(', ');
     const updateLanguageObj = {
-      id: completeLoginObj._id,
+      id: completeLoginObjData._id,
       language: languageString, 
     };
 
@@ -39,9 +41,9 @@ console.log('langusage array in language',selectedLanguages)
        setUpdateLanguage(updatePersonalInfoSelector)
     }
     else{
-       setUpdateLanguage(completeLoginObj)
+       setUpdateLanguage(completeLoginObjData)
     }
-   },[updatePersonalInfoSelector,completeLoginObj])
+   },[updatePersonalInfoSelector,completeLoginObjData])
   return (
     <>
       <ScrollView>

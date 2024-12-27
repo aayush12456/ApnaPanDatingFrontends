@@ -11,6 +11,7 @@ import { addVisitorEmailSenderAsync } from "../../Redux/Slice/addVisitorEmailSli
 const socket = io.connect("http://192.168.29.169:4000")
 const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
     console.log('online like user obj in new and online card',onlineLikeUserObj)
+    console.log('login id',loginId)
     console.log('all user',allUser)
     const navigation = useNavigation();
     const dispatch = useDispatch();

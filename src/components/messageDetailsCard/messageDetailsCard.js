@@ -29,6 +29,8 @@ const MessageDetailsCard = ({ messageDetails }) => {
   const dispatch = useDispatch()
   console.log("message details is", messageDetails);
   const loginResponse = useSelector((state) => state.loginData.loginData.token)
+  const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token || '') // otp login token
+  console.log('login otp reposne in message detail card',loginOtpResponse)
   const deleteChatSelector = useSelector((state) => state.moreChatData.moreChatToggle)
   const dotOpenHandler=useSelector((state)=>state.dotsOpenData.dotsOpenToggle)
   console.log("dot open selector", dotOpenHandler);
@@ -37,17 +39,17 @@ const MessageDetailsCard = ({ messageDetails }) => {
     navigation.navigate("Messages");
   };
   useEffect(() => {
-    if (loginResponse) {
+    if (loginResponse || loginOtpResponse) {
       const getLoginId = async () => {
         const loginIdData = await SecureStore.getItemAsync('loginId');
         setLoginId(loginIdData)
       };
       getLoginId()
     }
-  }, [loginResponse])
+  }, [loginResponse,loginOtpResponse])
 
   useEffect(() => {
-    if (loginResponse) {
+    if (loginResponse || loginOtpResponse) {
       const getLoginObj = async () => {
         try {
           const loginObjData = await SecureStore.getItemAsync('loginObj');
@@ -63,7 +65,7 @@ const MessageDetailsCard = ({ messageDetails }) => {
       };
       getLoginObj();
     }
-  }, [loginResponse]);
+  }, [loginResponse,loginOtpResponse]);
   useEffect(() => {
     const fetchChatId = async () => {
       try {

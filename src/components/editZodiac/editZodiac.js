@@ -10,11 +10,13 @@ const EditZodiac = ({ navigation }) => {
     const [updateZodiac, setUpdateZodiac] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectZodiacHandler = (zodiac) => {
         const updateZodiacObj = {
-            id: completeLoginObj._id,
+            id: completeLoginObjData._id,
             zodiac: zodiac
         };
         dispatch(updatePersonalDataAsync(updateZodiacObj));
@@ -25,9 +27,9 @@ const EditZodiac = ({ navigation }) => {
         if (updatePersonalInfoSelector) {
             setUpdateZodiac(updatePersonalInfoSelector);
         } else {
-            setUpdateZodiac(completeLoginObj);
+            setUpdateZodiac(completeLoginObjData);
         }
-    }, [updatePersonalInfoSelector, completeLoginObj]);
+    }, [updatePersonalInfoSelector, completeLoginObjData]);
 
     return (
         <View style={{ paddingTop: 8, paddingLeft: 8 }}>

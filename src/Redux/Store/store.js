@@ -21,6 +21,13 @@ import addVisitorEmailSlice from "../Slice/addVisitorEmailSlice/addVisitorEmailS
 import moreChatSlice from "../Slice/moreChatSlice/moreChatSlice"
 import dotsOpenModalSlice from "../Slice/dotsOpenModalSlice/dotsOpenModalSlice"
 import passSkipProfileSlice from "../Slice/passSkipProfileSlice/passSkipProfileSlice"
+import passwordUpdateSlice from "../Slice/passwordUpdateSlice/passwordUpdateSlice"
+import toastSlice from "../Slice/toastSlice/toastSlice"
+import deleteProfileUserSlice from "../Slice/deleteProfileUserSlice/deleteProfileUserSlice"
+import loginWithOtpSlice from "../Slice/loginWithOtpSlice/loginWithOtpSlice"
+import getAllPhoneNumberSlice from "../Slice/getAllPhoneNumberSlice/getAllPhoneNumberSlice"
+import finalLoginWithOtpSlice from "../Slice/finalLoginWithOtpSlice/finalLoginWithOtpSlice"
+import forgotUpdatePasswordUserSlice from "../Slice/forgotUpdatePasswordUserSlice/forgotUpdatePasswordUserSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -44,7 +51,14 @@ const store=configureStore({
         addVisitorEmailData:addVisitorEmailSlice,
         moreChatData:moreChatSlice,
         dotsOpenData:dotsOpenModalSlice,
-        passSkipProfile:passSkipProfileSlice
+        passSkipProfile:passSkipProfileSlice,
+        passwordUpdate:passwordUpdateSlice,
+        toastData:toastSlice,
+        deleteProfileData:deleteProfileUserSlice,
+        loginOtpData:loginWithOtpSlice,
+        finalLoginWithOtpData:finalLoginWithOtpSlice,
+        getAllPhoneNumber:getAllPhoneNumberSlice,
+        forgotPasswordUpdateData:forgotUpdatePasswordUserSlice
     }
 })
 export default store

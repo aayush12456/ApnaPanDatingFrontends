@@ -11,10 +11,11 @@ const SkipProfilePage=({route})=>{
     const [fetchMatchSkipUser,setFetchMatchSkipUser]=useState([])
     const [fetchOnlineSkipUser,setFetchOnlineSkipUser]=useState([])
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)
     const passSkipProfileId=useSelector((state)=>state.passSkipProfile.passSkipProfile)
     console.log('pass skip profile id',passSkipProfileId)
     useEffect(()=>{
-        if(loginResponse){
+        if(loginResponse || loginOtpResponse){
           const getLoginId = async () => {
             
             const loginIdData = await SecureStore.getItemAsync('loginId');
@@ -22,7 +23,7 @@ const SkipProfilePage=({route})=>{
           };
           getLoginId()
         }
-    },[loginResponse])
+    },[loginResponse,loginOtpResponse])
     useEffect(() => {
         const fetchMatchSkipUsers = async () => {
           try {

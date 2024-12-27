@@ -10,11 +10,13 @@ const EditSmoking = ({ navigation }) => {
     const [updateSmoking, setUpdateSmoking] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
     
     const selectSmokingHandler = (smoking) => {
         const updateSmokingObj = {
-            id: completeLoginObj._id,
+            id: completeLoginObjData._id,
             smoking: smoking
         };
         dispatch(updatePersonalDataAsync(updateSmokingObj));
@@ -25,9 +27,9 @@ const EditSmoking = ({ navigation }) => {
         if (updatePersonalInfoSelector) {
             setUpdateSmoking(updatePersonalInfoSelector);
         } else {
-            setUpdateSmoking(completeLoginObj);
+            setUpdateSmoking(completeLoginObjData);
         }
-    }, [updatePersonalInfoSelector, completeLoginObj]);
+    }, [updatePersonalInfoSelector, completeLoginObjData]);
 
     return (
         <View style={{ paddingTop: 8, paddingLeft: 8 }}>

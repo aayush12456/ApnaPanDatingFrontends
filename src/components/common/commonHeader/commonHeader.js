@@ -12,6 +12,18 @@ const CommonHeader=({commonHeaderName})=>{
 
       navigation.navigate('AccountSettingsPage',{formData:{headerName:'Account Settings'}})
     }
+    if(commonHeaderName==='Manage Account'){
+
+      navigation.navigate('AccountSettingsPage',{formData:{headerName:'Account Settings'}})
+    }
+    if(commonHeaderName==='Deactivate Account'){
+
+      navigation.navigate('ManageAccountPage',{formData:{headerName:'Manage Account'}})
+    }
+    if(commonHeaderName==='Delete Account'){
+
+      navigation.navigate('ManageAccountPage',{formData:{headerName:'Manage Account'}})
+    }
     }
 return (
     <>

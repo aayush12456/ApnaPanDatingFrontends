@@ -27,6 +27,7 @@ const MatchCard=({matchObj})=>{
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
     // const addMatchUserData=useSelector((state)=>state.addMatchUserData.addMatchUserData.anotherMatchUser)
     // console.log('add match user in match card',addMatchUserData)
     // useEffect(() => {
@@ -46,11 +47,12 @@ const MatchCard=({matchObj})=>{
       if(loginResponse){
         const getLoginId = async () => {
           const loginIdData = await SecureStore.getItemAsync('loginId');
-          setLoginId(loginIdData)
+          setLoginId(loginIdData) 
         };
         getLoginId()
       }
-  },[loginResponse])
+  },[loginResponse,loginOtpResponse])
+
   console.log('login id in match card',loginId)
     const [active, setActive] = useState(0); 
     const width = Dimensions.get('window').width - 50;

@@ -9,11 +9,14 @@ const EditRelation = ({navigation}) => {
     const [updateRelation,setUpdateRelation]=useState({})
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
     console.log('update personal relation obj',updatePersonalInfoSelector)
     const selectRelationHandler=(relation)=>{
         const updateRelationObj={
-            id:completeLoginObj._id,
+            id:completeLoginObjData._id,
             relationship:relation
         }
   console.log('select relation',relation)
@@ -26,9 +29,9 @@ const EditRelation = ({navigation}) => {
         setUpdateRelation(updatePersonalInfoSelector)
      }
      else{
-        setUpdateRelation(completeLoginObj)
+        setUpdateRelation(completeLoginObjData)
      }
-    },[updatePersonalInfoSelector,completeLoginObj])
+    },[updatePersonalInfoSelector,completeLoginObjData])
     return (
         <>
        <View style={{paddingTop:8, paddingLeft:8}}>

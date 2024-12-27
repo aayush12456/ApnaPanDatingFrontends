@@ -6,24 +6,26 @@ import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSli
 const EditAboutMe = ({navigation}) => {
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
-    const [aboutUser, setAboutUser] = useState(completeLoginObj.aboutUser || '');
+    const [aboutUser, setAboutUser] = useState(completeLoginObjData.aboutUser || '');
     useEffect(() => {
 if(updatePersonalInfoSelector?.aboutUser){
   setAboutUser(updatePersonalInfoSelector?.aboutUser);
 }
 else{
-  setAboutUser(completeLoginObj?.aboutUser || '')
+  setAboutUser(completeLoginObjData?.aboutUser || '')
 }
 
-    }, [completeLoginObj?.aboutUser,updatePersonalInfoSelector?.aboutUser]);
+    }, [completeLoginObjData?.aboutUser,updatePersonalInfoSelector?.aboutUser]);
 
     const handleAboutUserChange = (text) => {
         setAboutUser(text);
     };
     const submitEditBio=()=>{
       const updatePersonalBioObj={
-        id:completeLoginObj._id,
+        id:completeLoginObjData._id,
         aboutUser:aboutUser
       }
       dispatch(updatePersonalDataAsync(updatePersonalBioObj))

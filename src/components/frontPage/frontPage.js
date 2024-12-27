@@ -3,7 +3,29 @@ import holdingHands from '../../../assets/frontImages/holdingHands.png';
 import love from '../../../assets/frontImages/love.png';
 import { FrontImages } from "../../utils/frontImages";
 import { Button } from "react-native-paper";
+import { useEffect } from "react";
+import { useSelector,useDispatch } from "react-redux";
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import { hideToast } from "../../Redux/Slice/toastSlice/toastSlice";
 const FrontPage = ({navigation}) => {
+  const dispatch=useDispatch()
+  const { visible, type, title, textBody } = useSelector((state) => state.toastData);
+  console.log('toast data',visible,type,title,textBody)
+useEffect(() => {
+    if (visible) {
+      Dialog.show({
+        type: ALERT_TYPE[type],
+        title: title,
+        textBody: textBody,
+        button:'close'
+      });
+
+      // Automatically hide toast after 3 seconds
+      setTimeout(() => {
+        dispatch(hideToast());
+      }, 3000);
+    }
+  }, [visible, dispatch, type, title, textBody]);
   return (
     <>
       <View style={{ flexDirection: 'row', alignItems: 'center',marginTop:80 ,justifyContent:'center'}}>

@@ -10,11 +10,13 @@ const EditEating = ({ navigation }) => {
     const [updateEating, setUpdateEating] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectEatingHandler = (eating) => {
         const updateEatingObj = {
-            id: completeLoginObj._id,
+            id: completeLoginObjData._id,
             eating: eating
         };
         dispatch(updatePersonalDataAsync(updateEatingObj));
@@ -25,9 +27,9 @@ const EditEating = ({ navigation }) => {
         if (updatePersonalInfoSelector) {
             setUpdateEating(updatePersonalInfoSelector);
         } else {
-            setUpdateEating(completeLoginObj);
+            setUpdateEating(completeLoginObjData);
         }
-    }, [updatePersonalInfoSelector, completeLoginObj]);
+    }, [updatePersonalInfoSelector, completeLoginObjData]);
 
     return (
         <View style={{ paddingTop: 8, paddingLeft: 8 }}>

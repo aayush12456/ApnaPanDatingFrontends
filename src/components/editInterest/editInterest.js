@@ -10,6 +10,8 @@ const EditInterest = ({ navigation }) => {
   const dispatch = useDispatch();
   const [selectedInterests, setSelectedInterests] = useState([]);
   const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
   const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
   const rows = [];
@@ -30,7 +32,7 @@ const EditInterest = ({ navigation }) => {
 
   const interestSubmitHandler = () => {
     const interestObj = {
-      id: completeLoginObj._id,
+      id: completeLoginObjData._id,
       interest: selectedInterests,
     };
     dispatch(updatePersonalDataAsync(interestObj));
@@ -41,9 +43,9 @@ const EditInterest = ({ navigation }) => {
     if (updatePersonalInfoSelector) {
       setUpdateInterest(updatePersonalInfoSelector);
     } else {
-      setUpdateInterest(completeLoginObj);
+      setUpdateInterest(completeLoginObjData);
     }
-  }, [updatePersonalInfoSelector, completeLoginObj]);
+  }, [updatePersonalInfoSelector, completeLoginObjData]);
 
   return (
     <>

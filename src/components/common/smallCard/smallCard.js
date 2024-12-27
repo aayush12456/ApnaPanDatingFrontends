@@ -20,6 +20,7 @@ const SmallCard = ({ likesData,visitorData }) => {
     const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     console.log('likes image obj', likesData?.images?.[0]); // Safer logging
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
 
     const getProfile = () => likesData || visitorData?.visitor || {}; // Fallback to an empty object
     const dob = getProfile()?.DOB || ""; // Fallback to an empty string
@@ -39,14 +40,14 @@ const SmallCard = ({ likesData,visitorData }) => {
     }
     
     useEffect(()=>{
-        if(loginResponse){
+        if(loginResponse || loginOtpResponse){
           const getLoginId = async () => {
             const loginIdData = await SecureStore.getItemAsync('loginId');
             setLoginId(loginIdData)
           };
           getLoginId()
         }
-    },[loginResponse])
+    },[loginResponse,loginOtpResponse])
 
 
     useEffect(() => {

@@ -26,6 +26,7 @@ const MyProfile=({navigation})=>{
                 await SecureStore.deleteItemAsync('loginToken')
                 console.log('User logged out and login data removed from AsyncStorage');
                 navigation.navigate('FrontPage');
+                // navigation.reset({ index: 0, routes: [{ name: 'FrontPage' }] });
               } catch (error) {
                 console.error('Error removing login data:', error);
               }

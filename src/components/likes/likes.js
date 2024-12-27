@@ -19,19 +19,23 @@ const Likes = () => {
   const completeLoginObj = useSelector(
     (state) => state?.loginData?.loginData?.completeLoginData
   );
+  const completeLoginObjForOtp=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.completeLoginData)
+  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+
   const loginResponse = useSelector(
     (state) => state.loginData.loginData.token
   ); // loginToken
+  const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // otp login token
 
   useEffect(() => {
-    if (loginResponse) {
+    if (loginResponse || loginOtpResponse) {
       const getLoginId = async () => {
         const loginIdData = await SecureStore.getItemAsync("loginId");
         setLoginId(loginIdData);
       };
       getLoginId();
     }
-  }, [loginResponse]);
+  }, [loginResponse,loginOtpResponse]);
 
   console.log("login id in likes", loginId);
 
@@ -217,8 +221,8 @@ const Likes = () => {
   ].filter(
     (likeItem) =>
       likeItem?.gender &&
-      completeLoginObj?.gender &&
-      likeItem.gender.toLowerCase() !== completeLoginObj.gender.toLowerCase()
+      completeLoginObjData?.gender &&
+      likeItem.gender.toLowerCase() !== completeLoginObjData.gender.toLowerCase()
   ).filter((likeItem) => !blockUserIds?.includes(likeItem._id));
 
 

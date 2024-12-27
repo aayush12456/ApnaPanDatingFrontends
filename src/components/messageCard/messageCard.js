@@ -16,6 +16,7 @@ const MessageCard=({finalMessageUser,index})=>{
     const [checkMessages, setCheckMessages] = useState(false)
     console.log('final message user in message card',finalMessageUser)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
     const navigation = useNavigation();
     const getProfile = () => finalMessageUser;
     const dob = getProfile()?.DOB;
@@ -25,7 +26,7 @@ const MessageCard=({finalMessageUser,index})=>{
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
 useEffect(() => {
-  if (loginResponse) {
+  if (loginResponse || loginOtpResponse) {
     const getLoginObj = async () => {
       try {
         const loginObjData = await SecureStore.getItemAsync('loginObj');
@@ -41,7 +42,7 @@ useEffect(() => {
     };
     getLoginObj();
   }
-}, [loginResponse]);
+}, [loginResponse,loginOtpResponse]);
 
   console.log('login obj',loginObj)
     const messageCardClickHandler=async(finalMessageUser)=>{

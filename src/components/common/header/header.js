@@ -49,16 +49,17 @@ const Header=()=>{
  const newIcon=loginData?.gender === 'Female' ? boy : girl
  
  const loginResponse=useSelector((state)=>state.loginData.loginData.token)
+ const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // otp login token
 
  useEffect(()=>{
-    if(loginResponse){
+    if(loginResponse || loginOtpResponse){
       const getLoginId = async () => {
         const loginIdData = await SecureStore.getItemAsync('loginId');
         setLoginId(loginIdData)
       };
       getLoginId()
     }
-  },[loginResponse])
+  },[loginResponse,loginOtpResponse])
   console.log('login id in header',loginId)
  useEffect(() => {
     const fetchLikeCountId = async () => {

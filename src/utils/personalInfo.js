@@ -211,3 +211,4 @@ export const deactivateAccount=[
     {id:'7',reasonTitle:"Other "},
 
 ]
+

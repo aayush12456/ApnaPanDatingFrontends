@@ -10,17 +10,18 @@ const socket = io.connect("http://192.168.29.169:4000")
 const BlockProfilePage=({route})=>{
     const { formData } = route?.params;
     const loginResponse = useSelector((state) => state.loginData.loginData.token)
+    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
     const [loginId, setLoginId] = useState('')
     const [blockUserObj,setBlockUserObj]=useState({})
     useEffect(() => {
-        if (loginResponse) {
+        if (loginResponse || loginOtpResponse) {
           const getLoginId = async () => {
             const loginIdData = await SecureStore.getItemAsync('loginId');
             setLoginId(loginIdData)
           };
           getLoginId()
         }
-      }, [loginResponse])
+      }, [loginResponse,loginOtpResponse])
       useEffect(() => {
         const fetchBlockProfileUser = async () => {
           try {

@@ -17,12 +17,17 @@ const NewAndOnline = ({route}) => {
   const completeLoginObj = useSelector(
     (state) => state.loginData.loginData.completeLoginData
   );
+  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
   const getAllUserArray = useSelector(
     (state) => state.getAllUserData.getAllUserArray.users
   );
   console.log("get all user array in new ", getAllUserArray);
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
   console.log('login response in new and pnline',loginResponse)
+  const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)// ye login otp token
+  console.log('login otp response token in new and online',loginOtpResponse)
+
   const [allUser,setAllUser]=useState(getAllUserArray)
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
   const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
@@ -32,20 +37,20 @@ const NewAndOnline = ({route}) => {
   const [refreshing, setRefreshing] = useState(false); 
   useEffect(() => {
     if (dispatch) {
-      dispatch(getAllUserData(completeLoginObj?._id));
+      dispatch(getAllUserData(completeLoginObjData?._id));
     }
   }, [dispatch]);
 
 
   useEffect(()=>{
-    if(loginResponse){
+    if(loginResponse || loginOtpResponse){
       const getLoginId = async () => {
         const loginIdData = await SecureStore.getItemAsync('loginId');
         setLoginId(loginIdData)
       };
       getLoginId()
     }
-},[loginResponse])
+},[loginResponse,loginOtpResponse])
 console.log('login id in new and online',loginId)
   useEffect(()=>{
     if(formData?.onlinePersonSkipUserId){
@@ -215,7 +220,7 @@ console.log('visitor user in new and online',visitorArray)
     
     const handleRefresh = () => {
       setRefreshing(true); // Show loading spinner
-      dispatch(getAllUserData(completeLoginObj?._id));
+      dispatch(getAllUserData(completeLoginObjData?._id));
       setRefreshing(false); // Hide loading spinner
     };
   

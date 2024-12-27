@@ -10,11 +10,13 @@ const EditProfession = ({ navigation }) => {
     const [updateProfession, setUpdateProfession] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectProfessionHandler = (profession) => {
         const updateProfessionObj = {
-            id: completeLoginObj._id,
+            id: completeLoginObjData._id,
             profession: profession
         };
         dispatch(updatePersonalDataAsync(updateProfessionObj));
@@ -25,9 +27,9 @@ const EditProfession = ({ navigation }) => {
         if (updatePersonalInfoSelector) {
             setUpdateProfession(updatePersonalInfoSelector);
         } else {
-            setUpdateProfession(completeLoginObj);
+            setUpdateProfession(completeLoginObjData);
         }
-    }, [updatePersonalInfoSelector, completeLoginObj]);
+    }, [updatePersonalInfoSelector, completeLoginObjData]);
 
     return (
         <ScrollView>
