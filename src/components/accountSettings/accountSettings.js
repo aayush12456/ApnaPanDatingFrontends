@@ -4,16 +4,40 @@ import {useSelector} from 'react-redux'
 import rightArrow from '../../../assets/settingIcons/rightArrow.png'
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from "@react-navigation/native"
+import { useEffect,useState } from "react";
+import axios from 'axios'
 const AccountSettings=()=>{
     const navigation = useNavigation();
+    const [loginId, setLoginId] = useState('')
     const completeLoginObj = useSelector(
         (state) => state?.loginData?.loginData?.completeLoginData
       );
       const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
       const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     
+      const loginResponse = useSelector((state) => state.loginData.loginData.token)
+      const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token || '') 
+
+      useEffect(() => {
+        if (loginResponse || loginOtpResponse) {
+          const getLoginId = async () => {
+            const loginIdData = await SecureStore.getItemAsync('loginId');
+            setLoginId(loginIdData)
+          };
+          getLoginId()
+        }
+      }, [loginResponse,loginOtpResponse])
+
       const logoutHandler=async()=>{
         try {
+          if(!loginId){
+            console.error('loginId is not set');
+            return;
+          }
+          const response = await axios.post(
+            `http://192.168.29.169:4000/user/deleteLoginIdUser`,
+             {loginId} 
+        );
             await SecureStore.deleteItemAsync('loginObj')
             await SecureStore.deleteItemAsync('loginToken')
             console.log('User logged out and login data removed from AsyncStorage');

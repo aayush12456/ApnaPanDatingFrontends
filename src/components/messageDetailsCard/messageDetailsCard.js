@@ -8,7 +8,7 @@ import profile from "../../../assets/chatIcons/profile.png";
 import block from "../../../assets/chatIcons/block.png";
 import io from "socket.io-client";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from 'react'
+import { useEffect, useState ,useRef} from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
@@ -21,8 +21,13 @@ const MessageDetailsCard = ({ messageDetails }) => {
   const [loginId, setLoginId] = useState('')
   const [loginObj, setLoginObj] = useState({})
   const [fetchMessages, setFetchMessages] = useState([])
+  const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
   const [finalMessageArray, setFinalMessageArray] = useState([])
+  const [loginIdUserArray, setLoginIdUserArray] = useState([])
+  const [showTypingResponse,setShowTypingResponse]=useState(false)
+  const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
+  const previousTextRef = useRef("");
   const windowHeight = Dimensions.get('window').height;
   console.log('window heigth', windowHeight)
   const navigation = useNavigation();
@@ -66,6 +71,47 @@ const MessageDetailsCard = ({ messageDetails }) => {
       getLoginObj();
     }
   }, [loginResponse,loginOtpResponse]);
+
+  useEffect(()=>{
+    const fetchAllLoginIdUser = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginId}`,
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get all login id user is', response?.data?.loginIdUserArray)
+          setLoginIdUserArray(response?.data?.loginIdUserArray)
+        }
+      } catch (error) {
+        console.error("Error fetching in chat id obj:", error);
+      }
+    };
+    fetchAllLoginIdUser();
+    socket.on("getLoginUser", (newUser) => {
+  
+      setLoginIdUserArray(newUser)
+    });
+    socket.on("deleteLoginIdUser", (newUser) => {
+      setLoginIdUserArray(newUser)
+    });
+    return () => {
+      socket.off("getLoginUser");
+      socket.off("deleteLoginIdUser");
+    };
+   
+  },[loginId])
+
+  console.log('login id user array is',loginIdUserArray)
+  useEffect(() => {
+    if (loginId) {
+      const getActiveLoginId = loginIdUserArray?.some(
+        (item) => item === messageDetails?._id
+      );
+      setActiveLoginIdResponse(getActiveLoginId)
+    }
+  }, [loginId, loginIdUserArray, messageDetails]);
+
   useEffect(() => {
     const fetchChatId = async () => {
       try {
@@ -99,6 +145,92 @@ const MessageDetailsCard = ({ messageDetails }) => {
   console.log('get chat details obj', getChatDetailObj)
   // console.log('chat detail array',chatDetailArray)
 
+
+
+  const messageTypingHandler = async (text) => {
+    setMessageText(text);
+    const postTypingObj = {
+      loginId: loginId,
+      senderId: loginId,
+      recieverId: messageDetails._id,
+    };
+  
+    console.log('text is', text);
+    console.log('post typing is', postTypingObj);
+  
+    try {
+      if (text.length > messageText.length) {
+        // Call the postTyping API when text is increasing
+        const response = await axios.post(
+          `http://192.168.29.169:4000/chat/postTyping/${postTypingObj.loginId}`,
+          postTypingObj
+        );
+        console.log('Send typing message of data is', response.data);
+        socket.emit('postTyping', response.data);
+      } else if (text.length <= messageText.length  ) {
+        const response = await axios.post(
+          `http://192.168.29.169:4000/chat/deleteTyping`,
+          postTypingObj
+        );
+        console.log('Delete typing message of data is', response.data);
+      }
+   
+    } catch (error) {
+      console.error(
+        'Error sending or deleting message:',
+        error.response || error.message || error
+      );
+    }
+  };
+  
+
+
+useEffect(() => {
+
+  const getMessageTyping = async () => {
+    try {
+      if (loginId) {
+        const response = await axios.get(`http://192.168.29.169:4000/chat/getTyping/${loginId}`);
+        // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
+        // console.log('fetch messages is', response.data.chatUserArray)
+        // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+   setFetchTypingIdObj(response.data)
+
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+  getMessageTyping()
+  socket.on('getTyping', (newTypingId) => {
+    // setFetchTypingIdArray(preTypingId => [...preTypingId, newTypingId])
+    setFetchTypingIdObj(newTypingId)
+  })
+  socket.on('typingChatDeleted', (deleteTyping) => {
+    // setFetchMessages((prevMessages) =>
+    //   prevMessages.filter((msg) => msg._id !== deletedMessage._id)
+    // );
+    setFetchTypingIdObj(deleteTyping)
+  });
+
+  return () => {
+    socket.off('getTyping')
+    socket.off('typingChatDeleted');
+  }
+}, [loginId])
+console.log('fetch typing id obj',fetchTypingIdObj)
+
+useEffect(() => {
+  if (loginId) {
+    const getTypingIdResponse = fetchTypingIdObj?.data?.some(
+      (item) => item === messageDetails?._id
+    );
+    setShowTypingResponse(getTypingIdResponse)
+    console.log('get typing id response:', getTypingIdResponse);
+  }
+}, [loginId, fetchTypingIdObj, messageDetails]);
+
+
   const submitHandler = async () => {
     if (messageText.trim()) {
       const messageSubmitData = {
@@ -109,12 +241,19 @@ const MessageDetailsCard = ({ messageDetails }) => {
         senderName: loginObj?.firstName,
         images: loginObj?.image
       };
+      const deleteTypingObj={
+        loginId:loginId,
+        senderId:loginId,
+        recieverId:messageDetails._id
+      }
       console.log("Message sent:", messageSubmitData);
       try {
         const response = await axios.post(`http://192.168.29.169:4000/chat/addSendMessage/${messageSubmitData.id}`, messageSubmitData);
         console.log(' send message of data is', response.data)
         socket.emit('sendMessage', response.data.chatUser)
         setMessageText('')
+        const responseData = await axios.post(`http://192.168.29.169:4000/chat/deleteTyping`, deleteTypingObj);
+        console.log('delete  typing message of data is', responseData.data);
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -246,15 +385,19 @@ const MessageDetailsCard = ({ messageDetails }) => {
                   marginBottom: 6,
                 }}
               />
+              <View>
               <Text
                 style={{
                   color: "black",
                   fontWeight: "500",
-                  paddingTop: 14,
+                  paddingTop: `${showTypingResponse===true || activeLoginIdResponse===true ?8:14}`,
                 }}
               >
                 {messageDetails?.firstName}
               </Text>
+              {showTypingResponse===true?<Text>typing...</Text>:null}
+              {activeLoginIdResponse===true?<Text style={{color:'green'}}>Online</Text>:null}
+              </View>
             </View>
           </Pressable>
           <Pressable onPress={dotPressHandler}>
@@ -387,7 +530,7 @@ const MessageDetailsCard = ({ messageDetails }) => {
               height: 50
             }}
             placeholder="Message"
-            onChangeText={(text) => setMessageText(text)}
+            onChangeText={(text) => messageTypingHandler(text)}
             onSubmitEditing={submitHandler}
             value={messageText}
           />

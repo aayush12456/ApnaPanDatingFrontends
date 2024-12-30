@@ -16,6 +16,8 @@ const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selfLikeMatch,setSelfLikeMatch]=useState(false)
+    const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
+    const [loginIdUserArray, setLoginIdUserArray] = useState([])
     const getProfile = () => allUser;
     const dob = getProfile()?.DOB;
     const dobBreak = dob?.split("/");
@@ -23,6 +25,46 @@ const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
+
+    useEffect(()=>{
+      const fetchAllLoginIdUser = async () => {
+        try {
+          if (loginId) {
+            const response = await axios.get(
+              `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginId}`,
+            );
+            // setLikesArray(response?.data?.anotherMatchUser || []);
+            console.log('get all login id user is', response?.data?.loginIdUserArray)
+            setLoginIdUserArray(response?.data?.loginIdUserArray)
+          }
+        } catch (error) {
+          console.error("Error fetching in chat id obj:", error);
+        }
+      };
+      fetchAllLoginIdUser();
+  
+      socket.on("getLoginUser", (newUser) => {
+  
+        setLoginIdUserArray(newUser)
+      });
+      socket.on("deleteLoginIdUser", (newUser) => {
+        setLoginIdUserArray(newUser)
+      });
+      return () => {
+        socket.off("getLoginUser");
+        socket.off("deleteLoginIdUser");
+      };
+    },[loginId])
+  
+    console.log('login id user array is',loginIdUserArray)
+    useEffect(() => {
+      if (loginId) {
+        const getActiveLoginId = loginIdUserArray?.some(
+          (item) => item === allUser?._id
+        );
+        setActiveLoginIdResponse(getActiveLoginId)
+      }
+    }, [loginId, loginIdUserArray, allUser]);
 
     const cardClickHandler = async(allUser) => {
         console.log('card pressed', allUser);
@@ -81,6 +123,8 @@ const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
     setSelfLikeMatch(isLiked);
 }, [onlineLikeUserObj?.selfOnlineLikeUser, allUser]);
      console.log('self online like',selfLikeMatch)
+
+console.log('active login response',activeLoginIdResponse)
 return (
     <>
      <Card
@@ -105,6 +149,19 @@ return (
                       source={{ uri: allUser?.images[0] }}
                       style={{ width: 65, height: 65, borderRadius: 70 }}
                     />
+                     {activeLoginIdResponse===true?<View
+      style={{
+        width: 15, 
+        height: 15,
+        backgroundColor: 'rgba(74, 222, 128,1)',
+        borderRadius: 15 / 2,
+        position: 'absolute',
+        bottom: 5, 
+        right: 0, 
+        borderWidth: 2,
+        borderColor: 'white',
+      }}
+    />:null}
                   </View>
                   <View style={{ paddingTop: 1 }}>
                     <Text style={{ color: "black", fontWeight: "500" }}>

@@ -23,6 +23,8 @@ const socket = io.connect("http://192.168.29.169:4000")
 const MatchCard=({matchObj})=>{
   const [loginData, setLoginData] = useState(null);
   const [loginId,setLoginId]=useState('')
+  const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
+  const [loginIdUserArray, setLoginIdUserArray] = useState([])
     const navigation = useNavigation();
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
@@ -54,6 +56,48 @@ const MatchCard=({matchObj})=>{
   },[loginResponse,loginOtpResponse])
 
   console.log('login id in match card',loginId)
+
+  useEffect(()=>{
+    const fetchAllLoginIdUser = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginId}`,
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get all login id user is', response?.data?.loginIdUserArray)
+          setLoginIdUserArray(response?.data?.loginIdUserArray)
+        }
+      } catch (error) {
+        console.error("Error fetching in chat id obj:", error);
+      }
+    };
+    fetchAllLoginIdUser();
+
+    socket.on("getLoginUser", (newUser) => {
+
+      setLoginIdUserArray(newUser)
+    });
+    socket.on("deleteLoginIdUser", (newUser) => {
+      setLoginIdUserArray(newUser)
+    });
+    return () => {
+      socket.off("getLoginUser");
+      socket.off("deleteLoginIdUser");
+    };
+  },[loginId])
+
+  console.log('login id user array is',loginIdUserArray)
+  useEffect(() => {
+    if (loginId) {
+      const getActiveLoginId = loginIdUserArray?.some(
+        (item) => item === matchObj?._id
+      );
+      setActiveLoginIdResponse(getActiveLoginId)
+    }
+  }, [loginId, loginIdUserArray, matchObj]);
+
+
     const [active, setActive] = useState(0); 
     const width = Dimensions.get('window').width - 50;
     console.log('width is',width)
@@ -124,15 +168,32 @@ const MatchCard=({matchObj})=>{
       console.error('Error sending message:', error);
   }
         }
+      //   <View style={{flexDirection:"row", backgroundColor:'green',borderRadius:12,marginTop:-18}}>
+      //   <Text>Online</Text>
+      // </View>
 return (
     <>
     <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white'}}>
     <Card.Content>
-      <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:30,zIndex:10,left:30}} >
+      {/* <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:30,zIndex:10,left:30}} >
         <Pressable onPress={playVideoHandler}>
         <Image source={play} style={{width:16,height:16,marginTop:3,tintColor:'white'}}/>
         <Text style={{color:'white',paddingLeft:20,marginTop:-18}}>Watch Video</Text>
         </Pressable>
+           <View style={{ backgroundColor:'green',borderRadius:15, width:80}}>
+        <Text style={{textAlign:'center',color:'white',paddingTop:6,paddingBottom:6}}>Online</Text>
+      </View>
+      </View> */}
+      <View style={{flexDirection:"row",justifyContent:'space-between'}}>
+      <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:15,zIndex:10,left:16}} >
+        <Pressable onPress={playVideoHandler}>
+        <Image source={play} style={{width:16,height:16,marginTop:3,tintColor:'white'}}/>
+        <Text style={{color:'white',paddingLeft:20,marginTop:-18}}>Watch Video</Text>
+        </Pressable>
+        </View>
+        {activeLoginIdResponse===true?<View style={{ backgroundColor:'#32cd32',borderRadius:15, width:80,position:'absolute',top:15,zIndex:10,right:8}}>
+        <Text style={{textAlign:'center',color:'white',paddingTop:6,paddingBottom:6}}>Online</Text>
+      </View>:null}
       </View>
     <View style={{ overflow: 'scroll' }}>
               <ScrollView

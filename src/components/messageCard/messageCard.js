@@ -13,7 +13,9 @@ const MessageCard=({finalMessageUser,index})=>{
     const [chatIdArray, setChatIdArray] = useState([])
     const [filteredMessages, setFilteredMessages] = useState([])
     const [fetchMessages,setFetchMessages]=useState([])
+    const [loginIdUserArray, setLoginIdUserArray] = useState([])
     const [checkMessages, setCheckMessages] = useState(false)
+    const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
     console.log('final message user in message card',finalMessageUser)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
@@ -45,6 +47,49 @@ useEffect(() => {
 }, [loginResponse,loginOtpResponse]);
 
   console.log('login obj',loginObj)
+
+  useEffect(()=>{
+    const fetchAllLoginIdUser = async () => {
+      try {
+        if (loginObj._id) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginObj._id}`,
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get all login id user is', response?.data?.loginIdUserArray)
+          setLoginIdUserArray(response?.data?.loginIdUserArray)
+        }
+      } catch (error) {
+        console.error("Error fetching in chat id obj:", error);
+      }
+    };
+    fetchAllLoginIdUser();
+
+    socket.on("getLoginUser", (newUser) => {
+       console.log('on get login user array',newUser)
+      setLoginIdUserArray(newUser)
+    });
+
+    socket.on("deleteLoginIdUser", (newUser) => {
+     setLoginIdUserArray(newUser)
+   });
+
+    return () => {
+      socket.off("getLoginUser");
+      socket.off("deleteLoginIdUser");
+    };
+  },[loginObj._id])
+
+  console.log('login id user array is',loginIdUserArray)
+  useEffect(() => {
+    if (loginObj._id) {
+      const getActiveLoginId = loginIdUserArray?.some(
+        (item) => item === finalMessageUser?._id
+      );
+      setActiveLoginIdResponse(getActiveLoginId)
+    }
+  }, [loginObj._id, loginIdUserArray, finalMessageUser]);
+
     const messageCardClickHandler=async(finalMessageUser)=>{
     console.log('final message user',finalMessageUser)
     if(finalMessageUser){
@@ -178,10 +223,25 @@ return (
                     gap:30
                   }}
                 >
-                    <Image
+                  <View style={{flexDirection:'row'}}>
+                  <Image
                       source={{ uri: finalMessageUser?.images[0] }}
                       style={{ width: 65, height: 65, borderRadius: 70 }}
                     />
+               {activeLoginIdResponse===true?<View
+      style={{
+        width: 15, 
+        height: 15,
+        backgroundColor: 'rgba(74, 222, 128,1)',
+        borderRadius: 15 / 2,
+        position: 'absolute',
+        bottom: 5, 
+        right: 0, 
+        borderWidth: 2,
+        borderColor: 'white',
+      }}
+    />:null}
+                  </View>
                     <View>
                     <View style={{ flexDirection:'row',gap:10,paddingTop:7 }}>
                     <Text style={{ color: "black", fontWeight: "500" }}>

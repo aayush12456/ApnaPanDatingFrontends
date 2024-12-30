@@ -12,13 +12,24 @@ import { useEffect,useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import closeEye from '../../../assets/AllIcons/closedeye.png'
 import openEye from '../../../assets/AllIcons/openeye.png'
+import io from "socket.io-client";
+const socket = io.connect("http://192.168.29.169:4000")
 const Login=({navigation})=>{
   const [loginToken,setLoginToken]=useState(null)
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch=useDispatch()
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)
   const loginObj=useSelector((state)=>state.loginData.loginData.loginData)
+  const getAllLoginIdUserArray=useSelector((state)=>state.loginData.loginData.loginIdUserArray)
+  console.log('get all login id user array',getAllLoginIdUserArray)
   console.log(' login response data in login',loginObj)
+
+  useEffect(() => {
+    if (getAllLoginIdUserArray) {
+      socket.emit('loginUser',getAllLoginIdUserArray);
+      console.log('Emitted login data:',getAllLoginIdUserArray);
+    }
+  }, [getAllLoginIdUserArray]);
   useEffect(() => {
     if (loginResponse) {
       const saveToSecureStore = async () => {
@@ -29,7 +40,7 @@ const Login=({navigation})=>{
         } catch (error) {
           console.error("Failed to store login data:", error);
         }
-      };
+    };
       saveToSecureStore();
       // navigation.navigate('HeaderPage');
     }
