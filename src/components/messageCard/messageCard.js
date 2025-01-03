@@ -1,4 +1,5 @@
-import { Text, View, Image } from "react-native";
+import { Text, View } from "react-native";
+import { Image } from 'expo-image';
 import { Card } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
 import {useSelector} from 'react-redux'
@@ -7,6 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import axios from "axios";
 import FilteredChatMessage from "../filteredChatMessage/filteredChatMessage";
+import typingIcon from "../../../assets/chatIcons/chat.gif";
 const socket = io.connect("http://192.168.29.169:4000")
 const MessageCard=({finalMessageUser,index})=>{
     const [loginObj,setLoginObj]=useState({})
@@ -14,8 +16,12 @@ const MessageCard=({finalMessageUser,index})=>{
     const [filteredMessages, setFilteredMessages] = useState([])
     const [fetchMessages,setFetchMessages]=useState([])
     const [loginIdUserArray, setLoginIdUserArray] = useState([])
+    const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
+    const [recordMessage, setRecordMessage] = useState([])
     const [checkMessages, setCheckMessages] = useState(false)
     const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
+    const [showTypingResponse,setShowTypingResponse]=useState(false)
+    const [recordMessageId,setRecordMessageId]=useState(false)
     console.log('final message user in message card',finalMessageUser)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
@@ -90,6 +96,53 @@ useEffect(() => {
     }
   }, [loginObj._id, loginIdUserArray, finalMessageUser]);
 
+  
+useEffect(() => {
+
+  const getMessageTyping = async () => {
+    try {
+      if (loginObj._id) {
+        const response = await axios.get(`http://192.168.29.169:4000/chat/getTyping/${loginObj._id}`);
+        // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
+        // console.log('fetch messages is', response.data.chatUserArray)
+        // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+   setFetchTypingIdObj(response.data)
+
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+  getMessageTyping()
+  socket.on('getTyping', (newTypingId) => {
+    // setFetchTypingIdArray(preTypingId => [...preTypingId, newTypingId])
+    setFetchTypingIdObj(newTypingId)
+  })
+  socket.on('typingChatDeleted', (deleteTyping) => {
+    // setFetchMessages((prevMessages) =>
+    //   prevMessages.filter((msg) => msg._id !== deletedMessage._id)
+    // );
+    setFetchTypingIdObj(deleteTyping)
+  });
+
+  return () => {
+    socket.off('getTyping')
+    socket.off('typingChatDeleted');
+  }
+}, [loginObj._id])
+console.log('fetch typing id obj',fetchTypingIdObj)
+
+useEffect(() => {
+  if (loginObj._id) {
+    const getTypingIdResponse = fetchTypingIdObj?.data?.some(
+      (item) => item === finalMessageUser?._id
+    );
+    setShowTypingResponse(getTypingIdResponse)
+    console.log('get typing id response:', getTypingIdResponse);
+  }
+}, [loginObj._id, fetchTypingIdObj, finalMessageUser]);
+
+
     const messageCardClickHandler=async(finalMessageUser)=>{
     console.log('final message user',finalMessageUser)
     if(finalMessageUser){
@@ -99,10 +152,31 @@ useEffect(() => {
      loginName:loginObj.name,
      anotherName:finalMessageUser.firstName
       }
+      const deleteRecordMessageIdObj={
+        id:loginObj._id,
+        recieverId:finalMessageUser._id
+      }
+      const anotherRecordMessageIdObj={
+        id:loginObj._id,
+        recieverId:finalMessageUser._id
+      }
+      try {
+        const deleteResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/deleteRecordMessage/${deleteRecordMessageIdObj.id}`,deleteRecordMessageIdObj);
+        console.log('response in delete recoird id user is',deleteResponseIdObj?.data)
+            //  socket.emit('deleteRecordMessageId', deleteResponseIdObj?.data?.recordMessageIdArray)
+            socket.emit('deleteRecordMessageId', deleteResponseIdObj?.data)
+    } catch (error) {
+        console.error('Error sending message in delete id:', error);
+    }
+    try {
+      const anotherResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/addAnotherRecordMessage/${anotherRecordMessageIdObj.id}`,anotherRecordMessageIdObj);
+      console.log('response in another record message id user is',anotherResponseIdObj?.data?.anotherRecordMessageIdArray)
+  } catch (error) {
+      console.error('Error sending another response in another response id:', error);
+  }
       try {
         const response = await axios.post(`http://192.168.29.169:4000/chat/addChatId`, addChatIdObj);
         console.log('response in add chat id user is',response?.data?.chatIdUser)
-        // socket.emit('addChatIdUser', response?.data?.chatIdUser)
         navigation.navigate('MessageDetailsPageContent', {
           formData: finalMessageUser,
         });
@@ -204,6 +278,45 @@ useEffect(() => {
   }
 }, [filteredMessages, finalMessageUser._id, loginObj._id]);
 
+useEffect(() => {
+
+  const fetchRecordMessage = async () => {
+      try {
+        if(loginObj._id){
+          const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${loginObj._id}`);
+          // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
+          // console.log('fetch messages is', response.data.chatUserArray)
+          // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+          // setRecordMessage(response.data.recordMessageIdArray);
+          setRecordMessage(response.data);
+
+        }
+      } catch (error) {
+          console.error("Error fetching messages:", error);
+      }
+  };
+  fetchRecordMessage()
+  socket.on('recieveRecordMessageId', (newMessage) => {
+    setRecordMessage(newMessage);
+  })
+  // socket.on('recordMessageIdDeleted', (newMessage) => {
+  //   setRecordMessage(newMessage);
+  // })
+  return () => {
+      socket.off('recieveRecordMessageId')
+      // socket.off('recordMessageIdDeleted')
+  }
+}, [loginObj._id])
+
+console.log('record message array',recordMessage)
+
+useEffect(() => {
+  const checkRecordMessageId = recordMessage?.recordMessageIdArray?.some(
+      recordId => recordId === finalMessageUser._id 
+  );
+  setRecordMessageId(checkRecordMessageId)
+}, [ recordMessage, finalMessageUser._id]);
+console.log('record message id response',recordMessageId)
 return (
     <>
       <Card
@@ -252,12 +365,12 @@ return (
                     </Text>
                   </View>
                   <View>
-                    {
+                    {showTypingResponse===true?null:
                       filteredMessages.map((filterMessage,index)=>{
                         const messageUniqueKey = `${filterMessage._id}_${index}`;
                         return (
                           <>
-                          <FilteredChatMessage key={messageUniqueKey} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} index={index} />
+                          <FilteredChatMessage key={messageUniqueKey} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} index={index} recordMessageId={recordMessageId} />
                           </>
                         )
                       })
@@ -265,8 +378,29 @@ return (
                  {checkMessages===false && <Text style={{ color: "black", fontWeight: "500",paddingTop:2 }}>
            You have both paired
                     </Text>}
+                    {showTypingResponse===true &&
+                    <View style={{flexDirection:'row',gap:0}}>
+          <Image source={typingIcon} style={{width:17,marginTop:6}}/>
+          <Text style={{ color: "#32cd32",paddingTop:2 }}>
+                    Typing
+                    </Text>
+                    </View>
+       }
                   </View>
-                    </View>                     
+                    </View> 
+                    {recordMessageId===true?<View
+      style={{
+        width: 15, 
+        height: 15,
+        backgroundColor: 'blue',
+        borderRadius: 15 / 2,
+        position: 'absolute',
+        bottom: 25, 
+        right: 0, 
+        borderWidth: 2,
+        borderColor: 'white',
+      }}
+    />:null }                   
                 </View>
               </Card.Content>
             </Card>

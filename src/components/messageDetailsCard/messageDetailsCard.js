@@ -1,11 +1,14 @@
 import { Text, Button, TextInput, Card } from "react-native-paper";
-import { View, Image, Pressable, ScrollView, Dimensions } from "react-native";
+import { View,  Pressable, ScrollView, Dimensions } from "react-native";
 import back from "../../../assets/signUpFormIcon/back.png";
 import dots from "../../../assets/chatIcons/dots.png";
 import send from "../../../assets/chatIcons/sendIcon.png";
 import unsend from "../../../assets/chatIcons/unsend.png";
 import profile from "../../../assets/chatIcons/profile.png";
 import block from "../../../assets/chatIcons/block.png";
+import typingIcon from "../../../assets/chatIcons/chat.gif";
+import guru from "../../../assets/chatIcons/guru.png";
+import { Image } from 'expo-image';
 import io from "socket.io-client";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState ,useRef} from 'react'
@@ -40,7 +43,17 @@ const MessageDetailsCard = ({ messageDetails }) => {
   const dotOpenHandler=useSelector((state)=>state.dotsOpenData.dotsOpenToggle)
   console.log("dot open selector", dotOpenHandler);
   console.log("delete chat selector", deleteChatSelector);
-  const backHandler = () => {
+  const backHandler = async() => {
+    const deleteAnotherRecordMessageIdObj={
+      id:loginObj._id,
+      recieverId:messageDetails._id
+    }
+    try {
+      const deleteAnotherResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/deleteAnotherRecordMessage/${deleteAnotherRecordMessageIdObj.id}`,deleteAnotherRecordMessageIdObj);
+      console.log('response in another record message id user is',deleteAnotherResponseIdObj?.data?.anotherRecordMessageIdArray)
+  } catch (error) {
+      console.error('Error sending in delete another response in another response id:', error);
+  }
     navigation.navigate("Messages");
   };
   useEffect(() => {
@@ -231,6 +244,45 @@ useEffect(() => {
 }, [loginId, fetchTypingIdObj, messageDetails]);
 
 
+  // const submitHandler = async () => {
+  //   if (messageText.trim()) {
+  //     const messageSubmitData = {
+  //       id: loginId,
+  //       senderId: loginId,
+  //       recieverId: messageDetails._id,
+  //       message: messageText,
+  //       senderName: loginObj?.firstName,
+  //       images: loginObj?.image
+  //     };
+  //     const deleteTypingObj={
+  //       loginId:loginId,
+  //       senderId:loginId,
+  //       recieverId:messageDetails._id
+  //     }
+  //     const addRecordMessageObj={
+  //       id:loginId,
+  //       recieverId:messageDetails._id
+  //     }
+  //     console.log("Message sent:", messageSubmitData);
+  //     try {
+  //       const response = await axios.post(`http://192.168.29.169:4000/chat/addSendMessage/${messageSubmitData.id}`, messageSubmitData);
+  //       console.log(' send message of data is', response.data)
+  //       socket.emit('sendMessage', response.data.chatUser)
+  //       setMessageText('')
+
+  //       const responseData = await axios.post(`http://192.168.29.169:4000/chat/deleteTyping`, deleteTypingObj);
+  //       console.log('delete  typing message of data is', responseData.data);
+
+  //       const recordResponseData = await axios.post(`http://192.168.29.169:4000/chat/addRecordMessage/${addRecordMessageObj.id}`, addRecordMessageObj);
+  //       console.log('add record response message id array  is', recordResponseData.data);
+  //       socket.emit('addRecordMessageId', response.data.recordMessageIdArray)
+  //     } catch (error) {
+  //       console.error('Error sending message:', error);
+  //     }
+  //   } else {
+  //     console.log("Message text is empty");
+  //   }
+  // };
   const submitHandler = async () => {
     if (messageText.trim()) {
       const messageSubmitData = {
@@ -239,29 +291,57 @@ useEffect(() => {
         recieverId: messageDetails._id,
         message: messageText,
         senderName: loginObj?.firstName,
-        images: loginObj?.image
+        images: loginObj?.image,
       };
-      const deleteTypingObj={
-        loginId:loginId,
-        senderId:loginId,
-        recieverId:messageDetails._id
-      }
+      const deleteTypingObj = {
+        loginId: loginId,
+        senderId: loginId,
+        recieverId: messageDetails._id,
+      };
+      const addRecordMessageObj = {
+        id: loginId,
+        recieverId: messageDetails._id,
+      };
+  
       console.log("Message sent:", messageSubmitData);
+  
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/chat/addSendMessage/${messageSubmitData.id}`, messageSubmitData);
-        console.log(' send message of data is', response.data)
-        socket.emit('sendMessage', response.data.chatUser)
-        setMessageText('')
-        const responseData = await axios.post(`http://192.168.29.169:4000/chat/deleteTyping`, deleteTypingObj);
-        console.log('delete  typing message of data is', responseData.data);
+        // Call addSendMessage API
+        const response = await axios.post(
+          `http://192.168.29.169:4000/chat/addSendMessage/${messageSubmitData.id}`,
+          messageSubmitData
+        );
+        console.log('Send message data:', response.data);
+        socket.emit('sendMessage', response.data.chatUser);
+        setMessageText('');
+  
+        // Call deleteTyping API
+        const responseData = await axios.post(
+          `http://192.168.29.169:4000/chat/deleteTyping`,
+          deleteTypingObj
+        );
+        console.log('Delete typing message data:', responseData.data);
+  
+        // Call addRecordMessage API
+        console.log('About to call addRecordMessage API with:', addRecordMessageObj);
+        const recordResponseData = await axios.post(
+          `http://192.168.29.169:4000/chat/addRecordMessage/${addRecordMessageObj.id}`,
+          addRecordMessageObj
+        );
+        console.log('Add record message ID array is:', recordResponseData.data);
+        // socket.emit('addRecordMessageId', recordResponseData.data.recordMessageIdArray);
+        socket.emit('addRecordMessageId', recordResponseData.data
+        );
       } catch (error) {
-        console.error('Error sending message:', error);
+        console.error(
+          'Error during API calls:',
+          error.response ? error.response.data : error.message
+        );
       }
     } else {
       console.log("Message text is empty");
     }
   };
-
   useEffect(() => {
 
     const fetchMessage = async () => {
@@ -350,6 +430,15 @@ useEffect(() => {
     navigation.navigate("Messages");
   
   }
+  const viewExpertChatHandler=async(messageDetailProfile)=>{
+  //  const expertChatObj={
+  //   loginName:loginObj.name,
+  //   anotherName:messageDetailProfile.firstName
+  //  }
+   dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
+   navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:loginObj.name} });
+  
+  }
   return (
     <>
       <View style={{ flex: 1 }}>
@@ -395,8 +484,11 @@ useEffect(() => {
               >
                 {messageDetails?.firstName}
               </Text>
-              {showTypingResponse===true?<Text>typing...</Text>:null}
-              {activeLoginIdResponse===true?<Text style={{color:'green'}}>Online</Text>:null}
+             {showTypingResponse===true? <View style={{flexDirection:'row',gap:3}}>
+              <Image source={typingIcon} style={{width:15}}/>
+              <Text>typing</Text>
+              </View>:null}
+              {activeLoginIdResponse===true && !showTypingResponse===true?<Text style={{color:'#32cd32'}}>Online</Text>:null}
               </View>
             </View>
           </Pressable>
@@ -425,6 +517,12 @@ useEffect(() => {
               <View style={{flexDirection:"row", gap:8,marginTop:9}}>
               <Image source={block} style={{width:30,height:30}}/>
               <Text style={{paddingTop:4}}>Block</Text>
+            </View>
+              </Pressable>
+              <Pressable onPress={()=>viewExpertChatHandler(messageDetails)}>
+              <View style={{flexDirection:"row", gap:8,marginTop:9}}>
+              <Image source={guru} style={{width:30,height:30}}/>
+              <Text style={{paddingTop:4}}>Expert Chat</Text>
             </View>
               </Pressable>
             </Card.Content>

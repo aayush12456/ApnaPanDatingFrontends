@@ -52,6 +52,7 @@ import LoginWithOtpPage from './src/Pages/loginWithOtpPage/loginWithOtpPage';
 import LoginWithOtpDataPage from './src/Pages/loginWithOtpDataPage/loginWithOtpDataPage';
 import ForgotPasswordPage from './src/Pages/forgotPasswordPage/forgotPasswordPage';
 import ResetPasswordPage from './src/Pages/resetPasswordPage/resetPasswordPage';
+import ExpertChatPage from './src/Pages/expertChatPage/expertChatPage';
 // import axios from 'axios'
 const Stack = createNativeStackNavigator();
 
@@ -370,6 +371,11 @@ function AppContent() {
            <Stack.Screen
           name="DeleteAccountPage"
           component={DeleteAccountPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="ExpertChatPage"
+          component={ExpertChatPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

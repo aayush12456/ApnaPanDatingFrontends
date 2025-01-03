@@ -30,6 +30,7 @@ const Header=()=>{
     const [loginId,setLoginId]=useState('')
     const [likeCountObj,setLikeCountObj]=useState('')
     const [visitorCountObj,setVisitorCountObj]=useState('')
+    const [recordMessage, setRecordMessage] = useState([])
     // useEffect(() => {
     //   // Using an IIFE (Immediately Invoked Function Expression) to use await directly
     //   (async () => {
@@ -153,6 +154,36 @@ const deleteVisitorFunction = async () => {
       console.error('Error deleting visitor count:', error?.response?.data || error.message);
   }
 };
+
+useEffect(() => {
+
+  const fetchRecordMessage = async () => {
+      try {
+        if(loginId){
+          const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${loginId}`);
+          // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
+          // console.log('fetch messages is', response.data.chatUserArray)
+          // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+          setRecordMessage(response.data);
+
+        }
+      } catch (error) {
+          console.error("Error fetching messages:", error);
+      }
+  };
+  fetchRecordMessage()
+  socket.on('recieveRecordMessageId', (newMessage) => {
+    setRecordMessage(newMessage);
+  })
+  return () => {
+      socket.off('recieveRecordMessageId')
+  }
+}, [loginId])
+
+console.log('record message obj',recordMessage)
+
+
+
 return (
     <>
      <Drawer.Navigator>
@@ -268,8 +299,8 @@ return (
 
 
 
-
-       <Drawer.Screen
+{/* 
+    <Drawer.Screen
         name="Messages"
         component={Message}
         options={{ 
@@ -279,7 +310,41 @@ return (
                 style={{ width: 25, height: 25 }}/>
             ),
          }}
+      />  */}
+      <Drawer.Screen
+  name="Messages"
+  component={Message}
+  options={{
+    drawerLabel: ({ focused }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ color: focused ? 'blue' : 'black' }}>Messages</Text>
+        {recordMessage?.recordMessageIdArray?.length>0 && recordMessage.id===loginId? (
+          <View
+            style={{
+              marginLeft: 8, // Adjust space between "Likes" and the badge
+              borderRadius: 20,
+              width: 20,
+              height: 20,
+              backgroundColor: 'red',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ color: 'white', textAlign: 'center' }}>{recordMessage.recordMessageIdArray.length>0?recordMessage.recordMessageIdArray.length:null}</Text>
+          </View>
+        ) : null}
+      </View>
+    ),
+    drawerIcon: () => (
+      <Image
+        source={messages}
+        style={{ width: 25, height: 25 }}
       />
+    ),
+  }}
+
+/>
+
        {/* <Drawer.Screen
         name="Visitors"
         component={Visitors}
