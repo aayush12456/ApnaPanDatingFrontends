@@ -8,6 +8,8 @@ import { useState,useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import { addVisitorEmailSenderAsync } from "../../Redux/Slice/addVisitorEmailSlice/addVisitorEmailSlice";
+import { AlertNotificationRoot } from "react-native-alert-notification";
+import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
 const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
     console.log('online like user obj in new and online card',onlineLikeUserObj)
@@ -18,6 +20,9 @@ const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
     const [selfLikeMatch,setSelfLikeMatch]=useState(false)
     const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
     const [loginIdUserArray, setLoginIdUserArray] = useState([])
+    const [deactivateUserObj,setDeactivateUserObj]=useState({})
+    const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
+    const [openDailog,setOpenDialog]=useState(false)
     const getProfile = () => allUser;
     const dob = getProfile()?.DOB;
     const dobBreak = dob?.split("/");
@@ -66,42 +71,76 @@ const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
       }
     }, [loginId, loginIdUserArray, allUser]);
 
-    const cardClickHandler = async(allUser) => {
-        console.log('card pressed', allUser);
-        if(allUser){
-          const addVisitorObj={
-            id:loginId,
-            userId:allUser._id
-          }
-          const visitorCountObj={
-            id:loginId,
-            visitorOnlineId:allUser._id
-          }
-          const visitorEmailObj={
-            id:loginId,
-            recieverEmailId:allUser._id
-          }
-          console.log('add visitor obj',addVisitorObj)
-          // dispatch(addVisitorEmailSenderAsync(visitorEmailObj))
-          try {
-            const response = await axios.post(`http://192.168.29.169:4000/user/addVisitorUser/${addVisitorObj.id}`, addVisitorObj);
-            console.log('response in visitor user is',response?.data?.visitors)
-            socket.emit('addVisitorUser', response?.data?.visitors)
-        } catch (error) {
-            console.error('Error sending message in visitor:', error);
-        }
-
+    useEffect(()=>{
+      const fetchDeactivateUser = async () => {
         try {
-          const response = await axios.post(`http://192.168.29.169:4000/user/addVisitorCount/${visitorCountObj.id}`,visitorCountObj);
-          console.log('response in visitor count user',response?.data?.userObj)
-          socket.emit('addVisitorCountUser', response?.data?.userObj)
-      
-      } catch (error) {
-          console.error('Error sending message in visitor count:', error);
-      }
-          navigation.navigate('NewAndOnlinePageContent', { formData: allUser });
+          if (loginId) {
+            const response = await axios.get(
+              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+            );
+            // setLikesArray(response?.data?.anotherMatchUser || []);
+            console.log('get deactivate user obj is', response?.data)
+            setDeactivateUserObj(response?.data)
+          }
+        } catch (error) {
+          console.error("Error fetching in chat id obj:", error);
         }
       };
+      fetchDeactivateUser();
+  
+      socket.on("getDeactivateUser", (newUser) => {
+  
+        setDeactivateUserObj(newUser)
+      });
+      return () => {
+        socket.off("getDeactivateUser");
+      };
+    },[loginId])
+
+    const cardClickHandler = async (allUser) => {
+      if(loginId===deactivateUserObj.selfDeactivate){
+        setOpenDialog(true)
+        const obj={
+          type:'WARNING',
+          textBody:`You can't visited ${allUser.firstName}  profile untill you should activate yourself`
+        }
+        setNotifyDeactivateObj(obj)
+        return
+      }
+      navigation.navigate('NewAndOnlinePageContent', { formData: allUser });
+      if (allUser) {
+        const addVisitorObj = {
+          id: loginId,
+          userId: allUser._id,
+        };
+        const visitorCountObj = {
+          id: loginId,
+          visitorOnlineId: allUser._id,
+        };
+        try {
+          // Execute both API calls in parallel
+          const [visitorResponse, countResponse] = await Promise.all([
+            axios.post(
+              `http://192.168.29.169:4000/user/addVisitorUser/${addVisitorObj.id}`,
+              addVisitorObj
+            ),
+            axios.post(
+              `http://192.168.29.169:4000/user/addVisitorCount/${visitorCountObj.id}`,
+              visitorCountObj
+            ),
+          ]);
+    
+          console.log("Visitor added:", visitorResponse.data);
+          console.log("Visitor count updated:", countResponse.data);
+          // Emit socket events after both API calls succeed
+          socket.emit("addVisitorUser", visitorResponse.data.visitors);
+          socket.emit("addVisitorCountUser", countResponse.data.userObj);
+        } catch (error) {
+          console.error("Error in cardClickHandler:", error.response?.data || error.message);
+        }
+      }
+    };
+    
 
       const addChatModalOpenHandler = (name) => {
         dispatch(addChatModalActions.addChatVisibleToggle());
@@ -127,7 +166,8 @@ const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
 console.log('active login response',activeLoginIdResponse)
 return (
     <>
-     <Card
+    <AlertNotificationRoot>
+    <Card
               key={allUser._id || index} // Unique key: use _id if available, or index as fallback
               style={{
                 marginLeft: 8,
@@ -200,6 +240,9 @@ return (
                 </View>
               </Card.Content>
             </Card>
+            {openDailog===true &&<Notification dialog={notifyDeactivateObj}/>}
+    </AlertNotificationRoot>
+    
     </>
 )
 }

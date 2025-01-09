@@ -114,7 +114,7 @@ useEffect(() => {
     try {
       if (loginId) {
         const response = await axios.get(
-          `http://192.168.29.169:4000/user/getLikeCount/${loginId}`
+          `http://192.168.29.169:4000/user/getVisitorCount/${loginId}`
         );
    setVisitorCountObj(response?.data?.userObj)
       }
@@ -135,7 +135,7 @@ useEffect(() => {
 
   };
 }, [loginId]);
-
+console.log('visitor count obj',visitorCountObj)
 const deleteVisitorFunction = async () => {
   console.log('delete visitor func invoked');
   try {

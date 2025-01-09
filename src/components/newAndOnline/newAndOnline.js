@@ -34,6 +34,7 @@ const NewAndOnline = ({route}) => {
   const [loginId,setLoginId]=useState('')
   const [visitorArray,setVisitorArray]=useState([])
   const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
+  const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [refreshing, setRefreshing] = useState(false); 
   useEffect(() => {
     if (dispatch) {
@@ -217,13 +218,61 @@ console.log('visitor user in new and online',visitorArray)
         setAllUser(getAllUserArray);
       }
     }, [visitorArray, getAllUserArray]);
+
+    useEffect(() => {
+      const fetchDeactivateUser = async () => {
+        try {
+          if (loginId) {
+            const response = await axios.get(
+              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+            );
+            console.log('get deactivate user obj is', response?.data);
+            setDeactivateUserObj(response?.data);
+    
+            // If deactivatedIdArray is available, filter the allUser array
+            if (response?.data?.deactivatedIdArray?.length > 0 || response?.data?.selfDeactivate) {
+              const filteredUsers = getAllUserArray.filter(
+                (user) => 
+                  !response?.data?.deactivatedIdArray.includes(user._id) && 
+                  user._id !== response?.data?.selfDeactivate // Added condition
+              );
+              setAllUser(filteredUsers);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching deactivate user:", error);
+        }
+      };
+    
+      fetchDeactivateUser();
+    
+      socket.on("getDeactivateUser", (newUser) => {
+        setDeactivateUserObj(newUser);
+    
+        // If deactivatedIdArray is available, filter the allUser array
+        if (newUser?.deactivatedIdArray?.length > 0 || newUser?.selfDeactivate) {
+          const filteredUsers = getAllUserArray.filter(
+            (user) => 
+              !newUser?.deactivatedIdArray.includes(user._id) &&
+              user._id !== newUser?.selfDeactivate // Added condition
+          );
+          setAllUser(filteredUsers);
+        }
+      });
+    
+      return () => {
+        socket.off("getDeactivateUser");
+      };
+    }, [loginId, getAllUserArray]); // Re-run effect whenever loginId or getAllUserArray changes
+    
+    console.log('get deactivate user obj in likes',deactivateUserObj)
     
     const handleRefresh = () => {
       setRefreshing(true); // Show loading spinner
       dispatch(getAllUserData(completeLoginObjData?._id));
       setRefreshing(false); // Hide loading spinner
     };
-  
+
   return (
     <>
       <AddChat />

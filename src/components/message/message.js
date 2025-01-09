@@ -11,6 +11,7 @@ const Message=()=>{
     const [loginId,setLoginId]=useState('')
     const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
     const [blockUserObj,setBlockUserObj]=useState({})
+    const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
   useEffect(()=>{
@@ -79,7 +80,33 @@ const Message=()=>{
           socket.off("getBlockUser");
         };
       }, [loginId]);     
-       
+
+      useEffect(()=>{
+        const fetchDeactivateUser = async () => {
+          try {
+            if (loginId) {
+              const response = await axios.get(
+                `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              );
+              // setLikesArray(response?.data?.anotherMatchUser || []);
+              console.log('get deactivate user obj is', response?.data)
+              setDeactivateUserObj(response?.data)
+            }
+          } catch (error) {
+            console.error("Error fetching in chat id obj:", error);
+          }
+        };
+        fetchDeactivateUser();
+    
+        socket.on("getDeactivateUser", (newUser) => {
+    
+          setDeactivateUserObj(newUser)
+        });
+        return () => {
+          socket.off("getDeactivateUser");
+        };
+      },[loginId])
+      console.log('get deactivate user obj in message',deactivateUserObj)
       // const finalMessageArray = [
       //   ...(likeMatchUserObj?.matchLikes || []),
       //   ...(likeMatchUserObj?.anotherMatchLikes || [])
@@ -106,7 +133,12 @@ const Message=()=>{
       console.log('final message array',finalMessageArray)
        
       finalMessageArray = finalMessageArray.filter(
-        (user) => user._id !== loginId
+        (user) => user._id !== loginId &&
+        !deactivateUserObj?.deactivatedIdArray?.includes(user._id) 
+      );    
+          
+      finalMessageArray = finalMessageArray.filter(
+        (user) => user._id !== deactivateUserObj.selfDeactivate
       );    
 return (
     <>

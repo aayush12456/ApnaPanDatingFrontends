@@ -6,6 +6,9 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector } from 'react-redux';
 import { useRef, useEffect,useState } from 'react';
+import {Toast, AlertNotificationRoot } from 'react-native-alert-notification';
+import {Image} from 'react-native'
+import {Text} from 'react-native-paper'
 import io from 'socket.io-client';
 import * as SecureStore from 'expo-secure-store';
 import store from './src/Redux/Store/store';
@@ -44,7 +47,6 @@ import SkipProfilePage from './src/Pages/skipProfilePage/skipProfilePage';
 import BlockProfilePage from './src/Pages/blockProfilePage/blockProfilePage';
 import AccountSettingsPage from './src/Pages/accountSettingsPage/accountSettingsPage';
 import ChangePasswordPage from './src/Pages/changePasswordPage/changePasswordPage';
-import { AlertNotificationRoot } from 'react-native-alert-notification';
 import MannageAccountPage from './src/Pages/manageAccountPage/manageAccountPage';
 import DeactivateAccountPage from './src/Pages/deactivateAccountPage/deactivateAccountPage';
 import DeleteAccountPage from './src/Pages/deleteAccountPage/deleteAccountPage';
@@ -53,17 +55,38 @@ import LoginWithOtpDataPage from './src/Pages/loginWithOtpDataPage/loginWithOtpD
 import ForgotPasswordPage from './src/Pages/forgotPasswordPage/forgotPasswordPage';
 import ResetPasswordPage from './src/Pages/resetPasswordPage/resetPasswordPage';
 import ExpertChatPage from './src/Pages/expertChatPage/expertChatPage';
-// import axios from 'axios'
+import Notification from './src/components/notification/notification';
+import axios from 'axios'
 const Stack = createNativeStackNavigator();
-
+const socket = io.connect("http://192.168.29.169:4000")
 function AppContent() {
   const socketRef = useRef(null);
   // const [token,setLoginToken]=useState('')
+  const [recordMessage, setRecordMessage] = useState([])
+  const [visitorNotifyObj, setVisitorNotifyObj] = useState([])
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const completeLoginObj = useSelector(
     (state) => state?.loginData?.loginData?.completeLoginData
   );
   const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  const lightColors = {
+    label: '#000000',
+    card: '#ffffff',
+    overlay: '#f1f1f1',
+    success: '#28a745',
+    danger: '#dc3545',
+    warning: '#ffc107',
+  };
+  
+  const darkColors = {
+    label: '#ffffff',
+    card: 'red',
+    overlay: '#444444',
+    success: '#28a745',
+    danger: '#dc3545',
+    warning: '#ffc107',
+  };
+  
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -151,7 +174,36 @@ function AppContent() {
     };
   }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
 
- 
+  useEffect(() => {
+
+    const fetchRecordMessage = async () => {
+        try {
+          if(completeLoginObj?._id){
+            const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${completeLoginObj?._id}`);
+            // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
+            // console.log('fetch messages is', response.data.chatUserArray)
+            // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+            // setRecordMessage(response.data.recordMessageIdArray);
+            setRecordMessage(response.data);
+  
+          }
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+        }
+    };
+    fetchRecordMessage()
+    socket.on('recieveRecordMessageId', (newMessage) => {
+      setRecordMessage(newMessage);
+    })
+    // socket.on('recordMessageIdDeleted', (newMessage) => {
+    //   setRecordMessage(newMessage);
+    // })
+    return () => {
+        socket.off('recieveRecordMessageId')
+        // socket.off('recordMessageIdDeleted')
+    }
+  }, [completeLoginObj?._id])
+  console.log('record message array in app.js',recordMessage)
 //   const AuthenticatedStack = () => (
 //     <Stack.Navigator>
 //         <Stack.Screen name="HeaderPage" component={HeaderPage} options={{ headerShown: false }} />
@@ -167,9 +219,104 @@ function AppContent() {
 //     </Stack.Navigator>
 // );
 
+useEffect(() => {
+  if (recordMessage?.messageNotify?.length > 0 && completeLoginObj._id===recordMessage.id) {
+    recordMessage.messageNotify.map((notify, index) => {
+      Toast.show({
+        textBody: (
+          <View
+            key={index}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 10,
+              textAlign: 'left',
+            }}
+          >
+            <Image
+              source={{ uri: notify.images }}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25, // Circular image
+                marginRight: 10,
+              }}
+            />
+            <View>
+          <Text style={{color:'white'}}>{notify.recieverName} message you</Text>
+          
+          <Text style={{color:'white'}} >please checkout your message</Text>
+            </View>
+          </View>
+        ),
+        autoClose: 13000, // Optional: automatically hide after 3 second
+ 
+      });
+    });
+  }
+}, [recordMessage]);
 
+useEffect(() => {
+
+  const fetchVisitorNotify = async () => {
+      try {
+        if(completeLoginObj?._id){
+          const response = await axios.get(`http://192.168.29.169:4000/user/getVisitorCount/${completeLoginObj?._id}`);
+          setVisitorNotifyObj(response.data.userObj);
+
+        }
+      } catch (error) {
+          console.error("Error fetching messages:", error);
+      }
+  };
+  fetchVisitorNotify()
+  socket.on('getVisitorCountUser', (newVisitorNotifyUser) => {
+    setVisitorNotifyObj(newVisitorNotifyUser);
+  })
+  return () => {
+      socket.off('getVisitorCountUser')
+  }
+}, [completeLoginObj?._id])
+console.log('visitor notify in app.js',visitorNotifyObj)
+
+useEffect(() => {
+  if (visitorNotifyObj?.visitorNotify?.length > 0 && completeLoginObj._id===visitorNotifyObj.id) {
+    visitorNotifyObj?.visitorNotify.map((notify, index) => {
+      Toast.show({
+        textBody: (
+          <View
+            key={index}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 10,
+              textAlign: 'left',
+            }}
+          >
+            <Image
+              source={{ uri: notify.images }}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25, // Circular image
+                marginRight: 10,
+              }}
+            />
+            <View>
+          <Text style={{color:'white'}}>{notify.visitorName} visited you</Text>
+          
+          <Text style={{color:'white'}} >please checkout your visitors</Text>
+            </View>
+          </View>
+        ),
+        autoClose: 13000, // Optional: automatically hide after 3 second
+ 
+      });
+    });
+  }
+}, [visitorNotifyObj]);
   return (
-    <AlertNotificationRoot>
+    <AlertNotificationRoot colors={[darkColors]}  >
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -376,6 +523,11 @@ function AppContent() {
          <Stack.Screen
           name="ExpertChatPage"
           component={ExpertChatPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="notification"
+          component={Notification}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

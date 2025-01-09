@@ -13,6 +13,7 @@ const Matches=()=>{
   const [filterMatchArray,setFilterMatchArray]=useState([])
   const [loginId,setLoginId]=useState('')
   const [refreshing, setRefreshing] = useState(false);
+    const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const dispatch=useDispatch()
   const getFilterUser=useSelector((state)=>state.getMatchesData.getMatchesArray.interestUsers)
 console.log('get match filter user',getFilterUser)
@@ -88,7 +89,7 @@ else{
 
 useEffect(() => {
   if (filterMatchArray?.length > 0 && matchArray?.length > 0) {
-    const updatedArray = matchArray.filter(
+    const updatedArray = matchArray?.filter(
       (user) =>
         !filterMatchArray.some(
           (filterUser) => filterUser._id === user._id
@@ -99,6 +100,55 @@ useEffect(() => {
     setMatchArray(getFilterUser);
   }
 }, [filterMatchArray, getFilterUser]);
+
+useEffect(() => {
+  const fetchDeactivateUser = async () => {
+    try {
+      if (loginId) {
+        const response = await axios.get(
+          `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+        );
+        console.log('get deactivate user obj is', response?.data);
+        setDeactivateUserObj(response?.data);
+
+        // If deactivatedIdArray is available, filter the allUser array
+        if (response?.data?.deactivatedIdArray?.length > 0 || response?.data?.selfDeactivate) {
+          const filteredUsers = getFilterUser?.filter(
+            (user) => 
+              !response?.data?.deactivatedIdArray.includes(user._id) && 
+              user._id !== response?.data?.selfDeactivate // Added condition
+          );
+          setMatchArray(filteredUsers);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching deactivate user:", error);
+    }
+  };
+
+  fetchDeactivateUser();
+
+  socket.on("getDeactivateUser", (newUser) => {
+    setDeactivateUserObj(newUser);
+
+    // If deactivatedIdArray is available, filter the allUser array
+    if (newUser?.deactivatedIdArray?.length > 0 || newUser?.selfDeactivate) {
+      const filteredUsers = getFilterUser.filter(
+        (user) => 
+          !newUser?.deactivatedIdArray.includes(user._id) &&
+          user._id !== newUser?.selfDeactivate // Added condition
+      );
+      setMatchArray(filteredUsers);
+    }
+  });
+
+  return () => {
+    socket.off("getDeactivateUser");
+  };
+}, [loginId,getFilterUser]); // Re-run effect whenever loginId or getAllUserArray changes
+
+console.log('get deactivate user obj in likes',deactivateUserObj)
+
 const handleRefresh = () => {
   setRefreshing(true);
   dispatch(getMatchesData(completeLoginObj?._id)).finally(() =>

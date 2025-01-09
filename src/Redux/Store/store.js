@@ -58,7 +58,7 @@ const store=configureStore({
         loginOtpData:loginWithOtpSlice,
         finalLoginWithOtpData:finalLoginWithOtpSlice,
         getAllPhoneNumber:getAllPhoneNumberSlice,
-        forgotPasswordUpdateData:forgotUpdatePasswordUserSlice
+        forgotPasswordUpdateData:forgotUpdatePasswordUserSlice,
     }
 })
 export default store

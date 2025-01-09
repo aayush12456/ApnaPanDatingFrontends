@@ -3,10 +3,12 @@ import { Button, Text } from "react-native-paper"
 import { View, Image, Pressable } from 'react-native'
 import { deactivateAccount } from '../../utils/personalInfo';
 import { Dropdown } from 'react-native-paper-dropdown';
-import { Provider as PaperProvider } from 'react-native-paper';
 import { useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
-const DeactivateAccount=()=>{
+import io from "socket.io-client";
+import axios from "axios";
+const socket = io.connect("http://192.168.29.169:4000")
+const DeactivateAccount=({loginId,deactivateObj})=>{
     const navigation = useNavigation();
     const [deactivateReason,setDeactivateReason]=useState('')
     const dropdownOptions = deactivateAccount.map(item => ({
@@ -19,8 +21,35 @@ const DeactivateAccount=()=>{
       const matchesHandler=()=>{
         navigation.navigate('Matches')
       }
-      const deactivateAccountHandler=()=>{
+
+      const deactivateAccountHandler=async()=>{
         console.log('deactivate account reason',deactivateReason)
+        const deactivateAccountObj={
+          id:loginId,
+          deactivate:'deactivate'
+        }
+        console.log('deactivate obj',deactivateAccountObj)
+        try {
+          const response = await axios.post(`http://192.168.29.169:4000/user/addDeactivateUser/${deactivateAccountObj.id}`,  deactivateAccountObj);
+          console.log('response in deactivate obj is',response?.data)
+          socket.emit('addDeactivateUser', response?.data)
+      } catch (error) {
+          console.error('Error sending deactivate', error);
+      }
+      }
+
+      const activateAccountHandler=async()=>{
+       const activateAccountObj={
+        id:loginId,
+        activate:'activate'
+       }
+       try {
+        const response = await axios.post(`http://192.168.29.169:4000/user/getActivateUser/${activateAccountObj.id}`,activateAccountObj);
+        console.log('response in deactivate obj is',response?.data)
+        socket.emit('addActivateUser', response?.data)
+    } catch (error) {
+        console.error('Error sending activate', error);
+    }
       }
 return (
     <>
@@ -42,7 +71,7 @@ return (
     </View>
               <View style={{flexDirection:"row",justifyContent:"center",marginTop:18}}>
             <View style={{width:"90%"}}  >
-            <Button
+          { deactivateObj.selfDeactivate===null || !deactivateObj.selfDeactivate ?<Button
                       mode="contained"
                       style={{
                         height: 50, // Set the desired height
@@ -55,12 +84,27 @@ return (
                       onPress={deactivateAccountHandler}
                     >
                   Deactivate Account
-                    </Button>
+                    </Button>:
+                    <Button
+                    mode="contained"
+                    style={{
+                      height: 50, // Set the desired height
+                      color: '#FFFFFF',
+                       fontSize: 16, 
+                       justifyContent:'center',
+                       borderRadius: 6,
+                    }}
+                    buttonColor="#bbc5d1"
+                    onPress={activateAccountHandler}
+                  >
+               Activate Account
+                  </Button>
+                    }
             </View>
             </View>
 
             <View style={{flexDirection:"row",justifyContent:"center",marginTop:14}}>
-            <View style={{width:"90%"}}  >
+           {deactivateObj.selfDeactivate===null || !deactivateObj.selfDeactivate ? <View style={{width:"90%"}}  >
             <Button
                       mode="contained"
                       style={{
@@ -75,7 +119,7 @@ return (
                     >
                  Go to Matches
                     </Button>
-            </View>
+            </View>:null}
             </View>
     </View>
     </>

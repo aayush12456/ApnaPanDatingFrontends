@@ -13,6 +13,7 @@ const Visitors=()=>{
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
     const [visitorArray,setVisitorArray]=useState([])
     const [likeMatchUser, setLikeMatchUser] = useState({});
+    const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const processedVisitors = useRef(false); 
     useEffect(()=>{
         if(loginResponse || loginOtpResponse){
@@ -34,7 +35,7 @@ useEffect(() => {
           `http://192.168.29.169:4000/user/getVisitorUser/${loginId}`
         );
         console.log('visitor user in response',response?.data)
-        setVisitorArray(response?.data?.visitors || []);
+        setVisitorArray(response?.data?.visitors || [] )
       }
     } catch (error) {
       console.error("Error fetching visitors:", error);
@@ -44,14 +45,14 @@ useEffect(() => {
   fetchVisitorUsers();
 
   socket.on("getVisitorUser", (newUser) => {
-
-    setVisitorArray(newUser)
+    setVisitorArray(newUser);
   });
-
   return () => {
     socket.off("getVisitorUser");
   };
 }, [loginId]);
+
+
 
 useEffect(() => {
   const fetchLikeMatchUsers = async () => {
@@ -96,6 +97,7 @@ useEffect(() => {
   };
 }, [loginId]);
 
+
 useEffect(() => {
   if (
     visitorArray.length &&
@@ -117,7 +119,36 @@ console.log('another match first name',anotherMatchFirstNames)
 
 console.log("get like match user in socket in visitors", likeMatchUser);
 console.log('visitor data array',visitorArray)
-const combineVisitorArray=[...visitorArray]
+
+useEffect(()=>{
+  const fetchDeactivateUser = async () => {
+    try {
+      if (loginId) {
+        const response = await axios.get(
+          `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+        );
+        // setLikesArray(response?.data?.anotherMatchUser || []);
+        console.log('get deactivate user obj is', response?.data)
+        setDeactivateUserObj(response?.data)
+      }
+    } catch (error) {
+      console.error("Error fetching in chat id obj:", error);
+    }
+  };
+  fetchDeactivateUser();
+
+  socket.on("getDeactivateUser", (newUser) => {
+
+    setDeactivateUserObj(newUser)
+  });
+  return () => {
+    socket.off("getDeactivateUser");
+  };
+},[loginId])
+console.log('get deactivate user obj in visitor',deactivateUserObj)
+let combineVisitorArray=[]
+ combineVisitorArray=[...visitorArray].filter((visitorItem) => !deactivateUserObj?.deactivatedIdArray?.includes(visitorItem?.visitor?._id) ).
+ filter((visitorItem) => visitorItem?.visitor?._id!==deactivateUserObj?.selfDeactivate)
 const visitorChunkArray = (array, chunkSize) => {
     const visitorChunks = [];
     for (let i = 0; i < array?.length; i += chunkSize) {
@@ -127,6 +158,7 @@ const visitorChunkArray = (array, chunkSize) => {
   };
 
   const visitorChunkedData = visitorChunkArray(combineVisitorArray, 2);
+  console.log('combine visitor array',combineVisitorArray)
 return (
     <>
      <ScrollView>

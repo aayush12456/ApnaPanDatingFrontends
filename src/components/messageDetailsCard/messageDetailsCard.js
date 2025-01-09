@@ -17,8 +17,10 @@ import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
 import { moreChatActions } from "../../Redux/Slice/moreChatSlice/moreChatSlice";
 import { dotsOpenModalToggleActions } from "../../Redux/Slice/dotsOpenModalSlice/dotsOpenModalSlice";
+import { AlertNotificationRoot } from "react-native-alert-notification";
+import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
-const MessageDetailsCard = ({ messageDetails }) => {
+const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
   const [messageText, setMessageText] = useState('')
   const [loginId, setLoginId] = useState('')
@@ -29,6 +31,8 @@ const MessageDetailsCard = ({ messageDetails }) => {
   const [loginIdUserArray, setLoginIdUserArray] = useState([])
   const [showTypingResponse,setShowTypingResponse]=useState(false)
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
+  const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
+  const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
   const previousTextRef = useRef("");
   const windowHeight = Dimensions.get('window').height;
@@ -417,6 +421,15 @@ useEffect(() => {
     id:loginId,
     blockId:messageDetailProfile._id
     }
+    if(blockChatIdObj.id===deactivateUserObj.selfDeactivate){
+      setOpenDialog(true)
+      const obj={
+        type:'WARNING',
+        textBody:`You can't block ${messageDetails.firstName} profile untill you should activate yourself`
+      }
+      setNotifyDeactivateObj(obj)
+      return
+    }
     try {
       const response = await axios.post(`http://192.168.29.169:4000/user/addBlockChatIdUser/${blockChatIdObj.id}`,blockChatIdObj);
       console.log('response in block chat user',response?.data)
@@ -439,9 +452,14 @@ useEffect(() => {
    navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:loginObj.name} });
   
   }
+
+  const notificationHandler=()=>{
+    navigation.navigate('notification');
+  }
   return (
     <>
-      <View style={{ flex: 1 }}>
+    <AlertNotificationRoot>
+    <View style={{ flex: 1 }}>
         {/* Header Section */}
         <View
           style={{
@@ -530,7 +548,7 @@ useEffect(() => {
         </View>}
 
 
-        <View style={{ flex: 1, marginBottom: 100 }}>
+        <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==""?0:100}` }}>
           <ScrollView>
             {
               finalMessageArray.map((finalMessage, index) => {
@@ -601,7 +619,20 @@ useEffect(() => {
         </View>
 
         {/* Message Input Section */}
-        <View
+       {deactivateUserObj.selfDeactivate!==null && deactivateUserObj.selfDeactivate===loginId?
+       <View style={{
+        position: "absolute",
+        bottom: 0,
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
+        width: "100%",
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+      }}>
+       <Text>You can't message {messageDetails.firstName}  untill you should activate yourself</Text>
+       </View>
+       : <View
           style={{
             position: "absolute",
             bottom: 0,
@@ -645,8 +676,12 @@ useEffect(() => {
               }}
             />
           </Pressable>
-        </View>
+        </View>}
       </View>
+      {openDailog===true && <Notification dialog={notifyDeactivateObj}/>}
+    </AlertNotificationRoot>
+     
+      
     </>
   );
 };

@@ -5,12 +5,21 @@ import { FrontImages } from "../../utils/frontImages";
 import { Button } from "react-native-paper";
 import { useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
 import { hideToast } from "../../Redux/Slice/toastSlice/toastSlice";
 const FrontPage = ({navigation}) => {
   const dispatch=useDispatch()
   const { visible, type, title, textBody } = useSelector((state) => state.toastData);
   console.log('toast data',visible,type,title,textBody)
+  const lightColors = {
+    label: '#000000',
+    card: '#ffffff',
+    overlay: '#f1f1f1',
+    success: '#28a745',
+    danger: '#dc3545',
+    warning: '#ffc107',
+  };
+  
 useEffect(() => {
     if (visible) {
       Dialog.show({
@@ -28,7 +37,8 @@ useEffect(() => {
   }, [visible, dispatch, type, title, textBody]);
   return (
     <>
-      <View style={{ flexDirection: 'row', alignItems: 'center',marginTop:80 ,justifyContent:'center'}}>
+<AlertNotificationRoot colors={[lightColors]} >
+<View style={{ flexDirection: 'row', alignItems: 'center',marginTop:80 ,justifyContent:'center'}}>
         <Text style={{ fontWeight: 'bold', fontSize: 40 }}>Apna
           <View style={{ marginTop: 20 }}>
             <Image
@@ -92,6 +102,8 @@ useEffect(() => {
                     </Button>
         </View>
       </View>
+</AlertNotificationRoot>
+   
     </>
   );
 };

@@ -12,7 +12,7 @@ const ImageUpload = ({ imageUpload }) => {
   const [uploadedImages, setUploadedImages] = useState(uploadImages); // Track uploaded images to be shown
   const [imgFileType,setImgFileType]=useState([])
   const [fileUploadError,setFileUploadError]=useState('')
-  console.log('image upload is', imageUpload);
+  console.log('image upload is', imageUpload.videoUrl);
 
   const uploadImageData = async (index) => {
     try {
@@ -55,42 +55,10 @@ const ImageUpload = ({ imageUpload }) => {
       setFileUploadError('please upload images')
       return
     }
-    const imageSubmitData={
-      firstName:imageUpload.firstName,
-      email:imageUpload.email,
-      phone:imageUpload.phone,
-      password:imageUpload.password,
-      gender:imageUpload.gender,
-      DOB:imageUpload.date,
-      city:imageUpload.city,
-      aboutUser:imageUpload.AboutMe,
-      // images:imgFileType,
-      // videoUrl:imageUpload.videoUrl,
-      interest:imageUpload.interest,
-      education:imageUpload.education,
-      drinking:imageUpload.drinking,
-      smoking:imageUpload.smoking,
-      eating:imageUpload.eating,
-      profession:imageUpload.profession,
-      looking:imageUpload.looking,
-      relationship:imageUpload.relation,
-      zodiac:imageUpload.zodiac,
-      language:imageUpload.language
-    }
-    console.log('image submit data',imageSubmitData)
+    console.log('update images',imgFileType)
+
     const formData = new FormData();
-//     // imgFileType.forEach((imageFile) => {
-//     //   const localUri = imageFile.uri;
-//     //   const filename = localUri.split('/').pop();
-//     //   const match = /\.(\w+)$/.exec(filename);
-//     //   const type = match ? `image/${match[1]}` : `image`;
-  
-//     //   formData.append('images', JSON.stringify({
-//     //     uri: localUri,
-//     //     name: filename,
-//     //     type: type
-//     //   }))
-//     // });
+    
 
 
   formData.append('firstName', imageUpload.firstName);
@@ -101,8 +69,7 @@ const ImageUpload = ({ imageUpload }) => {
   formData.append('DOB', imageUpload.date);
   formData.append('city', imageUpload.city);
   formData.append('aboutUser', imageUpload.AboutMe);
-  // formData.append('videoUrl', imageUpload.videoUrl);
-  // formData.append('interest', imageUpload.interest);
+  formData.append('videoUrl', imageUpload.videoUrl);
   formData.append('interest', JSON.stringify(imageUpload.interest))
   formData.append('education', imageUpload.education);
   formData.append('drinking', imageUpload.drinking);
@@ -113,13 +80,19 @@ const ImageUpload = ({ imageUpload }) => {
   formData.append('relationship', imageUpload.relation);
   formData.append('zodiac', imageUpload.zodiac);
   // formData.append('language', imageUpload.language);
-  formData.append('language', JSON.stringify(imageUpload.language));
+  // formData.append('language', JSON.stringify(imageUpload.language));
+  // selectedImages.forEach((image, index) => {
+  //   formData.append("images", {
+  //     uri: image.uri,
+  //     name: `image_${index}.jpg`,
+  //     type: "image/jpeg",
+  //   });
+  // });
 // //     // console.log('image complete data',imageSubmitData.imageFileArray)
-//     console.log(' complete obj data',formData)
-    // dispatch(userRegisterAsync(formData))
+    console.log(' complete obj data',formData)
     try {
       // Make the API call directly using axios
-      const response = await axios.post('https://9441-2405-201-3014-a811-699d-a373-e212-d219.ngrok-free.app/user/signup',formData, {
+      const response = await axios.post('http://192.168.29.169:4000/user/signup',formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -130,13 +103,8 @@ const ImageUpload = ({ imageUpload }) => {
         console.log('Registration successful:', response.data);
       }
     } catch (error) {
-      if (error.response) {
-        console.log('Backend responded with error:', error.response.data); // Backend-specific error
-      } else if (error.request) {
-        console.log('No response from backend:', error.request); // No response received
-      } else {
         console.log('Error during request setup:', error.message); // Error during request setup
-      }
+      
     }
   }
   return (

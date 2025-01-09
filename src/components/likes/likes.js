@@ -14,6 +14,7 @@ const Likes = () => {
   const [likeMatchUser, setLikeMatchUser] = useState({});
   const [onlineLikeUserObj, setOnlineLikeUserObj] = useState({});
   const [blockUserObj,setBlockUserObj]=useState({})
+  const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const dispatch = useDispatch();
 
   const completeLoginObj = useSelector(
@@ -186,6 +187,34 @@ const Likes = () => {
     };
   }, [loginId]);  
 
+
+  useEffect(()=>{
+    const fetchDeactivateUser = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get deactivate user obj is', response?.data)
+          setDeactivateUserObj(response?.data)
+        }
+      } catch (error) {
+        console.error("Error fetching in chat id obj:", error);
+      }
+    };
+    fetchDeactivateUser();
+
+    socket.on("getDeactivateUser", (newUser) => {
+
+      setDeactivateUserObj(newUser)
+    });
+    return () => {
+      socket.off("getDeactivateUser");
+    };
+  },[loginId])
+  console.log('get deactivate user obj in likes',deactivateUserObj)
+
   const finalLikesArray =
     likesArray.length > 0
       ? likesArray.filter((finalLikes) => finalLikes._id !== loginId)
@@ -223,7 +252,9 @@ const Likes = () => {
       likeItem?.gender &&
       completeLoginObjData?.gender &&
       likeItem.gender.toLowerCase() !== completeLoginObjData.gender.toLowerCase()
-  ).filter((likeItem) => !blockUserIds?.includes(likeItem._id));
+  ).filter((likeItem) => !blockUserIds?.includes(likeItem._id)).
+  filter((likeItem) => !deactivateUserObj?.deactivatedIdArray?.includes(likeItem._id) ).
+  filter((likeItem) => likeItem._id!==deactivateUserObj?.selfDeactivate)
 
 
   const chunkArray = (array, chunkSize) => {

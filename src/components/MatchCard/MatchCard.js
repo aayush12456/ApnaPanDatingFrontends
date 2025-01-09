@@ -1,4 +1,4 @@
-import { Card, Button } from "react-native-paper";
+import { Card } from "react-native-paper";
 import {View,ScrollView,Image,StyleSheet,Dimensions,Text, Pressable} from 'react-native'
 import { useState,useEffect } from "react";
 import io from "socket.io-client";
@@ -18,13 +18,16 @@ import * as SecureStore from 'expo-secure-store';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { addMatchUserAsync } from "../../Redux/Slice/addMatchUserSlice/addMatchUserSlice";
 import axios from 'axios'
-import { addLikeSmsSenderAsync } from "../../Redux/Slice/addLikeSmsSlice/addLikeSmsSlice";
+import Notification from "../notification/notification";
+import { AlertNotificationRoot } from "react-native-alert-notification";
 const socket = io.connect("http://192.168.29.169:4000")
 const MatchCard=({matchObj})=>{
-  const [loginData, setLoginData] = useState(null);
   const [loginId,setLoginId]=useState('')
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [loginIdUserArray, setLoginIdUserArray] = useState([])
+  const [deactivateUserObj,setDeactivateUserObj]=useState({})
+  const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
+  const [openDialog,setOpenDialog]=useState(false)
     const navigation = useNavigation();
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
@@ -117,6 +120,32 @@ const MatchCard=({matchObj})=>{
       let currentYear = currentDate.getFullYear();
       const age = year ? currentYear - parseInt(year) : "";
 
+      useEffect(()=>{
+        const fetchDeactivateUser = async () => {
+          try {
+            if (loginId) {
+              const response = await axios.get(
+                `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              );
+              // setLikesArray(response?.data?.anotherMatchUser || []);
+              console.log('get deactivate user obj is', response?.data)
+              setDeactivateUserObj(response?.data)
+            }
+          } catch (error) {
+            console.error("Error fetching in chat id obj:", error);
+          }
+        };
+        fetchDeactivateUser();
+    
+        socket.on("getDeactivateUser", (newUser) => {
+    
+          setDeactivateUserObj(newUser)
+        });
+        return () => {
+          socket.off("getDeactivateUser");
+        };
+      },[loginId])
+     console.log('get deactivate user obj',deactivateUserObj)
       const upArrowClickHandler=()=>{
         console.log('another match data ardcae')
         navigation.navigate('AnotherMatchCardPage',{formData:matchObj})
@@ -138,15 +167,33 @@ const MatchCard=({matchObj})=>{
             id:loginId,
             userId:id
           }
+          if(addCrossObj.id===deactivateUserObj.selfDeactivate){
+            setOpenDialog(true)
+            const obj={
+              type:'WARNING',
+              textBody:`You can't skip ${matchObj.firstName} profile untill you should activate yourself`
+            }
+            setNotifyDeactivateObj(obj) 
+           
+            return
+          }
        dispatch(addCrossMatchAsync(addCrossObj))
        dispatch(passDataSliceActions.passDatas(id))
 
         }
-
         const addLikeMatchHandler=async(id)=>{
           const addLikeObj={
             id:loginId,
             matchLikeId:id
+          }
+          if(addLikeObj.id===deactivateUserObj.selfDeactivate){
+            setOpenDialog(true)
+            const obj={
+              type:'WARNING',
+              textBody:`You can't like ${matchObj.firstName} profile untill you should activate yourself`
+            }
+            setNotifyDeactivateObj(obj)
+            return
           }
   //  dispatch(addMatchUserAsync(addLikeObj))
        dispatch(passDataSliceActions.passDatas(id))
@@ -173,6 +220,7 @@ const MatchCard=({matchObj})=>{
       // </View>
 return (
     <>
+    <AlertNotificationRoot>
     <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white'}}>
     <Card.Content>
       {/* <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:30,zIndex:10,left:30}} >
@@ -248,6 +296,9 @@ return (
     </Card.Content>
     </Card>
     <PlayVideo/>
+ {openDialog===true && <Notification dialog={notifyDeactivateObj}  />}
+    </AlertNotificationRoot>
+    
     </>
 )
 }

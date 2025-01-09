@@ -1,5 +1,5 @@
 import { Text, Card ,Button} from "react-native-paper";
-import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable} from "react-native";
+import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable, Alert} from "react-native";
 import { useState,useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import io from "socket.io-client";
@@ -15,8 +15,10 @@ import { anotherPassDataSliceActions } from "../../../Redux/Slice/anotherPassDat
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store';
 import { addOnlineSkipUserAsync } from "../../../Redux/Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice";
+import Notification from "../../notification/notification";
+import { AlertNotificationRoot } from "react-native-alert-notification";
 const socket = io.connect("http://192.168.29.169:4000")
-const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
+const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj }) => {
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
@@ -29,6 +31,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
   const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
   const [selfLikeMatch,setSelfLikeMatch]=useState(true)
   const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
+  const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
+  const [openDailog,setOpenDialog]=useState(false)
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
   const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)//ye otp loginToken
 
@@ -128,6 +132,15 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
         id:loginId,
         likeSkipUserId:likeContent?._id
       }
+      if(likeSkipUserObj.id===deactivateUserObj.selfDeactivate){
+        setOpenDialog(true)
+        const obj={
+          type:'WARNING',
+          textBody:`You can't skip ${likeContent.firstName} profile untill you should activate yourself`
+        }
+        setNotifyDeactivateObj(obj)
+        return
+      }
       try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addCommonVisitorLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
         console.log('response in like skip user is',response?.data?.likeSkip)
@@ -150,6 +163,15 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
       const visitorSkipUserObj={
         id:loginId,
         likeSkipUserId:visitorContent?._id
+      }
+      if(visitorSkipUserObj.id===deactivateUserObj.selfDeactivate){
+        setOpenDialog(true)
+        const obj={
+          type:'WARNING',
+          textBody:`You can't skip ${visitorContent.firstName} profile untill you should activate yourself`
+        }
+        setNotifyDeactivateObj(obj)
+        return
       }
       try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addCommonVisitorLikeSkipUser/${visitorSkipUserObj.id}`, visitorSkipUserObj);
@@ -213,6 +235,15 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
         id:loginId,
         likeMatchId:likeUser._id
       }
+      if(likeMatchUserObj.id===deactivateUserObj.selfDeactivate){
+        setOpenDialog(true)
+        const obj={
+          type:'WARNING',
+          textBody:`You can't like ${likeUser.firstName} profile untill you should activate yourself`
+        }
+        setNotifyDeactivateObj(obj)
+        return
+      }
       try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
         console.log('response in like match user is',response?.data)
@@ -265,6 +296,15 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
       id:loginId,
       visitorPlusLikeUserId:visitorContent._id
      }
+     if(visitorLikeUserObj.id===deactivateUserObj.selfDeactivate){
+      setOpenDialog(true)
+      const obj={
+        type:'WARNING',
+        textBody:`You can't like ${visitorContent.firstName} profile untill you should activate yourself`
+      }
+      setNotifyDeactivateObj(obj)
+      return
+    }
      const visitorLikeCountObj={
       id:loginId,
       matchLikeId:visitorContent._id
@@ -427,7 +467,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
        },[visitorLikeUserObj?.visitorLikes,visitorContent])
   return (
     <>
-      <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
+     <AlertNotificationRoot>
+     <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
         <Card.Content style={{height:'100%'}}>
         <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
           {/* <TouchableOpacity  onPress={backHandler} >
@@ -611,6 +652,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent }) => {
         </Card.Content>
       </Card>
       <PlayVideo/>
+      {openDailog===true && <Notification dialog={notifyDeactivateObj}/>}
+     </AlertNotificationRoot>
     </>
   );
 };

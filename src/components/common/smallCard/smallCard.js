@@ -28,16 +28,40 @@ const SmallCard = ({ likesData,visitorData }) => {
     const year = dobBreak?.[2];
     const currentYear = new Date().getFullYear();
     const age = year ? currentYear - parseInt(year) : ""; // Ensure safe calculation
-    
-    const imagePressHandler=(likeData,visitorData)=>{
-        console.log('image is pressed')
-        if(likeData){
-          navigation.navigate('LikePageContent', { formData:likeData })
-        }
-        else if(visitorData){
-          navigation.navigate('VisitorPageContent', { formData:visitorData?.visitor })
-        }
-    }
+    const imagePressHandler = async (likeData, visitorData) => {
+      console.log('image is pressed');
+  
+      if (likeData) {
+          navigation.navigate('LikePageContent', { formData: likeData });
+      } else if (visitorData) {
+          const deleteVisitorNotifyObj = {
+              id: loginId,
+              visitorOnlineId: visitorData?.visitor?._id,
+          };
+  
+          try {
+              // Make the API call
+              const deleteVisitorNotifyIdObj = await axios.post(
+                  `http://192.168.29.169:4000/user/deleteVisitorNotify/${deleteVisitorNotifyObj.id}`,
+                  deleteVisitorNotifyObj
+              );
+  
+              console.log('Response from deleteVisitorNotify API:', deleteVisitorNotifyIdObj?.data?.userObj);
+  
+              // Emit socket event with the response data
+              socket.emit('deleteVisitorNotify', deleteVisitorNotifyIdObj?.data?.userObj);
+  
+          } catch (error) {
+              console.error('Error calling deleteVisitorNotify API:', error);
+          }
+  
+          // Navigate to the VisitorPageContent
+          navigation.navigate('VisitorPageContent', { formData: visitorData?.visitor });
+      } else {
+          console.warn('Neither likeData nor visitorData was provided');
+      }
+  };
+  
     
     useEffect(()=>{
         if(loginResponse || loginOtpResponse){

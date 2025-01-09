@@ -37,7 +37,7 @@ const ForgotPassword=({number,allPhoneNumberArray})=>{
             setCaptchaError("")
             const phoneObj = {
                 phone: phoneNumber,
-                reset: 'login data',
+                reset: 'Reset Password',
             };
             dispatch(loginWithOtpAsync(phoneObj));
             setPhoneNumber('');
