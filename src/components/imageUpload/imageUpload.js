@@ -3,15 +3,20 @@ import { Button } from "react-native-paper";
 import { uploadImages } from "../../utils/uploadImageData";
 import bulb from '../../../assets/signUpFormIcon/bulb.png';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { userRegisterAsync } from "../../Redux/Slice/registerSlice/registerSlice";
+import { useState,useEffect } from "react";
+import { useDispatch,useSelector } from "react-redux";
 import axios from 'axios';
+import { userRegisterAsync } from "../../Redux/Slice/registerSlice/registerSlice";
+import { useNavigation } from '@react-navigation/native';
 const ImageUpload = ({ imageUpload }) => {
+  const navigation = useNavigation();
   const dispatch=useDispatch()
+  const registerResponse=useSelector((state)=>state.registerData)
+  console.log('register response',registerResponse)
   const [uploadedImages, setUploadedImages] = useState(uploadImages); // Track uploaded images to be shown
   const [imgFileType,setImgFileType]=useState([])
   const [fileUploadError,setFileUploadError]=useState('')
+  const [positiveResponse,setPostiveResponse]=useState('')
   console.log('image upload is', imageUpload.videoUrl);
 
   const uploadImageData = async (index) => {
@@ -26,10 +31,12 @@ const ImageUpload = ({ imageUpload }) => {
 
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
       });
+      console.log('result images',result)
       setImgFileType((prevImageFile)=>[...prevImageFile,result.assets[0]])
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const imgURI = result.assets[0].uri;
@@ -58,9 +65,6 @@ const ImageUpload = ({ imageUpload }) => {
     console.log('update images',imgFileType)
 
     const formData = new FormData();
-    
-
-
   formData.append('firstName', imageUpload.firstName);
   formData.append('email', imageUpload.email);
   formData.append('phone', imageUpload.phone);
@@ -69,7 +73,7 @@ const ImageUpload = ({ imageUpload }) => {
   formData.append('DOB', imageUpload.date);
   formData.append('city', imageUpload.city);
   formData.append('aboutUser', imageUpload.AboutMe);
-  formData.append('videoUrl', imageUpload.videoUrl);
+  // formData.append('videoUrl', {uri:imageUpload.videoUrl.uri,name:imageUpload.videoUrl.fileName,type:imageUpload.videoUrl.type});
   formData.append('interest', JSON.stringify(imageUpload.interest))
   formData.append('education', imageUpload.education);
   formData.append('drinking', imageUpload.drinking);
@@ -79,34 +83,47 @@ const ImageUpload = ({ imageUpload }) => {
   formData.append('looking', imageUpload.looking);
   formData.append('relationship', imageUpload.relation);
   formData.append('zodiac', imageUpload.zodiac);
-  // formData.append('language', imageUpload.language);
-  // formData.append('language', JSON.stringify(imageUpload.language));
-  // selectedImages.forEach((image, index) => {
-  //   formData.append("images", {
-  //     uri: image.uri,
-  //     name: `image_${index}.jpg`,
-  //     type: "image/jpeg",
-  //   });
-  // });
-// //     // console.log('image complete data',imageSubmitData.imageFileArray)
-    console.log(' complete obj data',formData)
-    try {
-      // Make the API call directly using axios
-      const response = await axios.post('http://192.168.29.169:4000/user/signup',formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      if (response.status === 200) {
-        // Handle success, e.g., show a success message or redirect the user
-        console.log('Registration successful:', response.data);
-      }
-    } catch (error) {
-        console.log('Error during request setup:', error.message); // Error during request setup
-      
-    }
+  imgFileType.forEach((image, index) => {
+    formData.append(`images`, {
+      uri: image.uri,
+      name: `image_${index}.jpg`, // Provide a unique name for each image
+      type: "image/jpeg", // Ensure correct MIME type
+    });
+  });
+  if (imageUpload.videoUrl?.uri) {
+    formData.append("videoUrl", {
+      uri: imageUpload.videoUrl.uri,
+      name: "video.mp4", // Default name if not provided
+      type:  "video/mp4", // Ensure correct MIME type
+    });
+  } else {
+    console.log("No video URL provided");
   }
+  console.log(' complete obj data',formData)
+  dispatch(userRegisterAsync(formData))
+    // try {
+    //   // Make the API call directly using axios
+    //   const response = await axios.post('http://192.168.29.169:4000/user/signup',formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //     },
+    //   });
+  
+    //   console.log('Registration successful:', response.data);
+    //  if(response.token){
+    //   navigation.navigate('frontPage')
+    //  }
+    // } catch (error) {
+    //     console.log('Error during request setup:', error.message); // Error during request setup
+      
+    // }
+  }
+  useEffect(() => {
+    if(registerResponse){
+      navigation.navigate('FrontPage')
+    }
+ 
+  }, [registerResponse,navigation]);
   return (
     <>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
@@ -151,7 +168,6 @@ const ImageUpload = ({ imageUpload }) => {
            SUBMIT
                     </Button>
       </View>
-    
     </>
   );
 };
