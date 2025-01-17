@@ -3,20 +3,20 @@ import { Button } from "react-native-paper";
 import { uploadImages } from "../../utils/uploadImageData";
 import bulb from '../../../assets/signUpFormIcon/bulb.png';
 import * as ImagePicker from 'expo-image-picker';
-import { useState,useEffect } from "react";
-import { useDispatch,useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import axios from 'axios';
 import { userRegisterAsync } from "../../Redux/Slice/registerSlice/registerSlice";
 import { useNavigation } from '@react-navigation/native';
+import { ALERT_TYPE, Dialog, AlertNotificationRoot } from 'react-native-alert-notification';
+import { showToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
+
 const ImageUpload = ({ imageUpload }) => {
   const navigation = useNavigation();
   const dispatch=useDispatch()
-  const registerResponse=useSelector((state)=>state.registerData)
-  console.log('register response',registerResponse)
   const [uploadedImages, setUploadedImages] = useState(uploadImages); // Track uploaded images to be shown
   const [imgFileType,setImgFileType]=useState([])
   const [fileUploadError,setFileUploadError]=useState('')
-  const [positiveResponse,setPostiveResponse]=useState('')
   console.log('image upload is', imageUpload.videoUrl);
 
   const uploadImageData = async (index) => {
@@ -57,76 +57,164 @@ const ImageUpload = ({ imageUpload }) => {
 
   console.log('Uploaded images:', uploadedImages);
 
-  const imageSubmitHandler=async()=>{
-    if(imgFileType.length===0){
-      setFileUploadError('please upload images')
-      return
-    }
-    console.log('update images',imgFileType)
-
-    const formData = new FormData();
-  formData.append('firstName', imageUpload.firstName);
-  formData.append('email', imageUpload.email);
-  formData.append('phone', imageUpload.phone);
-  formData.append('password', imageUpload.password);
-  formData.append('gender', imageUpload.gender);
-  formData.append('DOB', imageUpload.date);
-  formData.append('city', imageUpload.city);
-  formData.append('aboutUser', imageUpload.AboutMe);
-  // formData.append('videoUrl', {uri:imageUpload.videoUrl.uri,name:imageUpload.videoUrl.fileName,type:imageUpload.videoUrl.type});
-  formData.append('interest', JSON.stringify(imageUpload.interest))
-  formData.append('education', imageUpload.education);
-  formData.append('drinking', imageUpload.drinking);
-  formData.append('smoking', imageUpload.smoking);
-  formData.append('eating', imageUpload.eating);
-  formData.append('profession', imageUpload.profession);
-  formData.append('looking', imageUpload.looking);
-  formData.append('relationship', imageUpload.relation);
-  formData.append('zodiac', imageUpload.zodiac);
-  imgFileType.forEach((image, index) => {
-    formData.append(`images`, {
-      uri: image.uri,
-      name: `image_${index}.jpg`, // Provide a unique name for each image
-      type: "image/jpeg", // Ensure correct MIME type
-    });
-  });
-  if (imageUpload.videoUrl?.uri) {
-    formData.append("videoUrl", {
-      uri: imageUpload.videoUrl.uri,
-      name: "video.mp4", // Default name if not provided
-      type:  "video/mp4", // Ensure correct MIME type
-    });
-  } else {
-    console.log("No video URL provided");
-  }
-  console.log(' complete obj data',formData)
-  dispatch(userRegisterAsync(formData))
-    // try {
-    //   // Make the API call directly using axios
-    //   const response = await axios.post('http://192.168.29.169:4000/user/signup',formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   });
+  const compareFaces = async (image1, image2) => { // ye face comparison ka function hai
+    const apiKey = 'sUQMhJSpjkktCUQrm09X2prq2HmdmoYI'; // Replace with actual Face++ API Key
+    const apiSecret = 'kIzroGEgHys3_c8zbCPO7A3gG_rNbrUh'; // Replace with actual Face++ API Secret
+    const apiEndpoint = 'https://api-us.faceplusplus.com/facepp/v3/compare';
   
-    //   console.log('Registration successful:', response.data);
-    //  if(response.token){
-    //   navigation.navigate('frontPage')
-    //  }
-    // } catch (error) {
-    //     console.log('Error during request setup:', error.message); // Error during request setup
-      
-    // }
-  }
-  useEffect(() => {
-    if(registerResponse){
-      navigation.navigate('FrontPage')
+    const formData = new FormData();
+    formData.append('api_key', apiKey);
+    formData.append('api_secret', apiSecret);
+    formData.append('image_file1', {
+      uri: image1.uri,
+      type: 'image/jpeg',
+      name: 'image1.jpg',
+    });
+    formData.append('image_file2', {
+      uri: image2.uri,
+      type: 'image/jpeg',
+      name: 'image2.jpg',
+    });
+  
+    try {
+      const response = await axios.post(apiEndpoint, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error comparing faces:', error);
+      return null;
     }
- 
-  }, [registerResponse,navigation]);
+  };
+  
+  // const imageSubmitHandler=async()=>{
+  //   if(imgFileType.length===0){
+  //     setFileUploadError('please upload images')
+  //     return
+  //   }
+  //   console.log('update images',imgFileType)
+
+  //   const formData = new FormData();
+  // formData.append('firstName', imageUpload.firstName);
+  // formData.append('email', imageUpload.email);
+  // formData.append('phone', imageUpload.phone);
+  // formData.append('password', imageUpload.password);
+  // formData.append('gender', imageUpload.gender);
+  // formData.append('DOB', imageUpload.date);
+  // formData.append('city', imageUpload.city);
+  // formData.append('aboutUser', imageUpload.AboutMe);
+  // // formData.append('videoUrl', {uri:imageUpload.videoUrl.uri,name:imageUpload.videoUrl.fileName,type:imageUpload.videoUrl.type});
+  // formData.append('interest', JSON.stringify(imageUpload.interest))
+  // formData.append('education', imageUpload.education);
+  // formData.append('drinking', imageUpload.drinking);
+  // formData.append('smoking', imageUpload.smoking);
+  // formData.append('eating', imageUpload.eating);
+  // formData.append('profession', imageUpload.profession);
+  // formData.append('looking', imageUpload.looking);
+  // formData.append('relationship', imageUpload.relation);
+  // formData.append('zodiac', imageUpload.zodiac);
+  // formData.append('songId', imageUpload.selectedSong);
+  // imgFileType.forEach((image, index) => {
+  //   formData.append(images, {
+  //     uri: image.uri,
+  //     name: image_${index}.jpg, // Provide a unique name for each image
+  //     type: "image/jpeg", // Ensure correct MIME type
+  //   });
+  // });
+  // if (imageUpload.videoUrl?.uri) {
+  //   formData.append("videoUrl", {
+  //     uri: imageUpload.videoUrl.uri,
+  //     name: "video.mp4", // Default name if not provided
+  //     type:  "video/mp4", // Ensure correct MIME type
+  //   });
+  // } else {
+  //   console.log("No video URL provided");
+  // }
+  // console.log(' complete obj data',formData)
+  // dispatch(userRegisterAsync(formData))
+  
+  // }
+  const imageSubmitHandler = async () => {
+    if (imgFileType.length === 0) {
+      setFileUploadError('Please upload images');
+      return;
+    }
+  
+    // Check if at least 2 images are uploaded for comparison
+    if (imgFileType.length < 2) {
+      setFileUploadError('Please upload at least two images for comparison');
+      return;
+    }
+  
+    console.log('Uploaded images:', imgFileType);
+  
+    // Call Face++ API for comparison
+    const faceComparisonResult = await compareFaces(imgFileType[0], imgFileType[1]);
+    if (faceComparisonResult && faceComparisonResult.confidence >= 70) {
+      console.log('Face comparison passed with confidence:', faceComparisonResult.confidence);
+  
+      // Create FormData and proceed with the registration
+      const formData = new FormData();
+      formData.append('firstName', imageUpload.firstName);
+      formData.append('email', imageUpload.email);
+      formData.append('phone', imageUpload.phone);
+      formData.append('password', imageUpload.password);
+      formData.append('gender', imageUpload.gender);
+      formData.append('DOB', imageUpload.date);
+      formData.append('city', imageUpload.city);
+      formData.append('aboutUser', imageUpload.AboutMe);
+      formData.append('interest', JSON.stringify(imageUpload.interest));
+      formData.append('education', imageUpload.education);
+      formData.append('drinking', imageUpload.drinking);
+      formData.append('smoking', imageUpload.smoking);
+      formData.append('eating', imageUpload.eating);
+      formData.append('profession', imageUpload.profession);
+      formData.append('looking', imageUpload.looking);
+      formData.append('relationship', imageUpload.relation);
+      formData.append('zodiac', imageUpload.zodiac);
+      formData.append('songId', imageUpload.selectedSong);
+  
+      imgFileType.forEach((image, index) => {
+        formData.append(`images`, {
+          uri: image.uri,
+          name: `image_${index}.jpg`,
+          type: 'image/jpeg',
+        });
+      });
+  
+      if (imageUpload.videoUrl?.uri) {
+        formData.append('videoUrl', {
+          uri: imageUpload.videoUrl.uri,
+          name: 'video.mp4',
+          type: 'video/mp4',
+        });
+      }
+  
+      console.log('Complete FormData:', formData);
+      dispatch(userRegisterAsync(formData));
+      dispatch(
+        showToasts({
+          types: 'SUCCESS',
+          titles: 'Thank You!',
+          textBodys: 'You have successfully register on ApnaPan Please login to check ',
+        })
+      );
+      navigation.navigate('FrontPage')
+    } else {
+      Dialog.show({
+        type: ALERT_TYPE.WARNING,
+        title: 'Warning',
+        textBody: 'Your capture image and upload image does not same make sure both images are same especially in case of face (both the capture image and upload image have same face)',
+        button: 'close',
+      })
+      // setFileUploadError('Face comparison failed. Please upload valid images.');
+    }
+  };
+  
   return (
     <>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
+    <AlertNotificationRoot>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
         <Text style={{ fontWeight: 'bold', fontSize: 25 }}>Upload Your Photos</Text>
       </View>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginLeft: 12 }}>
@@ -168,6 +256,9 @@ const ImageUpload = ({ imageUpload }) => {
            SUBMIT
                     </Button>
       </View>
+    </AlertNotificationRoot>
+      
+      
     </>
   );
 };

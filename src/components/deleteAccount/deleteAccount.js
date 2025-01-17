@@ -1,7 +1,27 @@
 import deleteIcon from '../../../assets/AllIcons/deletePerson.png';
 import { Button, Text } from "react-native-paper"
 import { View, Image } from 'react-native'
-const DeleteAccount=()=>{
+import {useDispatch,useSelector} from 'react-redux'
+import { deleteProfileUserAsync } from '../../Redux/Slice/deleteProfileUserSlice/deleteProfileUserSlice';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
+import * as SecureStore from 'expo-secure-store';
+const DeleteAccount=({loginId})=>{
+  const dispatch=useDispatch()
+  const navigation = useNavigation();
+  const deleteProfileResponse=useSelector((state)=>state.deleteProfileData.deleteProfileUserObj.msg)
+  console.log('delete profile user',deleteProfileResponse)
+  const deleteAccountHandler=async()=>{
+dispatch(deleteProfileUserAsync(loginId))
+await SecureStore.deleteItemAsync('loginObj')
+await SecureStore.deleteItemAsync('loginToken')
+
+  }
+  useEffect(() => {
+    if (deleteProfileResponse === "User deleted successfully") {
+      navigation.navigate("FrontPage"); // Navigate to 'frontPage'
+    }
+  }, [deleteProfileResponse, navigation]);
 return (
     <>
     <View>
@@ -21,6 +41,7 @@ return (
                          borderRadius: 6,
                       }}
                       buttonColor="#5394e4"
+                      onPress={deleteAccountHandler}
                     >
                    Delete Account
                     </Button>

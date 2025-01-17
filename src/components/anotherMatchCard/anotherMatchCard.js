@@ -1,13 +1,20 @@
 import { Card, Button } from "react-native-paper";
-import {View,Text,Image,Pressable,ScrollView,Dimensions,StyleSheet} from 'react-native'
+import {View,Text,Image,Pressable,ScrollView,Dimensions,StyleSheet,TouchableOpacity} from 'react-native'
 import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import downArrow from '../../../assets/matchIcons/downArrow.png'
 import like from '../../../assets/matchIcons/rightTiks.png'
 import dislike from '../../../assets/matchIcons/crossTik.png'
-const AnotherMatchCard=({anotherMatch})=>{
+import play from '../../../assets/myProfileIcons/play.png'
+import pause from '../../../assets/myProfileIcons/pause.png'
+import { Audio } from 'expo-av';
+const AnotherMatchCard=({anotherMatch,songs})=>{
+  console.log('songs is',songs)
     const navigation = useNavigation();
     const [active, setActive] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentSongUrl, setCurrentSongUrl] = useState(null);
+    const [sound, setSound] = useState(null);
     const getProfile = () =>anotherMatch
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");
@@ -37,6 +44,38 @@ const AnotherMatchCard=({anotherMatch})=>{
   const downArrowHandler=()=>{
 navigation.navigate('Matches')
   }
+  const playSongHandler = async (songUrl) => {
+    try {
+        if (sound && currentSongUrl === songUrl) {
+            if (isPlaying) {
+                // Pause the current song
+                await sound.pauseAsync();
+                setIsPlaying(false);
+            } else {
+                // Resume playing the song from where it was paused
+                await sound.playAsync();
+                setIsPlaying(true);
+            }
+            return;
+        }
+
+        // Stop and unload the previous sound if a different song is clicked
+        if (sound) {
+            await sound.stopAsync();
+            await sound.unloadAsync();
+        }
+
+        // Load and play the new song
+        const { sound: newSound } = await Audio.Sound.createAsync({ uri: songUrl });
+        setSound(newSound);
+        setCurrentSongUrl(songUrl);
+
+        await newSound.playAsync();
+        setIsPlaying(true);
+    } catch (error) {
+        console.error("Error playing sound:", error);
+    }
+};
 return (
     <>
     <Card style={{ marginLeft: 8, marginRight: 8,marginTop:45,marginBottom:10, backgroundColor: 'white' }}>
@@ -138,6 +177,17 @@ return (
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
         <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.eating}</Text>
       </View>
+
+    {anotherMatch.songId!=='none' || !anotherMatch.songId? <View style={{paddingLeft:10,paddingTop:18}}>
+      <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
+        <View style={{flexDirection:'row',marginTop:8,gap:8}}>
+          <Image source={{uri:songs &&songs.songImage}} style={{width:50,height:50,borderRadius:25}}/>
+          <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black',paddingTop:6}}>{songs && songs.songName}</Text>
+          <Pressable  onPress={() => playSongHandler(songs.songUrl)}> 
+          <Image  source={isPlaying && currentSongUrl === songs.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20 }}/>
+          </Pressable>
+        </View>
+      </View>:null}
     </ScrollView>
   
     </Card.Content>

@@ -72,7 +72,7 @@ const MatchCard=({matchObj})=>{
           setLoginIdUserArray(response?.data?.loginIdUserArray)
         }
       } catch (error) {
-        console.error("Error fetching in chat id obj:", error);
+        console.error("Error fetching in login id obj:", error);
       }
     };
     fetchAllLoginIdUser();
@@ -132,7 +132,7 @@ const MatchCard=({matchObj})=>{
               setDeactivateUserObj(response?.data)
             }
           } catch (error) {
-            console.error("Error fetching in chat id obj:", error);
+            console.error("Error fetching in deactivate user id obj:", error);
           }
         };
         fetchDeactivateUser();

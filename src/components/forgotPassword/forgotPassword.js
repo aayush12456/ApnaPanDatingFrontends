@@ -22,7 +22,7 @@ const ForgotPassword=({number,allPhoneNumberArray})=>{
         if(!phoneNumber.trim()){
             setError("Please enter your phone number");
         }
-    if(!allPhoneNumberArray.includes(phoneNumber.trim())){
+    if(!allPhoneNumberArray?.includes(phoneNumber?.trim())){
             setError("Phone number does not exist");
         }
      if(!captchaError.trim()){

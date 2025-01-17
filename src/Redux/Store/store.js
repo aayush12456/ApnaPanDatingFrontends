@@ -28,6 +28,11 @@ import loginWithOtpSlice from "../Slice/loginWithOtpSlice/loginWithOtpSlice"
 import getAllPhoneNumberSlice from "../Slice/getAllPhoneNumberSlice/getAllPhoneNumberSlice"
 import finalLoginWithOtpSlice from "../Slice/finalLoginWithOtpSlice/finalLoginWithOtpSlice"
 import forgotUpdatePasswordUserSlice from "../Slice/forgotUpdatePasswordUserSlice/forgotUpdatePasswordUserSlice"
+import getBollywoodSongSlice from "../Slice/getBollyWoodSongSlice/getBollywoodSongSlice"
+import addSelectedSongSlice from "../Slice/addSelectedSongSlice/addSelectedSongSlice"
+import addNoneSongSlice from "../Slice/addNoneSongSlice/addNoneSongSlice"
+import changePasswordToastSlice from "../Slice/changePasswordToastSlice/changePasswordToastSlice"
+import deleteAccountToastSlice from "../Slice/deleteAccountToastSlice/deleteAccountToastSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -59,6 +64,10 @@ const store=configureStore({
         finalLoginWithOtpData:finalLoginWithOtpSlice,
         getAllPhoneNumber:getAllPhoneNumberSlice,
         forgotPasswordUpdateData:forgotUpdatePasswordUserSlice,
+        getBollyWoodSong:getBollywoodSongSlice,
+        addSong:addSelectedSongSlice,
+        addNoneSong:addNoneSongSlice,
+        toasts:changePasswordToastSlice,
     }
 })
 export default store

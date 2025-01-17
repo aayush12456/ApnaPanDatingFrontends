@@ -57,6 +57,8 @@ import ResetPasswordPage from './src/Pages/resetPasswordPage/resetPasswordPage';
 import ExpertChatPage from './src/Pages/expertChatPage/expertChatPage';
 import Notification from './src/components/notification/notification';
 import axios from 'axios'
+import EditSongsPage from './src/Pages/editSongsPage/editSongsPage';
+import CaptureImagePage from './src/Pages/captureImagePage/captureImagePage';
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
 function AppContent() {
@@ -355,6 +357,11 @@ useEffect(() => {
           component={VideoUploadPage}
           options={{ headerShown: false }}
         />
+           <Stack.Screen
+          name="CaptureImagePage"
+          component={CaptureImagePage}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="ImageUploadPage"
           component={ImageUploadPage}
@@ -453,6 +460,11 @@ useEffect(() => {
         <Stack.Screen
           name="EditInterestPage"
           component={EditInterestPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="EditSongsPage"
+          component={EditSongsPage}
           options={{ headerShown: false }}
         />
         <Stack.Screen

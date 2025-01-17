@@ -37,7 +37,7 @@ export const userRegisterAsync = createAsyncThunk(
           videoUrl:response.data.user.videoUrl
         }
         // sessionStorage.setItem('signupObject',JSON.stringify(personalSignUpData))
-      return Responedata;
+      return Responedata
       
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -48,19 +48,19 @@ export const userRegisterAsync = createAsyncThunk(
 const userRegisterSlice = createSlice({
   name: 'userRegister',
   initialState: {
-    registerData: {}, // Initialize responseData in the state
+    registerDataObj: {}, // Initialize responseData in the state
 
 
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(userRegisterAsync.fulfilled, (state, action) => {
-      state.registerData = action.payload; // Update responseData in the state after successful login
-      // console.log(state.registerData)
+      state.registerDataObj = action.payload; // Update responseData in the state after successful login
+      console.log('register data in slice',state.registerDataObj)
     });
     // Additional extra reducers if needed
     builder.addCase(userRegisterAsync.rejected, (state, action) => {
-      state.responseData = action.payload; // Update responseData even for rejected login attempt
+      state.registerDataObj = action.payload; // Update responseData even for rejected login attempt
     });
   },
 });

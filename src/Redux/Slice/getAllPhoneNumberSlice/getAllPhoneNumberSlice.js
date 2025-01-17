@@ -18,7 +18,7 @@ export const getAllPhoneNumbersData = createAsyncThunk(
 const getAllPhoneNumberSlice = createSlice({
   name: 'getMatches',
   initialState: {
-    getAllPhoneNumbersArray:[],
+    getAllPhoneNumbersObj:{},
     isLoading: false,
     error: null,
   },
@@ -31,7 +31,7 @@ const getAllPhoneNumberSlice = createSlice({
     builder.addCase(getAllPhoneNumbersData.fulfilled, (state, action) => {
       
       state.isLoading = false;
-      state.getAllPhoneNumbersArray = action.payload;
+      state.getAllPhoneNumbersObj = action.payload;
       // console.log('matches data', state.getUserArray)
     });
     builder.addCase(getAllPhoneNumbersData.rejected, (state, action) => {

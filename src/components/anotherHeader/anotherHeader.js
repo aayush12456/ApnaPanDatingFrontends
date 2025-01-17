@@ -39,6 +39,9 @@ const AnotherHeader = ({ editObj,navigation }) => {
         else if(name==='Select Zodiac Sign'){
             navigation.navigate('EditProfilePage')
         }
+        else if(name==='Select Songs'){
+            navigation.navigate('EditProfilePage')
+        }
         else if(name==='About Me'){
             navigation.navigate('EditProfilePage')
         }

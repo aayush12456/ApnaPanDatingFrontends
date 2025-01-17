@@ -15,8 +15,11 @@ import { anotherPassDataSliceActions } from "../../../Redux/Slice/anotherPassDat
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store';
 import { addOnlineSkipUserAsync } from "../../../Redux/Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice";
+import { getBollywoodSongAsync } from "../../../Redux/Slice/getBollyWoodSongSlice/getBollywoodSongSlice";
 import Notification from "../../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
+import pause from '../../../../assets/myProfileIcons/pause.png'
+import { Audio } from 'expo-av';
 const socket = io.connect("http://192.168.29.169:4000")
 const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj }) => {
   const dispatch = useDispatch()
@@ -33,9 +36,19 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
   const [openDailog,setOpenDialog]=useState(false)
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSongUrl, setCurrentSongUrl] = useState(null);
+  const [sound, setSound] = useState(null);
+  const [songObj,setSongObj]=useState(null)
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
   const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)//ye otp loginToken
-
+  const completeLoginObj = useSelector(
+    (state) => state.loginData.loginData.completeLoginData
+  );
+  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  
+  const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+  const getAllSongsSelector=useSelector((state)=>state?.getBollyWoodSong?.getBollywoodSongUserObj?.uploadSongsData)
   const width = Dimensions.get('window').width - 50;
   const height = width * 1.2;
 
@@ -465,6 +478,57 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         setSelfVisitorLikeMatch(false)
       }
        },[visitorLikeUserObj?.visitorLikes,visitorContent])
+
+       useEffect(()=>{
+        if(completeLoginObjData._id){
+            dispatch(getBollywoodSongAsync(completeLoginObjData._id))
+        }
+    
+          },[dispatch,completeLoginObjData._id])
+          const finalContent=newAndOnlineContent || likeContent || visitorContent
+          console.log('get all songs',getAllSongsSelector)
+          console.log('finalContent',finalContent.songId)
+          useEffect(() => {
+            if (finalContent && getAllSongsSelector?.length > 0) {
+              const foundSong = getAllSongsSelector.find(
+                (song) => song?._id === finalContent?.songId
+              );
+              setSongObj(foundSong || null);
+            }
+          }, [getAllSongsSelector, finalContent]);
+          console.log('get song large card',songObj)
+          const playSongHandler = async (songUrl) => {
+            try {
+                if (sound && currentSongUrl === songUrl) {
+                    if (isPlaying) {
+                        // Pause the current song
+                        await sound.pauseAsync();
+                        setIsPlaying(false);
+                    } else {
+                        // Resume playing the song from where it was paused
+                        await sound.playAsync();
+                        setIsPlaying(true);
+                    }
+                    return;
+                }
+        
+                // Stop and unload the previous sound if a different song is clicked
+                if (sound) {
+                    await sound.stopAsync();
+                    await sound.unloadAsync();
+                }
+        
+                // Load and play the new song
+                const { sound: newSound } = await Audio.Sound.createAsync({ uri: songUrl });
+                setSound(newSound);
+                setCurrentSongUrl(songUrl);
+        
+                await newSound.playAsync();
+                setIsPlaying(true);
+            } catch (error) {
+                console.error("Error playing sound:", error);
+            }
+        };
   return (
     <>
      <AlertNotificationRoot>
@@ -616,7 +680,16 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
         <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
       </View>
-
+      { finalContent?.songId ==='none'|| !finalContent.songId?null:<View style={{paddingLeft:10,paddingTop:18}}>
+      <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
+        <View style={{flexDirection:'row',marginTop:8,gap:8}}>
+          <Image source={{uri:songObj &&songObj.songImage}} style={{width:50,height:50,borderRadius:25}}/>
+          <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black',paddingTop:6}}>{songObj && songObj.songName}</Text>
+          <Pressable  onPress={() => playSongHandler(songObj.songUrl)}> 
+          <Image  source={isPlaying && currentSongUrl === songObj.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20 }}/>
+          </Pressable>
+        </View>
+      </View>}
           </ScrollView>
           {commonVisitorLikeSkip===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You skipped this profile</Text>}

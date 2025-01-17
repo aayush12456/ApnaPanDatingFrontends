@@ -547,8 +547,8 @@ useEffect(() => {
           </Card>
         </View>}
 
-
-        <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==""?0:100}` }}>
+        {/* marginBottom: `${deactivateUserObj.selfDeactivate!==""?0:100}` */}
+        <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==null?0:100}` }}>
           <ScrollView>
             {
               finalMessageArray.map((finalMessage, index) => {

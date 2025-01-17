@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 export const signUpSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
     gender: Yup.string().required('Gender is required'),
-    city: Yup.string().min(4).required('City is required'),
+    city: Yup.string().min(4).matches(/^[A-Z]/, 'The first letter of the city must be capitalized').required('City is required'),
     firstName: Yup.string().min(2).max(25).required('First name is required'),
     password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     phone: Yup.string().max(10).required('Phone number is required'),

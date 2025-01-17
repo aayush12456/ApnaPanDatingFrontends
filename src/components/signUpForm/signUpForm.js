@@ -1,4 +1,4 @@
-import { Image, View, TouchableOpacity, Text } from "react-native";
+import { Image, View, TouchableOpacity, Text,Pressable } from "react-native";
 import { Button } from "react-native-paper";
 import back from '../../../assets/signUpFormIcon/back.png';
 import { TextInput } from 'react-native-paper';
@@ -7,15 +7,18 @@ import React, { useState } from "react";
 import { Formik } from 'formik';
 import { signUpSchema } from "../../schemas";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-
+import closeEye from '../../../assets/AllIcons/closedeye.png'
+import openEye from '../../../assets/AllIcons/openeye.png'
 const OPTIONS = [
   { label: 'Male', value: 'male' },
   { label: 'Female', value: 'female' },
 ];
 
-const SignUpForm = ({ navigation }) => {
+const SignUpForm = ({ navigation,allUserObj }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError,setEmailError]=useState('')
+  const [phoneError,setPhoneError]=useState('')
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -23,7 +26,9 @@ const SignUpForm = ({ navigation }) => {
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <Formik
       initialValues={{
@@ -38,6 +43,16 @@ const SignUpForm = ({ navigation }) => {
       validationSchema={signUpSchema}
       onSubmit={(values) => {
         console.log(values); // Handle form submission
+        const emailExists = allUserObj.emailArray.includes(values.email);
+        const phoneExists = allUserObj.phoneNumberArray.includes(values.phone.trim());
+        if (emailExists || phoneExists) {
+          setEmailError(emailExists ? 'Email already present' : '');
+          setPhoneError(phoneExists ? 'Phone Number already present' : '');
+          return; 
+        }
+        setEmailError('');
+        setPhoneError('');
+      
         navigation.navigate('AdditionalPage',{formData:values})
         // action.resetForm();
       }}
@@ -68,6 +83,7 @@ const SignUpForm = ({ navigation }) => {
               value={values.email}
             />
             {touched.email && errors.email && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.email}</Text>}
+            {emailError && <Text style={{ color: 'red', marginLeft: 12 }}>{emailError}</Text>}
           </View>
            <View style={{ flexDirection: 'row', justifyContent: 'between' }}>
            <View style={{ marginLeft: 12, marginRight: 20, marginTop: 9 }}>
@@ -136,7 +152,7 @@ const SignUpForm = ({ navigation }) => {
                 {touched.firstName && errors.firstName && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.firstName}</Text>}
               </View>
 
-              <View>
+              {/* <View>
                 <TextInput
                   label="Password"
                   style={{ marginLeft: 12, marginRight: 20, marginTop: 9 }}
@@ -147,8 +163,28 @@ const SignUpForm = ({ navigation }) => {
                   value={values.password}
                 />
                 {touched.password && errors.password && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.password}</Text>}
+              </View> */}
+ <View>
+            <View style={{flexDirection:'row'}}>
+            <TextInput
+                  label="Password"
+                  style={{ marginLeft: 12, marginRight: 20, marginTop: 9 ,width:'91%'}}
+                  mode="outlined"
+                  secureTextEntry={!showPassword}
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  value={values.password}
+                  type='text'
+                />
+               { !showPassword &&<Pressable onPress={togglePasswordVisibility}>
+                <Image source={closeEye} style={{width:25,height:25,marginLeft:-65,marginTop:30}}/>
+                </Pressable>}
+               {showPassword&& <Pressable onPress={togglePasswordVisibility}>
+                <Image source={openEye} style={{width:25,height:25,marginLeft:-65,marginTop:30}}/>
+                </Pressable>}
+            </View>
+                {touched.password && errors.password && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.password}</Text>}
               </View>
-
               <View>
                 <TextInput
                   label="Phone"
@@ -160,6 +196,7 @@ const SignUpForm = ({ navigation }) => {
                   placeholder="+91"
                 />
                 {touched.phone && errors.phone && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.phone}</Text>}
+                {phoneError && <Text style={{ color: 'red', marginLeft: 12 }}>{phoneError}</Text>}
               </View>
             </View>
           )}

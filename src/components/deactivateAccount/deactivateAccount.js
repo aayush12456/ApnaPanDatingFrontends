@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import io from "socket.io-client";
 import axios from "axios";
+import * as SecureStore from 'expo-secure-store';
 const socket = io.connect("http://192.168.29.169:4000")
 const DeactivateAccount=({loginId,deactivateObj})=>{
     const navigation = useNavigation();
@@ -33,6 +34,9 @@ const DeactivateAccount=({loginId,deactivateObj})=>{
           const response = await axios.post(`http://192.168.29.169:4000/user/addDeactivateUser/${deactivateAccountObj.id}`,  deactivateAccountObj);
           console.log('response in deactivate obj is',response?.data)
           socket.emit('addDeactivateUser', response?.data)
+          await SecureStore.deleteItemAsync('loginObj')
+          await SecureStore.deleteItemAsync('loginToken')
+          navigation.navigate('FrontPage',{formData:response.data.msg})
       } catch (error) {
           console.error('Error sending deactivate', error);
       }

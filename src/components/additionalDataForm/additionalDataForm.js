@@ -1,4 +1,4 @@
-import { Text, View, Image } from "react-native";
+import { Text, View, Image,TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
 import React, { useState } from "react";
 import { Formik } from 'formik';
@@ -6,13 +6,15 @@ import looking from '../../../assets/signUpFormIcon/looking.png';
 import zodiac from '../../../assets/signUpFormIcon/zodiac.png';
 import language from '../../../assets/signUpFormIcon/language.png';
 import heart from '../../../assets/signUpFormIcon/heart.png';
+import music from '../../../assets/signUpFormIcon/music.png';
 import { additonalInformationFormSchema } from "../../schemas";
 import { Interest, Language, lookingFor, zodiacSign } from "../../utils/personalInfo";
 import { Dropdown } from 'react-native-paper-dropdown';
 
-const AdditionalDataForm = ({ navigation, additionalFormData }) => {
+const AdditionalDataForm = ({ navigation, additionalFormData,uploadSongs }) => {
   const [interestArray,setInterestArray]=useState([])
   const [languageArray,setLanguageArray]=useState([])
+  const [selectedSong, setSelectedSong] = useState(null);
   const handleSelectInterest = (selectedOption, values, setFieldValue) => {
     const updatedInterests = values.interest.includes(selectedOption)
       ? values.interest.filter((item) => item !== selectedOption)
@@ -36,6 +38,14 @@ const AdditionalDataForm = ({ navigation, additionalFormData }) => {
     const displaySelectedLanguage = Array.isArray(languageArray)
       ? languageArray.join(', ')
       : '';
+
+      const handleSelectSong = (value, setFieldValue) => {
+        const song = uploadSongs.find((s) => s.songUrl === value);
+        if (song) {
+          setFieldValue('selectedSong', song._id); // Update Formik's selectedSong value
+          setSelectedSong(song)
+        }
+      };
   return (
     <>
       <Formik
@@ -43,7 +53,8 @@ const AdditionalDataForm = ({ navigation, additionalFormData }) => {
           interest: [],
           looking: '',
           zodiac: '',
-          language: []
+          language: [],
+          selectedSong: null,
         }}
         validationSchema={additonalInformationFormSchema}
         onSubmit={(values) => {
@@ -121,21 +132,6 @@ const AdditionalDataForm = ({ navigation, additionalFormData }) => {
               </View>
 
               {/* Language Field */}
-              {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <View style={{ marginLeft: 12 }}>
-                  <Image source={language} style={{ width: 25, height: 25 }} />
-                </View>
-                <View style={{ marginLeft: 4, marginRight: 20, marginTop: 9, width: '80%' }}>
-                  <Dropdown
-                    label="Language"
-                    options={Language}
-                    onSelect={handleChange('language')}
-                    value={values.language}
-                    mode="outlined"
-                  />
-                  {touched.language && errors.language && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.language}</Text>}
-                </View>
-              </View> */}
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ marginLeft: 12 }}>
                   <Image source={language} style={{ width: 25, height: 25 }} />
@@ -158,7 +154,41 @@ const AdditionalDataForm = ({ navigation, additionalFormData }) => {
         )}
                 </View>
               </View>
-
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ marginLeft: 12 }}>
+                <Image source={music} style={{ width: 25, height: 25 }} />
+              </View>
+              <View style={{ marginLeft: 4, marginRight: 20, marginTop: 9, width: '80%' }}>
+                <Dropdown
+                  label="Bio Track (Optional)"
+                  options={Array.isArray(uploadSongs) ? uploadSongs.map((song) => ({
+                    label: (
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Image
+                          source={{ uri: song.songImage }}
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            marginRight: 10,
+                          }}
+                        />
+                        <Text style={{ fontSize: 14, color: '#333' }}>{song.songName}</Text>
+                      </View>
+                    ),
+                    value: song.songUrl,
+                  })) : []}
+                  mode="outlined"
+                  onSelect={(value) => handleSelectSong(value, setFieldValue)}
+                  value={values.selectedSong ? values.selectedSong.songName : 'Select a song'}
+                />
+                {selectedSong && (
+                  <Text style={{ marginTop: 10, fontSize: 14, color: '#555' }}>
+                    {selectedSong.songName}
+                  </Text>
+                )}
+              </View>
+            </View>
               {/* Submit Button */}
               <View style={{ width: '100%', overflow: 'hidden' }}>
    <Button
