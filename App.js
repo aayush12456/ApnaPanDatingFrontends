@@ -59,6 +59,7 @@ import Notification from './src/components/notification/notification';
 import axios from 'axios'
 import EditSongsPage from './src/Pages/editSongsPage/editSongsPage';
 import CaptureImagePage from './src/Pages/captureImagePage/captureImagePage';
+import Message from './src/components/message/message';
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
 function AppContent() {
@@ -542,6 +543,7 @@ useEffect(() => {
           component={Notification}
           options={{ headerShown: false }}
         />
+            
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>

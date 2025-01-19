@@ -280,11 +280,11 @@ console.log('visitor user in new and online',visitorArray)
       <ScrollView  refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
-        {allUser?.map((allUser, index) => {
+        {allUser?.map((allUser) => {
         
           return (
            
-            <NewAndOnlineCard allUser={allUser} index={index} onlineLikeUserObj={onlineLikeUserObj} loginId={loginId}/>
+            <NewAndOnlineCard allUser={allUser} key={allUser?._id}  onlineLikeUserObj={onlineLikeUserObj} loginId={loginId}/>
           );
         })}
       </ScrollView>

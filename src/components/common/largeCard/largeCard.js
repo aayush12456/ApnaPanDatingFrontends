@@ -1,6 +1,6 @@
 import { Text, Card ,Button} from "react-native-paper";
-import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable, Alert} from "react-native";
-import { useState,useEffect } from "react";
+import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable, Alert,Animated} from "react-native";
+import { useState,useEffect,useRef } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import io from "socket.io-client";
 import like from '../../../../assets/matchIcons/rightTiks.png'
@@ -20,6 +20,7 @@ import Notification from "../../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import pause from '../../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
+
 const socket = io.connect("http://192.168.29.169:4000")
 const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj }) => {
   const dispatch = useDispatch()
@@ -40,6 +41,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   const [currentSongUrl, setCurrentSongUrl] = useState(null);
   const [sound, setSound] = useState(null);
   const [songObj,setSongObj]=useState(null)
+  const [animate,setAnimate]=useState(false)
+  const [animateObj,setAnimateObj]=useState({})
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
   const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)//ye otp loginToken
   const completeLoginObj = useSelector(
@@ -261,6 +264,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         const response = await axios.post(`http://192.168.29.169:4000/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
         console.log('response in like match user is',response?.data)
         socket.emit('addLikeMatchUser', response?.data)
+        if(response){
+          startAnimation()
+          setAnimateObj(response?.data)
+        }
     } catch (error) {
         console.error('Error sending message:', error);
     }
@@ -529,9 +536,92 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
                 console.error("Error playing sound:", error);
             }
         };
+        const leftImagePosition = useRef(new Animated.Value(-width)).current; // Start from left
+        const rightImagePosition = useRef(new Animated.Value(width)).current; 
+        const startAnimation = () => {
+          setAnimate(true)
+          Animated.parallel([
+            Animated.timing(leftImagePosition, {
+              toValue: width / 6 - 100, // Move to center
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+            Animated.timing(rightImagePosition, {
+              toValue: width / 2 - 100, // Move to center
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+          ]).start();
+        };
+        const keepMatchHandler=()=>{
+          setAnimate(false)
+        }
   return (
     <>
      <AlertNotificationRoot>
+    {animate && <View style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'black',
+      zIndex: 10,
+    }}>
+     <View
+      style={{
+        flex:1,
+        justifyContent: "center",
+        alignItems: "center",
+            }}
+    >
+      {/* Left Image */}
+      <Animated.Image
+        source={{ uri: animateObj?.loginUser?.images[0] }}
+        style={{
+          position: "absolute",
+          width: 100,
+          height: 100,
+          borderRadius: 60,
+          transform: [{ translateX: leftImagePosition }], // Inline animated style
+        }}
+      />
+
+      {/* Right Image */}
+      <Animated.Image
+        source={{ uri: animateObj?.anotherLoginUser?.images[0] }}
+        style={{
+          position: "absolute",
+          width: 100,
+          height: 100,
+          borderRadius: 60,
+          transform: [{ translateX: rightImagePosition }], // Inline animated style
+        }}
+      />       
+      </View>
+      <View style={{position:'relative',top:'-30%'}}>
+      <Text style={{color:'white',textAlign:'center',fontSize:17}}>{animateObj?.loginUser?.firstName} & {animateObj?.anotherLoginUser?.firstName}</Text>
+      <Text style={{color:'white',textAlign:'center',paddingTop:10,fontSize:15}}>{animateObj?.loginUser?.firstName} Yay! You're now paired.Let's get to know each other please go to message section & enjoy the company with {animateObj?.anotherLoginUser?.firstName}</Text>
+                    <Button
+                      mode="contained"
+                      style={{
+                        height: 50, // Set the desired height
+                        borderRadius:11,
+                        color: '#FFFFFF',
+                         fontSize: 16, 
+                         justifyContent:'center',
+                         marginTop: 20,
+                         marginLeft: 12,
+                         marginRight: 20,
+                      }}
+                      buttonColor="#6495ed"
+                      onPress={keepMatchHandler}
+                    >
+                    KEEP MATCHING
+                    </Button>
+      </View>
+      
+     </View>}
      <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
         <Card.Content style={{height:'100%'}}>
         <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
@@ -573,7 +663,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
 
             <View style={{marginLeft:-105,marginTop:11,marginRight:30}}>
             <Button  mode="contained"   style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}  buttonColor="rgba(34, 197, 94, 2)" onPress={playVideoHandler} >
-  <Image source={play} style={{ width: 20, height:20, tintColor: 'white', marginRight: 32 }} />Play
+  <Image source={play} style={{ width: 20, height:20, tintColor: 'white', marginRight: 32}} />Play
   </Button>
             </View>
             </View>
@@ -727,6 +817,9 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       <PlayVideo/>
       {openDailog===true && <Notification dialog={notifyDeactivateObj}/>}
      </AlertNotificationRoot>
+     {/* <Button   onPress={startAnimation}>Start Animation</Button> */}
+    
+  
     </>
   );
 };

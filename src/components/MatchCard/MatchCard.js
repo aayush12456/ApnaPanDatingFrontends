@@ -5,6 +5,8 @@ import io from "socket.io-client";
 import { useNavigation } from '@react-navigation/native';
 import {useDispatch,useSelector} from 'react-redux'
 import cross from '../../../assets/matchIcons/cross.png'
+import crossTik from '../../../assets/matchIcons/crossTik.png'
+import rightTik from '../../../assets/matchIcons/rightTiks.png'
 import like from '../../../assets/matchIcons/right.png'
 import upArrow from '../../../assets/matchIcons/upArrow.png'
 import play from '../../../assets/matchIcons/playVideo.png'
@@ -28,6 +30,8 @@ const MatchCard=({matchObj})=>{
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
   const [openDialog,setOpenDialog]=useState(false)
+  const [crosses, setCrosses] = useState(false);
+  const [liked, setLiked] = useState(false);
     const navigation = useNavigation();
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
@@ -177,9 +181,12 @@ const MatchCard=({matchObj})=>{
            
             return
           }
-       dispatch(addCrossMatchAsync(addCrossObj))
-       dispatch(passDataSliceActions.passDatas(id))
-
+          setCrosses(true);
+          dispatch(passDataSliceActions.passDatas(id))
+       setTimeout(() => {
+        dispatch(addCrossMatchAsync(addCrossObj))
+        setCrosses(false); // Set crosses back to false after a delay
+      }, 700);
         }
         const addLikeMatchHandler=async(id)=>{
           const addLikeObj={
@@ -195,15 +202,17 @@ const MatchCard=({matchObj})=>{
             setNotifyDeactivateObj(obj)
             return
           }
-  //  dispatch(addMatchUserAsync(addLikeObj))
+  setLiked(true)
        dispatch(passDataSliceActions.passDatas(id))
-      //  dispatch(addLikeSmsSenderAsync(addLikeObj))
+      setTimeout(() => {
+        setLiked(false); // Set crosses back to false after a delay
+      }, 700);
        try {
         const response = await axios.post(`http://192.168.29.169:4000/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
         console.log('response in match card is',response?.data?.likesArray)
         socket.emit('addMatchUser', response?.data?.likesArray)
     } catch (error) {
-        console.error('Error sending message:', error);
+        console.error('Error match response', error);
     }
 
     try {
@@ -212,16 +221,53 @@ const MatchCard=({matchObj})=>{
       socket.emit('addLikeCountUser', response?.data?.userObj)
 
   } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error like count', error);
   }
         }
-      //   <View style={{flexDirection:"row", backgroundColor:'green',borderRadius:12,marginTop:-18}}>
-      //   <Text>Online</Text>
-      // </View>
 return (
     <>
     <AlertNotificationRoot>
-    <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white'}}>
+      <View style={{position:'relative'}}>
+      {crosses && (
+    <View
+      style={{
+        position: 'absolute',
+        backgroundColor: '#4b5563',
+        zIndex: 10, 
+        top: 0, 
+        left: 0, 
+        width:'96%',
+        height:'96%',
+        marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10,
+        borderRadius:12
+      }}
+    >
+      <View style={{flexDirection:"row",justifyContent:'center'}} >
+      <Image source={crossTik} style={{ width:50, height:50,tintColor:'white',position:'relative',marginTop:'90%' }} />
+      </View>
+    </View>
+  )}
+
+{liked && (
+    <View
+      style={{
+        position: 'absolute',
+        backgroundColor: '#6495ed',
+        zIndex: 10, 
+        top: 0, 
+        left: 0, 
+        width:'96%',
+        height:'96%',
+        marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10,
+        borderRadius:12
+      }}
+    >
+      <View style={{flexDirection:"row",justifyContent:'center'}} >
+      <Image source={rightTik} style={{ width:50, height:50,position:'relative',marginTop:'90%' }} />
+      </View>
+    </View>
+  )}
+      <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white'}}>
     <Card.Content>
       {/* <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:30,zIndex:10,left:30}} >
         <Pressable onPress={playVideoHandler}>
@@ -295,6 +341,9 @@ return (
             </View>
     </Card.Content>
     </Card>
+      </View>
+     
+    
     <PlayVideo/>
  {openDialog===true && <Notification dialog={notifyDeactivateObj}  />}
     </AlertNotificationRoot>

@@ -32,7 +32,6 @@ import getBollywoodSongSlice from "../Slice/getBollyWoodSongSlice/getBollywoodSo
 import addSelectedSongSlice from "../Slice/addSelectedSongSlice/addSelectedSongSlice"
 import addNoneSongSlice from "../Slice/addNoneSongSlice/addNoneSongSlice"
 import changePasswordToastSlice from "../Slice/changePasswordToastSlice/changePasswordToastSlice"
-import deleteAccountToastSlice from "../Slice/deleteAccountToastSlice/deleteAccountToastSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,

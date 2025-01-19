@@ -67,11 +67,11 @@ const AnotherHeader = ({ editObj,navigation }) => {
            
                 <Button onPress={()=>backArrowHandler(editObj?.name)} style={{marginLeft:7}}
                 ><Image source={arrow} style={{ width: 15, height: 15 }} /></Button>
-          
-           { (editObj?.name===objSelector?.firstName)|| (editObj?.name===anotherObjSelector?.firstName)?<Text style={{ textAlign: 'center', fontSize: 19, fontWeight: '600', color: 'black', flex: 1}}>
+      
+           { (editObj?.name===objSelector?.firstName)|| (editObj?.name===anotherObjSelector?.firstName)?<Text style={{ textAlign: 'center', fontSize: 17, fontWeight: '600', color: 'black', flex: 1,paddingRight:40}}>
                 {`${editObj?.name} photos` }
             </Text>:
-           <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: '600', color: 'black', flex: 1}}>
+           <Text style={{ textAlign: 'center', fontSize: 17, fontWeight: '600', color: 'black', flex: 1,paddingRight:40}}>
                 {editObj?.name }
             </Text>}
         </View>

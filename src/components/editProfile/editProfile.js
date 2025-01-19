@@ -32,7 +32,7 @@ const [isSliding, setIsSliding] = useState(false);
    }
     }
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
-    console.log('complete  login response data in login',completeLoginObj)
+    console.log('complete  login response data in login',completeLoginObj.interest)
    
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
 
@@ -245,18 +245,13 @@ style={{width,height}}
 onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)} 
 >
 {
-  completeLoginObjData.images.map((image,index)=>{
-    return (
-      <>
-      <Image 
-key={index}
-source={{uri:image}}
-style={{width,height,resizeMode:'cover'}}
-/>
-
-      </>
-    )
-  })
+  completeLoginObjData.images.map((image) => (
+    <Image
+      key={image} // Use unique image URL as key
+      source={{ uri: image }}
+      style={{ width, height, resizeMode: 'cover' }}
+    />
+  ))
 }
 
 </ScrollView>
@@ -308,19 +303,30 @@ style={{width,height,resizeMode:'cover'}}
         </TouchableOpacity>
         </View>
        <View>
-       {
+{
   rows.map((row, rowIndex) => (
-    <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 14, paddingLeft: 12 }}>
+    <View 
+      key={rowIndex} 
+      style={{ flexDirection: "row", gap: 12, paddingTop: 14, paddingLeft: 12 }}
+    >
       {
         row.map((rowItem, itemIndex) => (
-          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
-            <Text style={{ fontSize: 17, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          <View  
+            key={`${rowItem}-${itemIndex}`} // Combine rowItem and itemIndex for a unique key
+            style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}
+          >
+            <Text 
+              style={{ fontSize: 17, textAlign: 'center', paddingTop: 6 }}
+            >
+              {rowItem}
+            </Text>
           </View>
         ))
       }
     </View>
   ))
 }
+
        </View>
       </View>
       

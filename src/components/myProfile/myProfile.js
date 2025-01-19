@@ -1,9 +1,9 @@
 
-import {Image,View,Text,TouchableOpacity,Pressable} from 'react-native'
+import {Image,View,Text,Pressable} from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import edit from '../../../assets/myProfileIcons/edit.png'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import rightTik from '../../../assets/matchIcons/rightTiks.png'
 const MyProfile=({navigation})=>{
     const [loginData, setLoginData] = useState(null);
     useEffect(()=>{
@@ -18,19 +18,13 @@ const MyProfile=({navigation})=>{
         const editProfileHandler=()=>{
       navigation.navigate('EditProfilePage')
         }
-        const logoutClickHandler=async()=>{
-            try {
-                await AsyncStorage.removeItem('loginId');
-                await AsyncStorage.clear();
-                await SecureStore.deleteItemAsync('loginObj')
-                await SecureStore.deleteItemAsync('loginToken')
-                console.log('User logged out and login data removed from AsyncStorage');
-                navigation.navigate('FrontPage');
-                // navigation.reset({ index: 0, routes: [{ name: 'FrontPage' }] });
-              } catch (error) {
-                console.error('Error removing login data:', error);
-              }
-        }
+        const getProfile = () =>loginData
+        const dob = getProfile()?.dob;
+      const dobBreak = dob?.split("/");
+      const year = dobBreak?.[2];
+      let currentDate = new Date();
+      let currentYear = currentDate.getFullYear();
+      const age = year ? currentYear - parseInt(year) : "";
 return (
     <>
  
@@ -44,12 +38,12 @@ return (
         <Image source={edit} style={{marginLeft:8,marginRight:2,marginTop:7}} />
     </View>
     </View>
-    <View>
-        <Text style={{textAlign:'center',paddingTop:20}}>Welcome to your Profile  {loginData?.name} </Text>
+    <View style={{flexDirection:'row',justifyContent:'center',gap:5}}>
+        <Text style={{textAlign:'center',paddingTop:20,color:'Black',fontSize:21,fontWeight:'700'}}>{loginData?.name}, {age} </Text>
+        <View style={{backgroundColor:'#0271fe',width:25,height:25,borderRadius:20,marginTop:22}}>
+         <Image source={rightTik} style={{width:12,height:12,marginTop:7,marginLeft:6}}/>
+        </View>
     </View>
-    <Pressable onPress={logoutClickHandler}>
-    <Text style={{textAlign:'center'}}>Logout</Text>
-    </Pressable>
     </>
 )
 }

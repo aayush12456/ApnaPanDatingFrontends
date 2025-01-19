@@ -20,6 +20,8 @@ const Login=({navigation})=>{
   const dispatch=useDispatch()
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)
   const loginObj=useSelector((state)=>state.loginData.loginData.loginData)
+  const loginError=useSelector((state)=>state.loginData.error)
+  console.log('login eror is',loginError)
   const getAllLoginIdUserArray=useSelector((state)=>state.loginData.loginData.loginIdUserArray)
   console.log('get all login id user array',getAllLoginIdUserArray)
   console.log(' login response data in login',loginObj)
@@ -110,10 +112,12 @@ return (
       }}
       validationSchema={loginSchema}
       onSubmit={(values,action) => {
-        // navigation.navigate('AdditionalPage',{formData:values})
-       dispatch(userLoginAsync(values)) 
-     
-        action.resetForm();
+       dispatch(userLoginAsync(values)).unwrap().then(()=>{ // form me password ya email galat nhi hai to form clear ho jayega ye check
+        action.resetForm();                                 // hoga backend se jo response aa rha hai usse
+       }). catch(() => {
+        console.log("Login failed, form not reset.");
+      });
+      
       }}
     >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -160,6 +164,7 @@ return (
                 </Pressable>}
             </View>
                 {touched.password && errors.password && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.password}</Text>}
+                {loginError && <Text style={{ color: 'red', marginLeft: 12 }}>{loginError}</Text>}
               </View>
               <Pressable onPress={forgotPasswordHandler}>
               <Text style={{textAlign:'right',paddingRight:22,paddingTop:4}}>Forgot your password?</Text>

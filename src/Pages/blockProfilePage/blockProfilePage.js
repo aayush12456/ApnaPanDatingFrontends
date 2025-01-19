@@ -61,7 +61,7 @@ return (
                 <BlockProfile blockProfileUser={blockUserData} loginId={loginId}/>
                 </>
             )
-        }):<Text>no block User is there</Text>
+        }):<Text  style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'30%'}}>No Block Profile is there</Text>
     }
     </>
 )

@@ -144,10 +144,10 @@ return (
     <>
     <ScrollView>
     {finalMessageArray?.map((finalMessageUser, index) => {
-          const uniqueKey = finalMessageUser._id || `${finalMessageUser._id}_${index}`;
+          const uniqueKey = finalMessageUser?._id || `${finalMessageUser._id}_${index}`;
         return (
          
-         <MessageCard key={uniqueKey} finalMessageUser={finalMessageUser} index={index}/>
+         <MessageCard key={uniqueKey} finalMessageUser={finalMessageUser} />
         );
       })}
     </ScrollView>

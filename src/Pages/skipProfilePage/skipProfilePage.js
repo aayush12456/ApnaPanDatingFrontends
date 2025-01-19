@@ -106,7 +106,7 @@ return (
                 <SkipProfile skipProfileUser={skipUserData} loginId={loginId}/>
                 </>
             )
-        }):<Text>no skip User is there</Text>
+        }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'30%'}}>No Skip Profile is there</Text>
     }
     </>
 )

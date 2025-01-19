@@ -18,6 +18,7 @@ const EditSongs=()=>{
     const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
     const getAllSongsSelector=useSelector((state)=>state.getBollyWoodSong.getBollywoodSongUserObj.uploadSongsData)
+    console.log('get all songs',getAllSongsSelector)
     const songLoginObj=useSelector((state)=>state?.addSong?.addSelectedSongData?.loginUser)
     const noneSongLoginObj=useSelector((state)=>state?.addNoneSong?.addNoneSongData?.loginUser)
     console.log('none song obj',noneSongLoginObj?.songId)
@@ -102,7 +103,7 @@ return(
             getAllSongsSelector?.map((getSong)=>{
                 return (
     
-                    <View style={{flexDirection:'row',marginTop:20,marginLeft:20,justifyContent:'space-between'}}>
+                    <View key={getSong?._id} style={{flexDirection:'row',marginTop:20,marginLeft:20,justifyContent:'space-between'}}>
                     <Pressable onPress={()=>songUploadHandler(getSong)}>
                     <Image source={{uri:getSong?.songImage}} style={{width:65,height:65,borderRadius:34}}/>
                     </Pressable>

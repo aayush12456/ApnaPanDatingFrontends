@@ -11,7 +11,7 @@ import { addVisitorEmailSenderAsync } from "../../Redux/Slice/addVisitorEmailSli
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
-const NewAndOnlineCard=({allUser,index,onlineLikeUserObj,loginId})=>{
+const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId})=>{
     console.log('online like user obj in new and online card',onlineLikeUserObj)
     console.log('login id',loginId)
     console.log('all user',allUser)
@@ -168,7 +168,7 @@ return (
     <>
     <AlertNotificationRoot>
     <Card
-              key={allUser._id || index} // Unique key: use _id if available, or index as fallback
+              // key={allUser._id || index} // Unique key: use _id if available, or index as fallback
               style={{
                 marginLeft: 8,
                 marginRight: 8,

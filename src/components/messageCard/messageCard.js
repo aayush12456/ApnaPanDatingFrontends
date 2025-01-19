@@ -10,7 +10,7 @@ import axios from "axios";
 import FilteredChatMessage from "../filteredChatMessage/filteredChatMessage";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
 const socket = io.connect("http://192.168.29.169:4000")
-const MessageCard=({finalMessageUser,index})=>{
+const MessageCard=({finalMessageUser})=>{
     const [loginObj,setLoginObj]=useState({})
     const [chatIdArray, setChatIdArray] = useState([])
     const [filteredMessages, setFilteredMessages] = useState([])
@@ -320,7 +320,6 @@ console.log('record message id response',recordMessageId)
 return (
     <>
       <Card
-              key={finalMessageUser._id || index} 
               style={{
                 marginLeft: 8,
                 marginRight: 8,

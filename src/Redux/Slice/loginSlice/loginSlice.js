@@ -32,7 +32,8 @@ export const userLoginAsync = createAsyncThunk(
       return Responedata;
       
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      // console.error('Login error:', error?.response?.data || error.message);
+      return rejectWithValue(error?.response?.data || { mssg: 'An error occurred. Please try again.' });
     }
   }
 );
@@ -41,7 +42,7 @@ const userLoginSlice = createSlice({
   name: 'userLogin',
   initialState: {
     loginData: {}, // Initialize responseData in the state
-
+    error:null
 
   },
   reducers: {},
@@ -49,10 +50,12 @@ const userLoginSlice = createSlice({
     builder.addCase(userLoginAsync.fulfilled, (state, action) => {
       state.loginData = action.payload; // Update responseData in the state after successful login
       // console.log(state.registerData)
+      state.error = null;
     });
     // Additional extra reducers if needed
     builder.addCase(userLoginAsync.rejected, (state, action) => {
-      state.loginData = action.payload; // Update responseData even for rejected login attempt
+      state.error = action.payload?.mssg || 'Login failed.'; // Set error message
+        state.loginData = {};   
     });
   },
 });
