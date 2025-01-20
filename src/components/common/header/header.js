@@ -186,15 +186,16 @@ console.log('record message obj',recordMessage)
 
 return (
     <>
-     <Drawer.Navigator>
+     <Drawer.Navigator 
+     >
      <Drawer.Screen
         name='My Profile'
         component={MyProfile}
         options={{ 
           drawerLabel: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center',marginLeft:-12 }}>
               {/* User Name */}
-              <Text style={{ fontSize: 16, color: 'black', marginRight: 10 }}>
+              <Text style={{ fontSize: 16, color: 'black', marginRight: 60 }}>
                 {loginData?.name || 'data'}
               </Text>
               {/* Settings Icon */}
@@ -230,7 +231,9 @@ return (
                 style={{ width: 45, height: 45 }}/>
             ),
             drawerLabelStyle: {
-                marginLeft:'-13%'
+                marginLeft:'-13%',
+                fontWeight:'500',
+                color:'black'
               },
          }}
       />
@@ -244,11 +247,13 @@ return (
                 style={{ width: 32, height: 32 }}/>
             ),
             drawerLabelStyle: {
-                marginLeft:'-3%'
+                marginLeft:'-3%',
+                fontWeight:'500',
+                color:'black'
               },
          }}
       />
-       <Drawer.Screen
+       {/* <Drawer.Screen
         name="Search"
         component={NewAndOnline}
         options={{ 
@@ -258,14 +263,14 @@ return (
                 style={{ width: 28, height:28 }}/>
             ),
          }}
-      />
+      /> */}
 <Drawer.Screen
   name="Likes"
   component={Likes}
   options={{
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? 'blue' : 'black' }}>Likes</Text>
+        <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Likes</Text>
         {likeCountObj?._id === loginId && likeCountObj?.counter!==null && likeCountObj?.counter!==""? (
           <View
             style={{
@@ -289,6 +294,7 @@ return (
         style={{ width: 25, height: 25 }}
       />
     ),
+    
   }}
   listeners={{
     focus: () => {
@@ -298,26 +304,13 @@ return (
 />
 
 
-
-{/* 
-    <Drawer.Screen
-        name="Messages"
-        component={Message}
-        options={{ 
-            drawerLabel: 'Messages',
-            drawerIcon:()=>(
-                <Image  source={messages}
-                style={{ width: 25, height: 25 }}/>
-            ),
-         }}
-      />  */}
       <Drawer.Screen
   name="Messages"
   component={Message}
   options={{
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? 'blue' : 'black' }}>Messages</Text>
+        <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Messages</Text>
         {recordMessage?.recordMessageIdArray?.length>0 && recordMessage.id===loginId? (
           <View
             style={{
@@ -362,7 +355,7 @@ return (
   options={{
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? 'blue' : 'black' }}>Visitors</Text>
+        <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Visitors</Text>
         {visitorCountObj?._id === loginId && visitorCountObj?.visitorCounter!==null && visitorCountObj?.visitorCounter!==""? (
           <View
             style={{

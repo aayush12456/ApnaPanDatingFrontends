@@ -93,9 +93,15 @@ return (
             </View>
 
             <View style={{marginLeft:-105,marginTop:11,marginRight:30}}>
-            <Button  mode="contained"   style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}  buttonColor="rgba(34, 197, 94, 2)" onPress={playVideoHandler} >
-  <Image source={play} style={{ width: 20, height:20, tintColor: 'white', marginRight: 32 }} />Play
-  </Button>
+            <Pressable onPress={playVideoHandler}>
+  <View style={{width:95,height:40,borderRadius:20,backgroundColor:'rgba(34, 197, 94, 2)'}}>
+    <View style={{flexDirection:'row',marginTop:8,marginLeft:20}}>
+  <Image source={play} style={{ width: 20, height:20, tintColor: 'white'}} />
+  <Text style={{color:'white'}}>Play</Text>
+    </View>
+  </View>
+  </Pressable>
+
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>

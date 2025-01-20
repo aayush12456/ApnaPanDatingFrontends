@@ -452,10 +452,6 @@ useEffect(() => {
    navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:loginObj.name} });
   
   }
-
-  const notificationHandler=()=>{
-    navigation.navigate('notification');
-  }
   return (
     <>
     <AlertNotificationRoot>
@@ -551,10 +547,10 @@ useEffect(() => {
         <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==null?0:100}` }}>
           <ScrollView>
             {
-              finalMessageArray.map((finalMessage, index) => {
-                const uniqueKey = finalMessage._id || `${finalMessage.message}_${index}`;
+              finalMessageArray.map((finalMessage) => {
+                // const uniqueKey = finalMessage?._id || `${finalMessage.message}_${index}`;
                 return (
-                  <View key={uniqueKey} style={{
+                  <View key={finalMessage?._id} style={{
                     flexDirection: 'row',
                     justifyContent: `${finalMessage.senderId === loginId ? 'flex-end' : 'flex-start'}`,
                     marginBottom: 10,
@@ -635,14 +631,11 @@ useEffect(() => {
        : <View
           style={{
             position: "absolute",
-            bottom: 0,
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: "#f5f5f5",
-            width: "100%",
-            paddingVertical: 10,
-            paddingHorizontal: 10,
-            bottom: -6,
+            width:'100%',
+            bottom:1,
           }}
         >
           <TextInput
@@ -651,11 +644,9 @@ useEffect(() => {
               height: 40,
               borderWidth: 1,
               borderColor: "#ccc",
-              paddingHorizontal: 10,
               borderRadius: 5,
               backgroundColor: "#fff",
               // marginLeft:-20
-              marginRight: 12,
               height: 50
             }}
             placeholder="Message"

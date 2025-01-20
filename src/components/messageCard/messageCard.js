@@ -256,6 +256,7 @@ useEffect(() => {
                     // Return the message with the smaller time difference
                     return currentTimeDiff < closestTimeDiff ? currentMessage : closest;
                 }, matchingMessages[0]);
+                
             }
             return null;
         }).filter(message => message !== null); // Filter out any nulls
@@ -265,6 +266,10 @@ useEffect(() => {
     }
 }, [fetchMessages, chatIdArray]);
 console.log('fetch message in message card',filteredMessages)
+
+
+
+
 
 useEffect(() => {
   const checkMessage = filteredMessages.some(
@@ -365,12 +370,12 @@ return (
                   </View>
                   <View>
                     {showTypingResponse===true?null:
-                      filteredMessages.map((filterMessage,index)=>{
-                        const messageUniqueKey = `${filterMessage._id}_${index}`;
+                      filteredMessages.map((filterMessage)=>{
+                    
                         return (
-                          <>
-                          <FilteredChatMessage key={messageUniqueKey} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} index={index} recordMessageId={recordMessageId} />
-                          </>
+               
+                          <FilteredChatMessage key={filterMessage?._id} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} recordMessageId={recordMessageId} />
+                    
                         )
                       })
                     }
