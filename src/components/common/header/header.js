@@ -1,4 +1,4 @@
-import {Image,Text,Pressable,View} from 'react-native'
+import {Image,Text,Pressable,View,Dimensions} from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Matches from '../../matches/matches.js'
 import NewAndOnline from '../../newAndOnline/newAndOnline';
@@ -181,13 +181,15 @@ useEffect(() => {
 }, [loginId])
 
 console.log('record message obj',recordMessage)
+const { width, height } = Dimensions.get('window')
+const count=parseInt(likeCountObj?.counter || 0)+parseInt(visitorCountObj?.visitorCounter || 0)
 
 
 
 return (
     <>
-     <Drawer.Navigator 
-     >
+ <Drawer.Navigator
+>
      <Drawer.Screen
         name='My Profile'
         component={MyProfile}
@@ -235,7 +237,47 @@ return (
                 fontWeight:'500',
                 color:'black'
               },
+              headerRight: () => {
+                if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+              alignItems: 'left',
+              marginRight:100,
+             justifyContent:'flex-start',
+             right:'100%'
+                      }}
+                    >
+                      {count > 0 && (
+                        <View
+                          style={{
+                            borderRadius: 10,
+                            backgroundColor: 'red',
+                            width: width * 0.05,
+                            height: width * 0.05,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontSize: width * 0.03,
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            {count}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                  );
+                }
+                return null; // Return null if the condition is not met
+              },
          }}
+        
       />
        <Drawer.Screen
         name="New And Online"
@@ -250,6 +292,46 @@ return (
                 marginLeft:'-3%',
                 fontWeight:'500',
                 color:'black'
+              },
+              headerRight: () => {
+                if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'left',
+                        marginRight:130,
+                       justifyContent:'flex-start',
+                       position:'absolute',
+                       right:'125%'
+                      }}
+                    >
+                      {count > 0 && (
+                        <View
+                          style={{
+                            borderRadius: 10,
+                            backgroundColor: 'red',
+                            width: width * 0.05,
+                            height: width * 0.05,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontSize: width * 0.03,
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            {count}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                  );
+                }
+                return null; // Return null if the condition is not met
               },
          }}
       />
@@ -271,7 +353,7 @@ return (
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Likes</Text>
-        {likeCountObj?._id === loginId && likeCountObj?.counter!==null && likeCountObj?.counter!==""? (
+        {likeCountObj?.counter && likeCountObj?._id === loginId && likeCountObj?.counter!==null && likeCountObj?.counter!==""? (
           <View
             style={{
               marginLeft: 8, // Adjust space between "Likes" and the badge
@@ -294,7 +376,45 @@ return (
         style={{ width: 25, height: 25 }}
       />
     ),
-    
+    headerRight: () => {
+      if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
+        return (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'left',
+              marginRight:70,
+             justifyContent:'flex-start',
+             right:'100%'
+            }}
+          >
+            {count > 0 && (
+              <View
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: 'red',
+                  width: width * 0.05,
+                  height: width * 0.05,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: width * 0.03,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {count}
+                </Text>
+              </View>
+            )}
+          </View>
+        );
+      }
+      return null; // Return null if the condition is not met
+    },
   }}
   listeners={{
     focus: () => {
@@ -311,7 +431,7 @@ return (
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Messages</Text>
-        {recordMessage?.recordMessageIdArray?.length>0 && recordMessage.id===loginId? (
+        {recordMessage?.recordMessageIdArray?.length>0 ? (
           <View
             style={{
               marginLeft: 8, // Adjust space between "Likes" and the badge
@@ -334,6 +454,45 @@ return (
         style={{ width: 25, height: 25 }}
       />
     ),
+    headerRight: () => {
+      if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  && recordMessage.id===loginId  ) {
+        return (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'left',
+              marginRight:115,
+             justifyContent:'flex-start',
+             right:'100%'
+            }}
+          >
+            {count > 0 && (
+              <View
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: 'red',
+                  width: width * 0.05,
+                  height: width * 0.05,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: width * 0.03,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {count}
+                </Text>
+              </View>
+            )}
+          </View>
+        );
+      }
+      return null; // Return null if the condition is not met
+    },
   }}
 
 />
@@ -356,7 +515,7 @@ return (
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Visitors</Text>
-        {visitorCountObj?._id === loginId && visitorCountObj?.visitorCounter!==null && visitorCountObj?.visitorCounter!==""? (
+        {visitorCountObj?.visitorCounter && visitorCountObj?._id === loginId && visitorCountObj?.visitorCounter!==null && visitorCountObj?.visitorCounter!==""? (
           <View
             style={{
               marginLeft: 8, // Adjust space between "Likes" and the badge
@@ -379,6 +538,45 @@ return (
         style={{ width: 25, height: 25 }}
       />
     ),
+    headerRight: () => {
+      if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
+        return (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'left',
+              marginRight:90,
+             justifyContent:'flex-start',
+             right:'100%'
+            }}
+          >
+            {count > 0 && (
+              <View
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: 'red',
+                  width: width * 0.05,
+                  height: width * 0.05,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: width * 0.03,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {count}
+                </Text>
+              </View>
+            )}
+          </View>
+        );
+      }
+      return null; // Return null if the condition is not met
+    },
   }}
   listeners={{
     focus: () => {
