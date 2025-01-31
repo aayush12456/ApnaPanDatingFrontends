@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Image,Pressable,ScrollView } from 'react-native';
+import { Text, View, Image,Pressable,ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from "react";
@@ -7,35 +7,34 @@ import { getBollywoodSongAsync } from '../../Redux/Slice/getBollyWoodSongSlice/g
 import play from '../../../assets/myProfileIcons/play.png'
 import pause from '../../../assets/myProfileIcons/pause.png'
 import rightTik from '../../../assets/myProfileIcons/rightTik.png';
-import { addSelectedSongAsync } from '../../Redux/Slice/addSelectedSongSlice/addSelectedSongSlice';
 import { useNavigation } from '@react-navigation/native';
-import { addNoneSongAsync } from '../../Redux/Slice/addNoneSongSlice/addNoneSongSlice';
-const EditSongs=()=>{
+import io from "socket.io-client";
+const socket = io.connect("http://192.168.29.169:4000")
+import axios from 'axios'
+const EditSongs=({completeObj})=>{
+    const BASE_URL = "http://192.168.29.169:4000";
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
     const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
-    const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
     const getAllSongsSelector=useSelector((state)=>state.getBollyWoodSong.getBollywoodSongUserObj.uploadSongsData)
     console.log('get all songs',getAllSongsSelector)
-    const songLoginObj=useSelector((state)=>state?.addSong?.addSelectedSongData?.loginUser)
-    const noneSongLoginObj=useSelector((state)=>state?.addNoneSong?.addNoneSongData?.loginUser)
-    console.log('none song obj',noneSongLoginObj?.songId)
     const [sound, setSound] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSongUrl, setCurrentSongUrl] = useState(null);
     const [updateSong,setUpdateSong]=useState({})
+    const [songLoginObj,setSongLoginObj]=useState({})
     useEffect(()=>{
-        if(completeLoginObjData._id){
-            dispatch(getBollywoodSongAsync(completeLoginObjData._id))
+        if(completeLoginObjData?._id){
+            dispatch(getBollywoodSongAsync(completeLoginObjData?._id))
         }
         return () => {
             if (sound) {
               sound.unloadAsync();
             }
           };
-          },[dispatch,completeLoginObjData._id,sound])
+          },[dispatch,completeLoginObjData?._id,sound])
         
           const playSongHandler = async (songUrl) => {
             try {
@@ -70,15 +69,49 @@ const EditSongs=()=>{
             }
         };
     
-const songUploadHandler=(getSong)=>{
+const songUploadHandler=async(getSong)=>{
 const songObj={
-    id:completeLoginObjData._id,
-    songId:getSong._id
+    id:completeLoginObjData?._id,
+    songId:getSong?._id
 }
-dispatch(addSelectedSongAsync(songObj))
-navigation.navigate('EditProfilePage');
+try {
+    const response = await axios.post(`${BASE_URL}/user/addSelectedSong/${songObj.id}`, songObj);
+    console.log('response in song obj user is',response?.data?.loginUser)
+    socket.emit('addSongObj', response?.data?.loginUser)
+    if(response?.data?.loginUser){
+        navigation.navigate('EditProfilePage');
+    }
+} catch (error) {
+    console.error('Error sending message:', error);
 }
-
+}
+useEffect(() => {
+    const fetchSongLoginObj = async () => {
+      try {
+        if (completeLoginObjData?._id) {
+          const response = await axios.get(
+            `${BASE_URL}/user/getSelectedSong/${completeLoginObjData?._id}`
+          );
+          // setLikesArray(response?.data?.anotherMatchUser || []);
+          console.log('get Song login obj is',response?.data?.loginUser)
+          setSongLoginObj(response?.data?.loginUser || {});
+        }
+      } catch (error) {
+        console.error("Error song login fetch:", error);
+      }
+    };
+  
+    fetchSongLoginObj ();
+  
+    socket.on("getSongObj", (newUser) => {
+  
+        setSongLoginObj(newUser)
+    });
+  
+    return () => {
+      socket.off("getSongObj");
+    };
+  }, [completeLoginObjData?._id]);
 useEffect(() => {
     if (songLoginObj) {
         setUpdateSong(songLoginObj);
@@ -87,13 +120,22 @@ useEffect(() => {
     }
 }, [songLoginObj, completeLoginObjData]);
 
-const noneSongHandler=()=>{
+const noneSongHandler=async()=>{
     const noneSongObj={
-        id:completeLoginObjData._id,
+        id:completeLoginObjData?._id,
         songId:'none'
     }
-    dispatch(addNoneSongAsync(noneSongObj))
-    navigation.navigate('EditProfilePage');
+    try {
+        const response = await axios.post(`${BASE_URL}/user/addNoneSong/${noneSongObj.id}`, noneSongObj);
+        console.log('response in none song obj user is',response?.data?.loginUser)
+        socket.emit('addSongObj', response?.data?.loginUser)
+        if(response?.data?.loginUser){
+            navigation.navigate('EditProfilePage');
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+
 }
 return(
     <>
@@ -107,9 +149,9 @@ return(
                     <Pressable onPress={()=>songUploadHandler(getSong)}>
                     <Image source={{uri:getSong?.songImage}} style={{width:65,height:65,borderRadius:34}}/>
                     </Pressable>
-                   <Text style={{paddingTop:15,fontSize: 15, color: `${updateSong?.songId === getSong._id && !noneSongLoginObj?.songId ? 'rgba(0, 150, 255, 1)' : 'black'}`}}>
+                   <Text style={{paddingTop:15,fontSize: 15, color: `${updateSong?.songId === getSong?._id && updateSong?.songId!=='none' ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`}}>
                     {getSong.songName}</Text>
-                  {updateSong?.songId === getSong._id && !noneSongLoginObj?.songId ?null: <Pressable onPress={() => playSongHandler(getSong.songUrl)}>
+                  {updateSong?.songId === getSong?._id && updateSong?.songId!=='none' ?null: <Pressable onPress={() => playSongHandler(getSong.songUrl)}>
                         <Image
                             source={
                                 isPlaying && currentSongUrl === getSong.songUrl
@@ -119,17 +161,14 @@ return(
                             style={{ width: 27, height: 27, marginTop: 12, marginRight: 20 }}
                         />
                     </Pressable>}
-                   {updateSong?.songId === getSong._id &&  !noneSongLoginObj?.songId &&
+                   {updateSong?.songId === getSong?._id && updateSong?.songId!=='none' &&
                    <Image source={rightTik} style={{width:15,height:15,marginTop: 17, marginRight: 20 }}/>}
                     </View>
                 )
             })
         }
-        <View>
-            
-        </View>
         <Pressable onPress={noneSongHandler}>
-        <Text style={{paddingTop:15,fontSize: 15,textAlign:'center'}}>None</Text>
+        <Text style={{paddingTop:15,fontSize: 15,textAlign:'center',color:`${updateSong.songId==='none'?'rgba(0, 150, 255, 1)':`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`}}>None</Text>
         </Pressable>
     </ScrollView>
     </View>

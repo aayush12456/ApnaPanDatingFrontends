@@ -1,4 +1,4 @@
-import {  ScrollView,RefreshControl } from "react-native";
+import {  ScrollView,RefreshControl,Text } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useEffect,useState } from "react";
@@ -9,7 +9,7 @@ import NewAndOnlineCard from "../newAndOnlineCard/newAndOnlineCard";
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
 const socket = io.connect("http://192.168.29.169:4000")
-const NewAndOnline = ({route}) => {
+const NewAndOnline = ({route,completeObj}) => {
   const { formData = {} } = route.params || {}; // Fallback to an empty object
   console.log('form data in new ', formData);
 
@@ -37,10 +37,10 @@ const NewAndOnline = ({route}) => {
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [refreshing, setRefreshing] = useState(false); 
   useEffect(() => {
-    if (dispatch) {
+    if (completeLoginObjData?._id) {
       dispatch(getAllUserData(completeLoginObjData?._id));
     }
-  }, [dispatch]);
+  }, [dispatch,completeLoginObjData?._id]);
 
 
   useEffect(()=>{
@@ -63,7 +63,7 @@ console.log('login id in new and online',loginId)
     }
     
     },[formData?.onlinePersonSkipUserId,getAllUserArray])
-
+console.log('all user array',allUser)
     useEffect(() => {
       const fetchOnlineLikeUsers = async () => {
         try {
@@ -280,13 +280,14 @@ console.log('visitor user in new and online',visitorArray)
       <ScrollView  refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
-        {allUser?.map((allUser) => {
+        {allUser && allUser.length>0? allUser?.map((allUser) => {
         
           return (
            
-            <NewAndOnlineCard allUser={allUser} key={allUser?._id}  onlineLikeUserObj={onlineLikeUserObj} loginId={loginId}/>
+            <NewAndOnlineCard allUser={allUser} key={allUser?._id}  onlineLikeUserObj={onlineLikeUserObj} loginId={loginId} completeObj={completeObj}/>
           );
-        })}
+        }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
+        color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No New Profile is there</Text>}
       </ScrollView>
     </>
   );

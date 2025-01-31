@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { updatePersonalDataAsync } from "../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice";
 import rightTik from '../../../assets/myProfileIcons/rightTik.png'
 import { useEffect,useState } from "react";
-const EditRelation = ({navigation}) => {
+const EditRelation = ({navigation,completeObj}) => {
     const [updateRelation,setUpdateRelation]=useState({})
     const dispatch=useDispatch()
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
@@ -16,7 +16,7 @@ const EditRelation = ({navigation}) => {
     console.log('update personal relation obj',updatePersonalInfoSelector)
     const selectRelationHandler=(relation)=>{
         const updateRelationObj={
-            id:completeLoginObjData._id,
+            id:completeLoginObjData?._id,
             relationship:relation
         }
   console.log('select relation',relation)
@@ -44,7 +44,7 @@ const EditRelation = ({navigation}) => {
               paddingTop: 22,
               paddingLeft: 8,
               fontSize: 15,
-              color: `${updateRelation?.relationship === relation.relation ? 'rgba(0, 150, 255, 1)' : 'black'}`}}>
+              color: `${updateRelation?.relationship === relation.relation ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`}}>
               {relation.relation}
             </Text>
           </TouchableOpacity>

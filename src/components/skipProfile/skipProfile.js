@@ -1,14 +1,12 @@
 import { Text, View, Image } from "react-native";
 import { Card, Button } from "react-native-paper";
-import { useEffect,useState } from "react";
-import { useSelector,useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import axios from 'axios'
-import * as SecureStore from 'expo-secure-store';
 import { passSkipProfileSliceActions } from "../../Redux/Slice/passSkipProfileSlice/passSkipProfileSlice";
-const SkipProfile=({skipProfileUser,loginId})=>{
+const SkipProfile=({skipProfileUser,loginId,completeObj})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
     const dispatch=useDispatch()
     console.log('skip profile user',skipProfileUser)
-    // const [loginId,setLoginId]=useState('')
     const getProfile = () => skipProfileUser;
     const dob = getProfile()?.DOB;
     const dobBreak = dob?.split("/");
@@ -16,25 +14,13 @@ const SkipProfile=({skipProfileUser,loginId})=>{
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
-  //   const loginResponse=useSelector((state)=>state.loginData.loginData.token)
-  //   useEffect(()=>{
-  //     if(loginResponse){
-  //       const getLoginId = async () => {
-  //         const loginIdData = await SecureStore.getItemAsync('loginId');
-  //         setLoginId(loginIdData)
-  //       };
-  //       getLoginId()
-  //     }
-  // },[loginResponse])
-
     const resetSkipProfileHandler=async(resetProfile)=>{
   console.log('reset profile',resetProfile)
-  const deleteUserId=resetProfile._id
+  const deleteUserId=resetProfile?._id
   dispatch(passSkipProfileSliceActions.passSkipProfile(deleteUserId))
   try {
-    const response = await axios.delete(`http://192.168.29.169:4000/user/deleteSkipProfile/${loginId}`,{params:{deleteUserId}});
+    const response = await axios.delete(`${BASE_URL}/user/deleteSkipProfile/${loginId}`,{params:{deleteUserId}});
     console.log('response in delete skip profile',response?.data)
-    // socket.emit('addVisitorUser', response?.data?.visitors)
 } catch (error) {
     console.error('Error sending message in delete skip profile:', error);
 }
@@ -48,7 +34,7 @@ return (
                 marginLeft: 8,
                 marginRight: 8,
                 marginTop: 20,
-                backgroundColor: "white",
+                backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`,
               }}
             >
               <Card.Content>
@@ -66,14 +52,14 @@ return (
                   </View>
                   <View style={{marginTop:7,marginLeft:10}}>
                   <View style={{ paddingTop: 1,flexDirection:'row',gap:7}}>
-                    <Text style={{ color: "black", fontWeight: "500" }}>
+                    <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, fontWeight: "500" }}>
                       {skipProfileUser?.firstName},
                     </Text>
-                    <Text>{age}</Text>
+                    <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}} >{age}</Text>
                     </View>
                     <View style={{ paddingTop: 1,flexDirection:'row',gap:7,marginTop:3 }}>
-                     <Text >{skipProfileUser?.city}</Text>
-                     <Text >{skipProfileUser?.education}</Text>
+                     <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{skipProfileUser?.city}</Text>
+                     <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{skipProfileUser?.education}</Text>
                     </View>
                   </View>
                   <View >

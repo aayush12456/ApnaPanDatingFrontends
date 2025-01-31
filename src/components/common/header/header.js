@@ -1,11 +1,9 @@
 import {Image,Text,Pressable,View,Dimensions} from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Matches from '../../matches/matches.js'
-import NewAndOnline from '../../newAndOnline/newAndOnline';
 import matches from '../../../../assets/sidebarIcons/profileMatch.png'
 import girl from '../../../../assets/sidebarIcons/girl.png'
 import boy from '../../../../assets/sidebarIcons/boy.png'
-import search from '../../../../assets/sidebarIcons/search.png'
+// import search from '../../../../assets/sidebarIcons/search.png'
 import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
 import settings from '../../../../assets/sidebarIcons/settings.png'
@@ -13,17 +11,20 @@ import visitors from '../../../../assets/sidebarIcons/interest.png'
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import { useEffect, useState } from 'react';
-import MyProfile from '../../myProfile/myProfile.js';
-import Likes from '../../likes/likes.js';
-import FrontPage from '../../frontPage/frontPage.js';
-import Message from '../../message/message.js';
 import {useSelector} from 'react-redux'
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
-import Visitors from '../../visitors/visitors.js';
-import Settings from '../../settings/settings.js';
+import SettingsPage from '../../../Pages/settingsPage/settingsPage.js';
+import VisitorPage from '../../../Pages/visitorPage/visitorPage.js';
+import MessagePage from '../../../Pages/messagePage/messagePage.js';
+import LikesPage from '../../../Pages/likesPage/likesPage.js';
+import NewAndOnlinePage from '../../../Pages/newAndOnlinePage/newAndOnlinePage.js';
+import MatchesPage from '../../../Pages/matchesPage/matchesPage.js';
+import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
+
 const socket = io.connect("http://192.168.29.169:4000")
 const Header=()=>{
+  const BASE_URL = "http://192.168.29.169:4000";
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation();
     const [loginData, setLoginData] = useState(null);
@@ -31,13 +32,23 @@ const Header=()=>{
     const [likeCountObj,setLikeCountObj]=useState('')
     const [visitorCountObj,setVisitorCountObj]=useState('')
     const [recordMessage, setRecordMessage] = useState([])
-    // useEffect(() => {
-    //   // Using an IIFE (Immediately Invoked Function Expression) to use await directly
-    //   (async () => {
-    //     const data = await SecureStore.getItemAsync('completeLoginObj');
-    //     setLoginData(JSON.parse(data)); // Parse JSON string back to an object and store in state
-    //   })();
-    // }, []); // Empty dependency array means this runs once on component mount
+    const [completeObj,setCompleteObj]=useState({})
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObj = useSelector(
+      (state) => state.loginData.loginData.completeLoginData
+    );
+    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+
+    useEffect(()=>{
+      if(appearModeSelector){
+      setCompleteObj(appearModeSelector)
+      }
+      else{
+          setCompleteObj(completeLoginObjData)
+      }
+      },[appearModeSelector,completeLoginObjData])
+
 
     useEffect(()=>{
         const getLoginData = async () => {
@@ -67,7 +78,7 @@ const Header=()=>{
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getLikeCount/${loginId}`
+            `${BASE_URL}/user/getLikeCount/${loginId}`
           );
      setLikeCountObj(response?.data?.userObj)
         }
@@ -99,7 +110,7 @@ const deleteFunction = async () => {
         }
 
         const response = await axios.post(
-            `http://192.168.29.169:4000/user/deleteLikeCount`,
+            `${BASE_URL}/user/deleteLikeCount`,
              {loginId} 
         );
         console.log('Response in delete like count user', response?.data?.userObj);
@@ -114,7 +125,7 @@ useEffect(() => {
     try {
       if (loginId) {
         const response = await axios.get(
-          `http://192.168.29.169:4000/user/getVisitorCount/${loginId}`
+          `${BASE_URL}/user/getVisitorCount/${loginId}`
         );
    setVisitorCountObj(response?.data?.userObj)
       }
@@ -145,7 +156,7 @@ const deleteVisitorFunction = async () => {
       }
 
       const response = await axios.post(
-          `http://192.168.29.169:4000/user/deleteVisitorCount`,
+          `${BASE_URL}/user/deleteVisitorCount`,
            {loginId} 
       );
       console.log('Response in delete visitor count user', response?.data?.userObj);
@@ -160,10 +171,7 @@ useEffect(() => {
   const fetchRecordMessage = async () => {
       try {
         if(loginId){
-          const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${loginId}`);
-          // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-          // console.log('fetch messages is', response.data.chatUserArray)
-          // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+          const response = await axios.get(`${BASE_URL}/chat/getRecordMessage/${loginId}`);
           setRecordMessage(response.data);
 
         }
@@ -188,27 +196,38 @@ const count=parseInt(likeCountObj?.counter || 0)+parseInt(visitorCountObj?.visit
 
 return (
     <>
- <Drawer.Navigator
+ <Drawer.Navigator 
+  screenOptions={{
+    drawerStyle: {
+      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`
+    },
+
+    headerStyle: {
+      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`
+    },
+    headerTintColor: `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, // 🔹 Header text ka color
+  }}
 >
      <Drawer.Screen
         name='My Profile'
-        component={MyProfile}
+        component={MyProfilePage}
         options={{ 
           drawerLabel: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center',marginLeft:-12 }}>
               {/* User Name */}
-              <Text style={{ fontSize: 16, color: 'black', marginRight: 60 }}>
+              <Text style={{ fontSize: 16,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, marginRight: 60 }}>
                 {loginData?.name || 'data'}
               </Text>
               {/* Settings Icon */}
               <Pressable   onPress={() => navigation.navigate('Settings')}>
               <Image
                 source={settings} // Replace with your settings image path
-                style={{ width: 24, height: 24 }}
+                style={{ width: 24, height: 24,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}
               />
               </Pressable>
             </View>
           ),
+          
             drawerIcon:()=>(
                 <Image source={{ uri: loginData?.image }}
                 style={{ width: 65, height: 65,borderRadius:30 }}/>
@@ -225,18 +244,24 @@ return (
 
      <Drawer.Screen
         name="Matches"
-        component={Matches}
+        component={MatchesPage}
         options={{ 
-            drawerLabel: 'Matches',
+            // drawerLabel: 'Matches',
+            drawerLabel: ({ focused }) => (
+              <View style={{ flexDirection: 'row',position:'relative',left:-18}}>
+        <Text style={{ color: focused ?`${completeObj?.appearanceMode === 'Dark Mode' ? '#87CEEB' : 'blue'}` : `${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}`,fontWeight:'500' }}>Matches</Text>
+        </View>
+            ),
             drawerIcon:()=>(
                 <Image  source={matches}
-                style={{ width: 45, height: 45 }}/>
+                style={{ width: 45, height: 45,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}/>
             ),
             drawerLabelStyle: {
                 marginLeft:'-13%',
                 fontWeight:'500',
-                color:'black'
+                color: completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black' 
               },
+          
               headerRight: () => {
                 if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
                   return (
@@ -276,22 +301,28 @@ return (
                 }
                 return null; // Return null if the condition is not met
               },
+      
          }}
         
       />
        <Drawer.Screen
         name="New And Online"
-        component={NewAndOnline}
+        component={NewAndOnlinePage}
         options={{ 
-            drawerLabel: 'New And Online',
+            // drawerLabel: 'New And Online',
+            drawerLabel: ({ focused }) => (
+              <View style={{ flexDirection: 'row', position:'relative',left:-6 }}>
+        <Text style={{ color: focused ? `${completeObj?.appearanceMode === 'Dark Mode' ? '#87CEEB' : 'blue'}` : `${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}`,fontWeight:'500' }}>New And Online</Text>
+        </View>
+            ),
             drawerIcon:()=>(
                 <Image  source={newIcon}
-                style={{ width: 32, height: 32 }}/>
+                style={{ width: 32, height: 32,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}/>
             ),
             drawerLabelStyle: {
                 marginLeft:'-3%',
                 fontWeight:'500',
-                color:'black'
+                color: completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black' 
               },
               headerRight: () => {
                 if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
@@ -348,11 +379,11 @@ return (
       /> */}
 <Drawer.Screen
   name="Likes"
-  component={Likes}
+  component={LikesPage}
   options={{
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Likes</Text>
+        <Text style={{ color: focused ? `${completeObj?.appearanceMode === 'Dark Mode' ? '#87CEEB' : 'blue'}` : `${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}`,fontWeight:'500' }}>Likes</Text>
         {likeCountObj?.counter && likeCountObj?._id === loginId && likeCountObj?.counter!==null && likeCountObj?.counter!==""? (
           <View
             style={{
@@ -373,7 +404,7 @@ return (
     drawerIcon: () => (
       <Image
         source={likes}
-        style={{ width: 25, height: 25 }}
+        style={{ width: 25, height: 25,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}
       />
     ),
     headerRight: () => {
@@ -426,12 +457,12 @@ return (
 
       <Drawer.Screen
   name="Messages"
-  component={Message}
+  component={MessagePage}
   options={{
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Messages</Text>
-        {recordMessage?.recordMessageIdArray?.length>0 ? (
+        <Text style={{ color: focused ? `${completeObj?.appearanceMode === 'Dark Mode' ? '#87CEEB' : 'blue'}` :`${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}`,fontWeight:'500' }}>Messages</Text>
+        {recordMessage?.recordMessageIdArray?.length>0 && recordMessage.id===loginId ? (
           <View
             style={{
               marginLeft: 8, // Adjust space between "Likes" and the badge
@@ -451,7 +482,7 @@ return (
     drawerIcon: () => (
       <Image
         source={messages}
-        style={{ width: 25, height: 25 }}
+        style={{ width: 25, height: 25,tintColor:`${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}` }}
       />
     ),
     headerRight: () => {
@@ -497,24 +528,13 @@ return (
 
 />
 
-       {/* <Drawer.Screen
-        name="Visitors"
-        component={Visitors}
-        options={{ 
-            drawerLabel: 'Visitors',
-            drawerIcon:()=>(
-                <Image  source={visitors}
-                style={{ width: 25, height: 25 }}/>
-            ),
-         }}
-      /> */}
       <Drawer.Screen
   name="Visitors"
-  component={Visitors}
+  component={VisitorPage}
   options={{
     drawerLabel: ({ focused }) => (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? 'blue' : 'black',fontWeight:'500' }}>Visitors</Text>
+        <Text style={{ color: focused ? `${completeObj?.appearanceMode === 'Dark Mode' ? '#87CEEB' : 'blue'}` :`${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}` ,fontWeight:'500' }}>Visitors</Text>
         {visitorCountObj?.visitorCounter && visitorCountObj?._id === loginId && visitorCountObj?.visitorCounter!==null && visitorCountObj?.visitorCounter!==""? (
           <View
             style={{
@@ -535,7 +555,7 @@ return (
     drawerIcon: () => (
       <Image
         source={visitors}
-        style={{ width: 25, height: 25 }}
+        style={{ width: 25, height: 25,tintColor:`${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}` }}
       />
     ),
     headerRight: () => {
@@ -587,12 +607,12 @@ return (
           
 <Drawer.Screen
     name="Settings"
-    component={Settings} // Your settings component
+    component={SettingsPage} // Your settings component
     options={{
       drawerLabel: () => null, // Remove label
       drawerIcon: () => null, // Remove icon
       headerShown: true, // Optional: hide header if needed
-      drawerActiveBackgroundColor: 'transparent', 
+      drawerActiveBackgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'black':'transparent'}`, 
       drawerInactiveBackgroundColor: 'transparent', 
       drawerItemStyle: { display: 'none' }
     }}

@@ -29,9 +29,8 @@ import getAllPhoneNumberSlice from "../Slice/getAllPhoneNumberSlice/getAllPhoneN
 import finalLoginWithOtpSlice from "../Slice/finalLoginWithOtpSlice/finalLoginWithOtpSlice"
 import forgotUpdatePasswordUserSlice from "../Slice/forgotUpdatePasswordUserSlice/forgotUpdatePasswordUserSlice"
 import getBollywoodSongSlice from "../Slice/getBollyWoodSongSlice/getBollywoodSongSlice"
-import addSelectedSongSlice from "../Slice/addSelectedSongSlice/addSelectedSongSlice"
-import addNoneSongSlice from "../Slice/addNoneSongSlice/addNoneSongSlice"
 import changePasswordToastSlice from "../Slice/changePasswordToastSlice/changePasswordToastSlice"
+import appearModeSlice from "../Slice/appearModeSlice/appearModeSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -39,7 +38,7 @@ const store=configureStore({
         updatePersonalData:updatePersonalDataSlice,
         getAllUserData:getAllUserSlice,
         addChatModalData:addChatModalSlice,
-        passData:passDataSlice,
+        passFilterData:passDataSlice,
         passVideoData:passVideoSlice,
         playVideoModal:playVideoModalSlice,
         getMatchesData:getMatchesSlice,
@@ -64,9 +63,8 @@ const store=configureStore({
         getAllPhoneNumber:getAllPhoneNumberSlice,
         forgotPasswordUpdateData:forgotUpdatePasswordUserSlice,
         getBollyWoodSong:getBollywoodSongSlice,
-        addSong:addSelectedSongSlice,
-        addNoneSong:addNoneSongSlice,
         toasts:changePasswordToastSlice,
+        appearMode:appearModeSlice
     }
 })
 export default store

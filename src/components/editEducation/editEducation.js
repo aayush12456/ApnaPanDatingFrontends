@@ -6,7 +6,7 @@ import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSli
 import rightTik from '../../../assets/myProfileIcons/rightTik.png';
 import { useEffect, useState } from "react";
 
-const EditEducation = ({ navigation }) => {
+const EditEducation = ({ navigation,completeObj }) => {
     const [updateEducation, setUpdateEducation] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditEducation = ({ navigation }) => {
 
     const selectEducationHandler = (education) => {
         const updateEducationObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             education: education
         };
         dispatch(updatePersonalDataAsync(updateEducationObj));
@@ -41,7 +41,7 @@ const EditEducation = ({ navigation }) => {
                                 paddingTop: 22,
                                 paddingLeft: 8,
                                 fontSize: 15,
-                                color: `${updateEducation?.education === education?.education ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                color: `${updateEducation?.education === education?.education ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                             }}>
                                 {education.education}
                             </Text>

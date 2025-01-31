@@ -1,6 +1,6 @@
 import deactivate from '../../../assets/AllIcons/deactivate.png';
 import { Button, Text } from "react-native-paper"
-import { View, Image, Pressable } from 'react-native'
+import { View, Image} from 'react-native'
 import { deactivateAccount } from '../../utils/personalInfo';
 import { Dropdown } from 'react-native-paper-dropdown';
 import { useState } from 'react';
@@ -9,7 +9,8 @@ import io from "socket.io-client";
 import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
 const socket = io.connect("http://192.168.29.169:4000")
-const DeactivateAccount=({loginId,deactivateObj})=>{
+const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
     const navigation = useNavigation();
     const [deactivateReason,setDeactivateReason]=useState('')
     const dropdownOptions = deactivateAccount.map(item => ({
@@ -31,7 +32,7 @@ const DeactivateAccount=({loginId,deactivateObj})=>{
         }
         console.log('deactivate obj',deactivateAccountObj)
         try {
-          const response = await axios.post(`http://192.168.29.169:4000/user/addDeactivateUser/${deactivateAccountObj.id}`,  deactivateAccountObj);
+          const response = await axios.post(`${BASE_URL}/user/addDeactivateUser/${deactivateAccountObj.id}`,  deactivateAccountObj);
           console.log('response in deactivate obj is',response?.data)
           socket.emit('addDeactivateUser', response?.data)
           await SecureStore.deleteItemAsync('loginObj')
@@ -48,7 +49,7 @@ const DeactivateAccount=({loginId,deactivateObj})=>{
         activate:'activate'
        }
        try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/getActivateUser/${activateAccountObj.id}`,activateAccountObj);
+        const response = await axios.post(`${BASE_URL}/user/getActivateUser/${activateAccountObj.id}`,activateAccountObj);
         console.log('response in deactivate obj is',response?.data)
         socket.emit('addActivateUser', response?.data)
     } catch (error) {
@@ -61,7 +62,7 @@ return (
     <View  style={{flexDirection:"row",justifyContent:"center",marginTop:20}}>
         <Image source={deactivate} style={{width:100,height:100}}/>
     </View>
-    <Text style={{textAlign:'center',paddingLeft:9,paddingRight:9,paddingTop:15}}>Deactivating account will cause your profile, messages, visits, likes to be hidden from others until you login back again.When you login again, your profile will be visible to others.Before you go, let us know why you are deactivating your account.</Text>
+    <Text style={{textAlign:'center',paddingLeft:9,paddingRight:9,paddingTop:15,color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Deactivating account will cause your profile, messages, visits, likes to be hidden from others until you login back again.When you login again, your profile will be visible to others.Before you go, let us know why you are deactivating your account.</Text>
     <View style={{flexDirection:"row",justifyContent:'center',marginTop:9}}>
     <View style={{  width: "90%" }}>
               <Dropdown

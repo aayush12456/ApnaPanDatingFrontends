@@ -4,14 +4,32 @@ import io from "socket.io-client";
 import * as SecureStore from 'expo-secure-store';
 import {useSelector} from 'react-redux'
 import { useState,useEffect } from "react";
+import { View } from "react-native";
 const socket = io.connect("http://192.168.29.169:4000")
 const LikePageContent=({route})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
     const { formData } = route?.params;
     console.log('form in likePage',formData)
     const [loginId,setLoginId]=useState('')
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
+    const [completeObj,setCompleteObj]=useState({})
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObj = useSelector(
+      (state) => state.loginData.loginData.completeLoginData
+    );
+    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+
+    useEffect(()=>{
+      if(appearModeSelector){
+      setCompleteObj(appearModeSelector)
+      }
+      else{
+          setCompleteObj(completeLoginObjData)
+      }
+      },[appearModeSelector,completeLoginObjData])
     useEffect(()=>{
         if(loginResponse){
           const getLoginId = async () => {
@@ -26,9 +44,8 @@ const LikePageContent=({route})=>{
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
-            // setLikesArray(response?.data?.anotherMatchUser || []);
             console.log('get deactivate user obj is', response?.data)
             setDeactivateUserObj(response?.data)
           }
@@ -49,7 +66,9 @@ const LikePageContent=({route})=>{
    console.log('get deactivate user obj in like page',deactivateUserObj)
 return (
     <>
-    <LargeCard likeContent={formData} deactivateUserObj={deactivateUserObj}/>
+    <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
+    <LargeCard likeContent={formData} deactivateUserObj={deactivateUserObj} completeObj={completeObj}/>
+    </View>
     </>
 )
 }

@@ -1,14 +1,12 @@
-import { Card, Button } from "react-native-paper";
-import {View,Text,Image,Pressable,ScrollView,Dimensions,StyleSheet,TouchableOpacity} from 'react-native'
+import { Card} from "react-native-paper";
+import {View,Text,Image,Pressable,ScrollView,Dimensions,StyleSheet} from 'react-native'
 import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import downArrow from '../../../assets/matchIcons/downArrow.png'
-import like from '../../../assets/matchIcons/rightTiks.png'
-import dislike from '../../../assets/matchIcons/crossTik.png'
 import play from '../../../assets/myProfileIcons/play.png'
 import pause from '../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
-const AnotherMatchCard=({anotherMatch,songs})=>{
+const AnotherMatchCard=({anotherMatch,songs,completeObj})=>{
   console.log('songs is',songs)
     const navigation = useNavigation();
     const [active, setActive] = useState(0);
@@ -78,12 +76,15 @@ navigation.navigate('Matches')
 };
 return (
     <>
-    <Card style={{ marginLeft: 8, marginRight: 8,marginTop:45,marginBottom:10, backgroundColor: 'white' }}>
+    <Card style={{ marginLeft: 8, marginRight: 8,marginTop:45,marginBottom:10, 
+      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}` }}>
     <Card.Content  style={{height:'100%'}}>
     <View style={{flexDirection:"row",justifyContent:'space-between'}}>
         <View style={{flexDirection:"row",gap:12}}>
-                    <Text style={{fontSize:19,fontWeight:'700'}}>{anotherMatch?.firstName}</Text>
-                    <Text  style={{fontSize:19,fontWeight:'500'}}>{age}</Text>
+                    <Text style={{fontSize:19,fontWeight:'700',
+                    color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{anotherMatch?.firstName}</Text>
+                    <Text  style={{fontSize:19,fontWeight:'500', 
+                    color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{age}</Text>
         </View>
         <View style={{width:30,height:30,borderRadius:16,backgroundColor:'black'}}>
             <Pressable onPress={downArrowHandler}>
@@ -118,17 +119,20 @@ return (
 
         <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{mainNumber}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{mainNumber}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.relationship}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.relationship}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.looking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -140,7 +144,8 @@ return (
       {
         row.map((rowItem, itemIndex) => (
           <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
-            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,  
+            color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -152,39 +157,46 @@ return (
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.education}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,  
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.education}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.profession}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,  
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.profession}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.drinking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.drinking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.smoking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,  
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.smoking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{anotherMatch?.eating}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,  
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.eating}</Text>
       </View>
 
     {anotherMatch.songId!=='none' || !anotherMatch.songId? <View style={{paddingLeft:10,paddingTop:18}}>
       <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
         <View style={{flexDirection:'row',marginTop:8,gap:8}}>
           <Image source={{uri:songs &&songs.songImage}} style={{width:50,height:50,borderRadius:25}}/>
-          <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black',paddingTop:6}}>{songs && songs.songName}</Text>
+          <Text style={{fontSize:16 ,fontWeight:'semibold',
+          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,paddingTop:6}}>{songs && songs.songName}</Text>
           <Pressable  onPress={() => playSongHandler(songs.songUrl)}> 
-          <Image  source={isPlaying && currentSongUrl === songs.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20 }}/>
+          <Image  source={isPlaying && currentSongUrl === songs.songUrl? pause: play}  style={{ width: 27, height: 27,
+             marginTop: 6, marginRight: 20,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/>
           </Pressable>
         </View>
       </View>:null}

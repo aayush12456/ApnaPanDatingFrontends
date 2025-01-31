@@ -11,7 +11,7 @@ import guru from "../../../assets/chatIcons/guru.png";
 import { Image } from 'expo-image';
 import io from "socket.io-client";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState ,useRef} from 'react'
+import { useEffect, useState} from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
@@ -20,7 +20,8 @@ import { dotsOpenModalToggleActions } from "../../Redux/Slice/dotsOpenModalSlice
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
-const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
+const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) => {
+  const BASE_URL = "http://192.168.29.169:4000";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
   const [messageText, setMessageText] = useState('')
   const [loginId, setLoginId] = useState('')
@@ -34,7 +35,6 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
   const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
-  const previousTextRef = useRef("");
   const windowHeight = Dimensions.get('window').height;
   console.log('window heigth', windowHeight)
   const navigation = useNavigation();
@@ -49,11 +49,11 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
   console.log("delete chat selector", deleteChatSelector);
   const backHandler = async() => {
     const deleteAnotherRecordMessageIdObj={
-      id:loginObj._id,
-      recieverId:messageDetails._id
+      id:loginObj?._id,
+      recieverId:messageDetails?._id
     }
     try {
-      const deleteAnotherResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/deleteAnotherRecordMessage/${deleteAnotherRecordMessageIdObj.id}`,deleteAnotherRecordMessageIdObj);
+      const deleteAnotherResponseIdObj = await axios.post(`${BASE_URL}/chat/deleteAnotherRecordMessage/${deleteAnotherRecordMessageIdObj.id}`,deleteAnotherRecordMessageIdObj);
       console.log('response in another record message id user is',deleteAnotherResponseIdObj?.data?.anotherRecordMessageIdArray)
   } catch (error) {
       console.error('Error sending in delete another response in another response id:', error);
@@ -94,9 +94,8 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginId}`,
+            `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get all login id user is', response?.data?.loginIdUserArray)
           setLoginIdUserArray(response?.data?.loginIdUserArray)
         }
@@ -134,11 +133,10 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/chat/getChatId`, {
-            params: { loginId: loginId, anotherId: messageDetails._id } // Pass the object as query parameters
+            `${BASE_URL}/chat/getChatId`, {
+            params: { loginId: loginId, anotherId: messageDetails?._id } // Pass the object as query parameters
           }
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get chat id user is', response?.data?.chatIdUser)
           setGetChatDetailObj(response?.data?.chatIdUser);
         }
@@ -149,18 +147,10 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
 
     fetchChatId();
 
-    // socket.on("getChatIdUser", (newUser) => {
-
-    //   setGetChatDetailObj(newUser)
-    // });
-
-    // return () => {
-    //   socket.off("getChatIdUser");
-    // };
   }, [loginId]);
 
   console.log('get chat details obj', getChatDetailObj)
-  // console.log('chat detail array',chatDetailArray)
+
 
 
 
@@ -169,7 +159,7 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
     const postTypingObj = {
       loginId: loginId,
       senderId: loginId,
-      recieverId: messageDetails._id,
+      recieverId: messageDetails?._id,
     };
   
     console.log('text is', text);
@@ -179,14 +169,14 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
       if (text.length > messageText.length) {
         // Call the postTyping API when text is increasing
         const response = await axios.post(
-          `http://192.168.29.169:4000/chat/postTyping/${postTypingObj.loginId}`,
+          `${BASE_URL}/chat/postTyping/${postTypingObj.loginId}`,
           postTypingObj
         );
         console.log('Send typing message of data is', response.data);
         socket.emit('postTyping', response.data);
       } else if (text.length <= messageText.length  ) {
         const response = await axios.post(
-          `http://192.168.29.169:4000/chat/deleteTyping`,
+          `${BASE_URL}/chat/deleteTyping`,
           postTypingObj
         );
         console.log('Delete typing message of data is', response.data);
@@ -201,16 +191,12 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj }) => {
   };
   
 
-
 useEffect(() => {
 
   const getMessageTyping = async () => {
     try {
       if (loginId) {
-        const response = await axios.get(`http://192.168.29.169:4000/chat/getTyping/${loginId}`);
-        // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-        // console.log('fetch messages is', response.data.chatUserArray)
-        // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+        const response = await axios.get(`${BASE_URL}/chat/getTyping/${loginId}`);
    setFetchTypingIdObj(response.data)
 
       }
@@ -220,13 +206,9 @@ useEffect(() => {
   };
   getMessageTyping()
   socket.on('getTyping', (newTypingId) => {
-    // setFetchTypingIdArray(preTypingId => [...preTypingId, newTypingId])
     setFetchTypingIdObj(newTypingId)
   })
   socket.on('typingChatDeleted', (deleteTyping) => {
-    // setFetchMessages((prevMessages) =>
-    //   prevMessages.filter((msg) => msg._id !== deletedMessage._id)
-    // );
     setFetchTypingIdObj(deleteTyping)
   });
 
@@ -248,51 +230,12 @@ useEffect(() => {
 }, [loginId, fetchTypingIdObj, messageDetails]);
 
 
-  // const submitHandler = async () => {
-  //   if (messageText.trim()) {
-  //     const messageSubmitData = {
-  //       id: loginId,
-  //       senderId: loginId,
-  //       recieverId: messageDetails._id,
-  //       message: messageText,
-  //       senderName: loginObj?.firstName,
-  //       images: loginObj?.image
-  //     };
-  //     const deleteTypingObj={
-  //       loginId:loginId,
-  //       senderId:loginId,
-  //       recieverId:messageDetails._id
-  //     }
-  //     const addRecordMessageObj={
-  //       id:loginId,
-  //       recieverId:messageDetails._id
-  //     }
-  //     console.log("Message sent:", messageSubmitData);
-  //     try {
-  //       const response = await axios.post(`http://192.168.29.169:4000/chat/addSendMessage/${messageSubmitData.id}`, messageSubmitData);
-  //       console.log(' send message of data is', response.data)
-  //       socket.emit('sendMessage', response.data.chatUser)
-  //       setMessageText('')
-
-  //       const responseData = await axios.post(`http://192.168.29.169:4000/chat/deleteTyping`, deleteTypingObj);
-  //       console.log('delete  typing message of data is', responseData.data);
-
-  //       const recordResponseData = await axios.post(`http://192.168.29.169:4000/chat/addRecordMessage/${addRecordMessageObj.id}`, addRecordMessageObj);
-  //       console.log('add record response message id array  is', recordResponseData.data);
-  //       socket.emit('addRecordMessageId', response.data.recordMessageIdArray)
-  //     } catch (error) {
-  //       console.error('Error sending message:', error);
-  //     }
-  //   } else {
-  //     console.log("Message text is empty");
-  //   }
-  // };
   const submitHandler = async () => {
     if (messageText.trim()) {
       const messageSubmitData = {
         id: loginId,
         senderId: loginId,
-        recieverId: messageDetails._id,
+        recieverId: messageDetails?._id,
         message: messageText,
         senderName: loginObj?.firstName,
         images: loginObj?.image,
@@ -300,11 +243,11 @@ useEffect(() => {
       const deleteTypingObj = {
         loginId: loginId,
         senderId: loginId,
-        recieverId: messageDetails._id,
+        recieverId: messageDetails?._id,
       };
       const addRecordMessageObj = {
         id: loginId,
-        recieverId: messageDetails._id,
+        recieverId: messageDetails?._id,
       };
   
       console.log("Message sent:", messageSubmitData);
@@ -312,7 +255,7 @@ useEffect(() => {
       try {
         // Call addSendMessage API
         const response = await axios.post(
-          `http://192.168.29.169:4000/chat/addSendMessage/${messageSubmitData.id}`,
+          `${BASE_URL}/chat/addSendMessage/${messageSubmitData.id}`,
           messageSubmitData
         );
         console.log('Send message data:', response.data);
@@ -321,7 +264,7 @@ useEffect(() => {
   
         // Call deleteTyping API
         const responseData = await axios.post(
-          `http://192.168.29.169:4000/chat/deleteTyping`,
+          `${BASE_URL}/chat/deleteTyping`,
           deleteTypingObj
         );
         console.log('Delete typing message data:', responseData.data);
@@ -329,11 +272,10 @@ useEffect(() => {
         // Call addRecordMessage API
         console.log('About to call addRecordMessage API with:', addRecordMessageObj);
         const recordResponseData = await axios.post(
-          `http://192.168.29.169:4000/chat/addRecordMessage/${addRecordMessageObj.id}`,
+          `${BASE_URL}/chat/addRecordMessage/${addRecordMessageObj.id}`,
           addRecordMessageObj
         );
         console.log('Add record message ID array is:', recordResponseData.data);
-        // socket.emit('addRecordMessageId', recordResponseData.data.recordMessageIdArray);
         socket.emit('addRecordMessageId', recordResponseData.data
         );
       } catch (error) {
@@ -351,10 +293,7 @@ useEffect(() => {
     const fetchMessage = async () => {
       try {
         if (loginId) {
-          const response = await axios.get(`http://192.168.29.169:4000/chat/getMessage/${loginId}`);
-          // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-          // console.log('fetch messages is', response.data.chatUserArray)
-          // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+          const response = await axios.get(`${BASE_URL}/chat/getMessage/${loginId}`);
           setFetchMessages(response.data.chatUserArray);
 
         }
@@ -368,7 +307,7 @@ useEffect(() => {
     })
     socket.on('messageDeleted', (deletedMessage) => {
       setFetchMessages((prevMessages) =>
-        prevMessages.filter((msg) => msg._id !== deletedMessage._id)
+        prevMessages.filter((msg) => msg?._id !== deletedMessage?._id)
       );
     });
 
@@ -382,7 +321,7 @@ useEffect(() => {
 
   useEffect(() => {
     if (loginId) {
-      const filterMessageArray = fetchMessages.filter((messageItem) => messageItem.chatId === getChatDetailObj._id)
+      const filterMessageArray = fetchMessages.filter((messageItem) => messageItem.chatId === getChatDetailObj?._id)
       setFinalMessageArray(filterMessageArray)
 
     }
@@ -397,7 +336,7 @@ useEffect(() => {
 
   const deleteChatHandler = async (deleteChatMessage) => {
     try {
-      await axios.post(`http://192.168.29.169:4000/chat/deleteChat`, deleteChatMessage);
+      await axios.post(`${BASE_URL}/chat/deleteChat`, deleteChatMessage);
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -416,10 +355,9 @@ useEffect(() => {
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
   const viewProfileBlockHandler=async(messageDetailProfile)=>{
-    // navigation.navigate('MessageProfilePage', { formData: messageDetailProfile });
     const blockChatIdObj={
     id:loginId,
-    blockId:messageDetailProfile._id
+    blockId:messageDetailProfile?._id
     }
     if(blockChatIdObj.id===deactivateUserObj.selfDeactivate){
       setOpenDialog(true)
@@ -431,10 +369,9 @@ useEffect(() => {
       return
     }
     try {
-      const response = await axios.post(`http://192.168.29.169:4000/user/addBlockChatIdUser/${blockChatIdObj.id}`,blockChatIdObj);
+      const response = await axios.post(`${BASE_URL}/user/addBlockChatIdUser/${blockChatIdObj.id}`,blockChatIdObj);
       console.log('response in block chat user',response?.data)
       socket.emit('addBlockUser', response?.data)
-      // socket.emit('addLikeMatchUser', response?.data)
   
   } catch (error) {
       console.error('Error sending user in block', error);
@@ -444,10 +381,6 @@ useEffect(() => {
   
   }
   const viewExpertChatHandler=async(messageDetailProfile)=>{
-  //  const expertChatObj={
-  //   loginName:loginObj.name,
-  //   anotherName:messageDetailProfile.firstName
-  //  }
    dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
    navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:loginObj.name} });
   
@@ -461,13 +394,13 @@ useEffect(() => {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            backgroundColor: "white",
+            backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`,
             marginTop: 40,
           }}
         >
           <View style={{ marginTop: 10 }}>
             <Button onPress={backHandler}>
-              <Image source={back} style={{ width: 15, height: 15 }} />
+              <Image source={back} style={{ width: 15, height: 15,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }} />
             </Button>
           </View>
           <Pressable onPress={() => messageDetailsProfileHandler(messageDetails)}>
@@ -491,7 +424,7 @@ useEffect(() => {
               <View>
               <Text
                 style={{
-                  color: "black",
+                  color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,
                   fontWeight: "500",
                   paddingTop: `${showTypingResponse===true || activeLoginIdResponse===true ?8:14}`,
                 }}
@@ -514,6 +447,7 @@ useEffect(() => {
                 height: 20,
                 marginRight: 20,
                 marginTop: 15,
+                tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`
               }}
             />
           </Pressable>
@@ -543,12 +477,11 @@ useEffect(() => {
           </Card>
         </View>}
 
-        {/* marginBottom: `${deactivateUserObj.selfDeactivate!==""?0:100}` */}
         <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==null?0:100}` }}>
           <ScrollView>
             {
-              finalMessageArray.map((finalMessage) => {
-                // const uniqueKey = finalMessage?._id || `${finalMessage.message}_${index}`;
+              finalMessageArray.map((finalMessage,index) => {
+        
                 return (
                   <View key={finalMessage?._id} style={{
                     flexDirection: 'row',
@@ -647,12 +580,15 @@ useEffect(() => {
               borderRadius: 5,
               backgroundColor: "#fff",
               // marginLeft:-20
-              height: 50
+              height: 50,
+              paddingRight: 50, // Space for the image
+              textAlignVertical: "top", // Align text properly
             }}
             placeholder="Message"
             onChangeText={(text) => messageTypingHandler(text)}
             onSubmitEditing={submitHandler}
             value={messageText}
+        
           />
           <Pressable onPress={submitHandler}>
             <Image

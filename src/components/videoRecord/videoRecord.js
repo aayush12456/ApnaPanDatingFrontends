@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system'
-import {ShareAsync, shareAsync} from 'expo-sharing'
 import { ResizeMode } from 'expo-av';
 import VideoPlayer from 'expo-video-player';
-
+import * as MediaLibrary from 'expo-media-library';
 
 const VideoRecord = ({navigation,videoRecord}) => {
   const [videoUri, setVideoUri] = useState(null);
@@ -34,34 +32,30 @@ const VideoRecord = ({navigation,videoRecord}) => {
       console.log('Error during video recording', error);
     }
   };
-
   const downloadVideo = async () => {
     try {
-      const fileName = 'video.mp4';
-      const fileUri = FileSystem.documentDirectory + fileName; // Define the path to save the video
-
-      // Move the video from its temporary location to the desired file URI
-      await FileSystem.moveAsync({
-        from: videoUri,
-        to: fileUri,
-      });
-
-      console.log('Download successful:', fileUri);
-      // Now share the downloaded video
-      save(fileUri);
-      navigation.navigate('VideoUploadPage',{formData:videoRecord})
+      // Request permission to access the media library
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission not granted to access media library');
+        return;
+      }
+  
+      // Save the video to the media library
+      const asset = await MediaLibrary.createAssetAsync(videoUri);
+      console.log('Video saved successfully to media library:', asset.uri);
+  
+      // Optionally navigate or perform other actions
+      navigation.navigate('VideoUploadPage', { formData: videoRecord });
     } catch (error) {
-      console.error('Error downloading video:', error);
+      console.error('Error saving video to media library:', error);
     }
   };
-  const save = async (uri) => {
-    try {
-      await shareAsync(uri); // Share the saved video file
-      console.log('Video shared successfully!');
-    } catch (error) {
-      console.error('Error sharing video:', error);
-    }
+  const restartVideo = () => {
+    // Reset the video URI to allow re-recording
+    setVideoUri(null);
   };
+ 
   return (
     <>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
@@ -94,8 +88,8 @@ const VideoRecord = ({navigation,videoRecord}) => {
          videoBackgroundColor: 'black',
          height: 200,  // Set the desired height here
        }}
-       fullscreen={{ inFullscreen: true, visible: true }} // Enable fullscreen
-       showFullscreenButton // Show fullscreen button
+
+
      />
       )}
   {videoUri?<TouchableOpacity onPress={downloadVideo}  style={{
@@ -110,6 +104,21 @@ const VideoRecord = ({navigation,videoRecord}) => {
               }}>
         <Text style={{ fontSize: 18, color: 'white' }}>DOWNLOAD VIDEO</Text>
       </TouchableOpacity>:null}
+     { videoUri?<TouchableOpacity
+            onPress={restartVideo}
+            style={{
+              height: 50,
+              backgroundColor: 'rgb(239,68,68)',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 12,
+              marginLeft: 12,
+              marginRight: 20,
+              borderRadius: 11,
+            }}
+          >
+            <Text style={{ fontSize: 18, color: 'white' }}>RESTART VIDEO</Text>
+          </TouchableOpacity>:null}
     </>
   );
 };

@@ -6,13 +6,14 @@ import io from "socket.io-client";
 import axios from 'axios'
 const socket = io.connect("http://192.168.29.169:4000")
 const VisitorPageContent=({route})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
     const { formData } = route?.params;
     const [loginId,setLoginId]=useState('')
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
     useEffect(()=>{
-        if(loginResponse){
+        if(loginResponse || loginOtpResponse){
           const getLoginId = async () => {
             const loginIdData = await SecureStore.getItemAsync('loginId');
             setLoginId(loginIdData) 
@@ -25,7 +26,7 @@ const VisitorPageContent=({route})=>{
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
             // setLikesArray(response?.data?.anotherMatchUser || []);
             console.log('get deactivate user obj is', response?.data)

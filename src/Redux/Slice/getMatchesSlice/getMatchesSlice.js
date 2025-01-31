@@ -6,7 +6,9 @@ export const getMatchesData = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
 
     try {
-      const response = await axios.get(`/filterUsers/${userId}`); 
+      const response = await axios.get(`/filterUsers/${userId}`,{
+        headers: { 'Cache-Control': 'no-cache' }
+      }); 
       console.log('response of filter user',response.data)
       return response.data
     } catch (error) {
@@ -43,3 +45,4 @@ const getMatchesSlice = createSlice({
 
 export default getMatchesSlice.reducer;
 export const getMatchesSiceActions = getMatchesSlice.actions;
+

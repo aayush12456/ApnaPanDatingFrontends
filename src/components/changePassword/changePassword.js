@@ -10,7 +10,7 @@ import { useState,useEffect } from "react";
 import { PasswordUpdateAsync } from "../../Redux/Slice/passwordUpdateSlice/passwordUpdateSlice";
 import * as SecureStore from 'expo-secure-store'
 import { showToast } from "../../Redux/Slice/toastSlice/toastSlice";
-const ChangePassword=()=>{
+const ChangePassword=({completeObj})=>{
   const [loginId, setLoginId] = useState('')
   const [notMatch,setNotMatch]=useState('')
     const navigation = useNavigation();
@@ -32,17 +32,6 @@ const ChangePassword=()=>{
       }
     }, [loginResponse,loginOtpResponse])
 
-    // useEffect(() => {
-    //   if (passwordUpdateObj?.mssg === "Password updated successfully") {
-    //     // Delayed navigation after password update success
-    //     const timer = setTimeout(() => {
-    //       navigation.navigate('FrontPage');
-    //     }, 3000);
-    
-    //     return () => clearTimeout(timer); // Cleanup to prevent memory leaks
-    //   }
-    // }, [passwordUpdateObj]);
-    
 return (
     <>
         <Formik
@@ -82,7 +71,8 @@ return (
         <>
         <View style={{marginTop:20}}>
         <View>
-<Text style={{paddingLeft:12}}>Current Password</Text>
+<Text style={{paddingLeft:12,
+  color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Current Password</Text>
 <View
           style={{
             flexDirection: "row",
@@ -116,7 +106,8 @@ return (
         </View>
 
         <View>
-<Text style={{paddingLeft:12}}>New Password</Text>
+<Text style={{paddingLeft:12,
+color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>New Password</Text>
 <View
           style={{
             flexDirection: "row",
@@ -149,7 +140,8 @@ return (
         </View>
 
         <View>
-<Text style={{paddingLeft:12}}>confirm New Password</Text>
+<Text style={{paddingLeft:12,
+  color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>confirm New Password</Text>
 <View
           style={{
             flexDirection: "row",

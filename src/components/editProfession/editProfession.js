@@ -6,7 +6,7 @@ import rightTik from '../../../assets/myProfileIcons/rightTik.png';
 import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice';
 import { useEffect, useState } from "react";
 
-const EditProfession = ({ navigation }) => {
+const EditProfession = ({ navigation,completeObj }) => {
     const [updateProfession, setUpdateProfession] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditProfession = ({ navigation }) => {
 
     const selectProfessionHandler = (profession) => {
         const updateProfessionObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             profession: profession
         };
         dispatch(updatePersonalDataAsync(updateProfessionObj));
@@ -43,7 +43,7 @@ const EditProfession = ({ navigation }) => {
                                         paddingTop: 22,
                                         paddingLeft: 8,
                                         fontSize: 15,
-                                        color: `${updateProfession?.profession === profession?.profession ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                        color: `${updateProfession?.profession === profession?.profession ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                                     }}>
                                         {profession.profession}
                                     </Text>

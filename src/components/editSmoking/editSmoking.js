@@ -6,7 +6,7 @@ import { Smoking } from '../../utils/EditPersonalInfo';
 import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice';
 import { useEffect, useState } from "react";
 
-const EditSmoking = ({ navigation }) => {
+const EditSmoking = ({ navigation,completeObj }) => {
     const [updateSmoking, setUpdateSmoking] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditSmoking = ({ navigation }) => {
     
     const selectSmokingHandler = (smoking) => {
         const updateSmokingObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             smoking: smoking
         };
         dispatch(updatePersonalDataAsync(updateSmokingObj));
@@ -42,7 +42,7 @@ const EditSmoking = ({ navigation }) => {
                                     paddingTop: 22,
                                     paddingLeft: 8,
                                     fontSize: 15,
-                                    color: `${updateSmoking?.smoking === smoking?.smoking ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                    color: `${updateSmoking?.smoking === smoking?.smoking ? 'rgba(0, 150, 255, 1)' :`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                                 }}>
                                     {smoking.smoking}
                                 </Text>

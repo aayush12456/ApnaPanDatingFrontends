@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { Text, View, TouchableOpacity, Image,Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
+import * as MediaLibrary from 'expo-media-library';
+import * as ImageManipulator from 'expo-image-manipulator'; 
 const CaptureImage = ({captureImages, navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const [imageUrl,setImageUrl]=useState(null)
@@ -39,6 +40,35 @@ const captureImageObj={
 }
 navigation.navigate('ImageUploadPage',{formData:captureImageObj})
 }
+
+const downloadImageHandler = async () => {
+  try {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Please grant media library permissions to save the image.');
+      return;
+    }
+
+    if (imageUri) {
+      // Resize the image to reduce size to around 1 MB
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+        imageUri,
+        [{ resize: { width: 800 } }], // Resize to a width of 800px (maintaining aspect ratio)
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress the image to 70% quality
+      );
+      
+      // Check if the image size is around 1 MB
+      const imageSize = manipulatedImage.uri;
+      const asset = await MediaLibrary.createAssetAsync(imageSize);
+      Alert.alert('Success', 'Image saved to your gallery!');
+    } else {
+      Alert.alert('Error', 'No image to save.');
+    }
+  } catch (error) {
+    console.log('Error saving image:', error);
+    Alert.alert('Error', 'Failed to save the image.');
+  }
+};
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginTop:`${!imageUri?-400:0}`}}>
       <Text style={{ fontWeight: 'bold', fontSize: 25, marginBottom: 20 }}>Capture Image</Text>
@@ -105,7 +135,23 @@ navigation.navigate('ImageUploadPage',{formData:captureImageObj})
             <Text style={{ fontSize: 18, color: 'white' }}>Submit</Text>
           </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+               onPress={downloadImageHandler}
+            style={{
+              height: 50,
+              backgroundColor: 'rgb(59,130,246)',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 30,
+              borderRadius: 11,
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ fontSize: 18, color: 'white' }}>Download Capture Image</Text>
+          </TouchableOpacity>
         </View>
+        
       )}
     </View>
   );

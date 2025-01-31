@@ -16,7 +16,6 @@ const LoginWithOtpData=({phoneNumber,otp})=>{
   const [otpData,setOtpData]=useState('')
   const [error,setError]=useState('')
   const [phone,setPhone]=useState('')
-  const [loginOtpToken,setLoginOtpToken]=useState(null)
   const [resendDisabled, setResendDisabled] = useState(true);
   const [countdown, setCountdown] = useState(10);
   const phoneObj = {
@@ -33,14 +32,12 @@ const LoginWithOtpData=({phoneNumber,otp})=>{
       const saveToSecureStore = async () => {
         try {
           await SecureStore.setItemAsync('loginObj', JSON.stringify(loginOtpObj));
-          // await AsyncStorage.setItem('loginData',loginResponse)
           console.log("Login data stored successfully!");
         } catch (error) {
           console.error("Failed to store login data:", error);
         }
       };
       saveToSecureStore();
-      // navigation.navigate('HeaderPage');
     }
   }, [loginOtpResponse]);
 
@@ -96,8 +93,7 @@ const LoginWithOtpData=({phoneNumber,otp})=>{
     console.log('change had')
 navigation.navigate('LoginWithOtpPage')
   }
-  // const loginWithOtpDatasSelector=useSelector((state)=>state?.loginWithOtpDatas?.loginWithOtpDatas)
-  // console.log('login with otp datas in navigate',loginWithOtpDatasSelector)
+
 return (
     <>
           <View>

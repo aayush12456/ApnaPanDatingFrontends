@@ -25,7 +25,7 @@ else{
     };
     const submitEditBio=()=>{
       const updatePersonalBioObj={
-        id:completeLoginObjData._id,
+        id:completeLoginObjData?._id,
         aboutUser:aboutUser
       }
       dispatch(updatePersonalDataAsync(updatePersonalBioObj))

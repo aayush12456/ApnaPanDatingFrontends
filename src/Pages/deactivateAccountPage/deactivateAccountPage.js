@@ -3,17 +3,35 @@ import DeactivateAccount from "../../components/deactivateAccount/deactivateAcco
 import { useState,useEffect } from "react";
 import * as SecureStore from 'expo-secure-store';
 import {useSelector} from 'react-redux'
+import { View } from "react-native";
 import axios from 'axios'
 import io from "socket.io-client";
 const socket = io.connect("http://192.168.29.169:4000")
 const DeactivateAccountPage=({route})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
     const { formData } = route?.params;
     const [loginId,setLoginId]=useState('')
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
+    const [completeObj,setCompleteObj]=useState({})
+    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+    const completeLoginObj = useSelector(
+      (state) => state.loginData.loginData.completeLoginData
+    );
+    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+
     useEffect(()=>{
-        if(loginResponse){
+      if(appearModeSelector){
+      setCompleteObj(appearModeSelector)
+      }
+      else{
+          setCompleteObj(completeLoginObjData)
+      }
+      },[appearModeSelector,completeLoginObjData])
+    useEffect(()=>{
+        if(loginResponse || loginOtpResponse){
           const getLoginId = async () => {
             const loginIdData = await SecureStore.getItemAsync('loginId');
             setLoginId(loginIdData) 
@@ -26,9 +44,8 @@ const DeactivateAccountPage=({route})=>{
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
-            // setLikesArray(response?.data?.anotherMatchUser || []);
             console.log('get deactivate user obj is', response?.data)
             setDeactivateUserObj(response?.data)
           }
@@ -49,8 +66,10 @@ const DeactivateAccountPage=({route})=>{
    console.log('get deactivate user obj',deactivateUserObj)
 return (
     <>
-    <CommonHeader commonHeaderName={formData.headerName}/>
-    <DeactivateAccount loginId={loginId} deactivateObj={deactivateUserObj}/>
+    <View  style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
+    <CommonHeader commonHeaderName={formData.headerName} completeObj={completeObj}/>
+    <DeactivateAccount loginId={loginId} deactivateObj={deactivateUserObj} completeObj={completeObj}/>
+    </View>
     </>
 )
 }

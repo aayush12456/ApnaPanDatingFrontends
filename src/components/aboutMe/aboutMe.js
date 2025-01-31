@@ -19,7 +19,6 @@ return (
         }
         console.log('about me values', aboutMeData); // Handle form submission
           navigation.navigate('VideoRecordPage',{formData:aboutMeData})
-        // action.resetForm();
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (

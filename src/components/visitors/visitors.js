@@ -1,7 +1,7 @@
 
 import { useEffect,useState,useRef } from "react"
 import {useSelector} from "react-redux"
-import {View,ScrollView} from 'react-native'
+import {View,ScrollView,Text} from 'react-native'
 import io from "socket.io-client";
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios'
@@ -162,7 +162,7 @@ const visitorChunkArray = (array, chunkSize) => {
 return (
     <>
      <ScrollView>
-      {visitorChunkedData.map((row, rowIndex) => (
+      {visitorChunkedData && visitorChunkedData.length>0? visitorChunkedData.map((row, rowIndex) => (
         <View
           key={rowIndex}
           style={{
@@ -181,7 +181,7 @@ return (
             </View>
           ))}
         </View>
-      ))}
+      )):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200}}>No Visitor Profile is there</Text>}
     </ScrollView>
     </>
 )

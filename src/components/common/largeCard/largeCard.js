@@ -1,5 +1,5 @@
 import { Text, Card ,Button} from "react-native-paper";
-import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable, Alert,Animated} from "react-native";
+import { ScrollView, View, Dimensions, Image,StyleSheet,Pressable,Animated} from "react-native";
 import { useState,useEffect,useRef } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import io from "socket.io-client";
@@ -22,7 +22,8 @@ import pause from '../../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
 
 const socket = io.connect("http://192.168.29.169:4000")
-const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj }) => {
+const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj,completeObj }) => {
+  const BASE_URL = "http://192.168.29.169:4000";
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
@@ -158,7 +159,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         return
       }
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addCommonVisitorLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
+        const response = await axios.post(`${BASE_URL}/user/addCommonVisitorLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
         console.log('response in like skip user is',response?.data?.likeSkip)
         socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
     } catch (error) {
@@ -172,7 +173,6 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         onlinePersonSkipUserId:newAndOnlineContent?._id
       }
       dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
-      // dispatch( onlinePassDataSliceActions.onlinePassDatas(onlineSkipUserObj.onlinePersonSkipUserId))
       navigation.navigate('New And Online',{formData:onlineSkipUserObj})
     }
     else if(visitorContent){
@@ -190,7 +190,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         return
       }
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addCommonVisitorLikeSkipUser/${visitorSkipUserObj.id}`, visitorSkipUserObj);
+        const response = await axios.post(`${BASE_URL}/user/addCommonVisitorLikeSkipUser/${visitorSkipUserObj.id}`, visitorSkipUserObj);
         console.log('response in like skip user is',response?.data?.likeSkip)
         socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
     } catch (error) {
@@ -205,9 +205,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getCommonVisitorLikeSkipUser/${loginId}`
+            `${BASE_URL}/user/getCommonVisitorLikeSkipUser/${loginId}`
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get like skip user is',response?.data?.likeSkipUserArray)
           setCommonVisitorLikeSkipUser(response?.data?.likeSkipUserArray || []);
         }
@@ -249,7 +248,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     if(likeUser){
       const likeMatchUserObj={
         id:loginId,
-        likeMatchId:likeUser._id
+        likeMatchId:likeUser?._id
       }
       if(likeMatchUserObj.id===deactivateUserObj.selfDeactivate){
         setOpenDialog(true)
@@ -261,7 +260,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         return
       }
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
+        const response = await axios.post(`${BASE_URL}/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
         console.log('response in like match user is',response?.data)
         socket.emit('addLikeMatchUser', response?.data)
         if(response){
@@ -273,10 +272,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
       const likeMatchCountObj={
         id:loginId,
-        matchLikeId:likeUser._id
+        matchLikeId:likeUser?._id
       }
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${likeMatchCountObj.id}`,likeMatchCountObj);
+        const response = await axios.post(`${BASE_URL}/user/addLikeCount/${likeMatchCountObj.id}`,likeMatchCountObj);
         console.log('response in add like count user',response?.data?.userObj)
         socket.emit('addLikeCountUser', response?.data?.userObj)
     
@@ -287,11 +286,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     else if(newOnline){
       const onlineLikeUserObj={
         id:loginId,
-        onlinePersonLikeUserId:newOnline._id
+        onlinePersonLikeUserId:newOnline?._id
       }
       console.log("Online like user in new", onlineLikeUserObj);
           try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addOnlineLikeUser/${onlineLikeUserObj.id}`,onlineLikeUserObj);
+        const response = await axios.post(`${BASE_URL}/user/addOnlineLikeUser/${onlineLikeUserObj.id}`,onlineLikeUserObj);
         console.log('response in online like user',response?.data)
         socket.emit('addOnlineLikeUser', response?.data)
     
@@ -300,10 +299,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
     const onlineLikeCountObj={
       id:loginId,
-      matchLikeId:newOnline._id
+      matchLikeId:newOnline?._id
     }
     try {
-      const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${onlineLikeCountObj.id}`,onlineLikeCountObj);
+      const response = await axios.post(`${BASE_URL}/user/addLikeCount/${onlineLikeCountObj.id}`,onlineLikeCountObj);
       console.log('response in online like count user',response?.data?.userObj)
       socket.emit('addLikeCountUser', response?.data?.userObj)
   
@@ -314,7 +313,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     else if(visitorContent){
      const visitorLikeUserObj={
       id:loginId,
-      visitorPlusLikeUserId:visitorContent._id
+      visitorPlusLikeUserId:visitorContent?._id
      }
      if(visitorLikeUserObj.id===deactivateUserObj.selfDeactivate){
       setOpenDialog(true)
@@ -327,10 +326,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
      const visitorLikeCountObj={
       id:loginId,
-      matchLikeId:visitorContent._id
+      matchLikeId:visitorContent?._id
     }
      try {
-      const response = await axios.post(`http://192.168.29.169:4000/user/addVisitorLikeUser/${visitorLikeUserObj.id}`,visitorLikeUserObj);
+      const response = await axios.post(`${BASE_URL}/user/addVisitorLikeUser/${visitorLikeUserObj.id}`,visitorLikeUserObj);
       console.log('response in visitor like  user',response?.data)
       socket.emit('addVisitorLikeUser', response?.data)
   
@@ -339,7 +338,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   }
 
   try {
-    const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${visitorLikeCountObj.id}`,visitorLikeCountObj);
+    const response = await axios.post(`${BASE_URL}/user/addLikeCount/${visitorLikeCountObj.id}`,visitorLikeCountObj);
     console.log('response in add like count user',response?.data?.userObj)
     socket.emit('addLikeCountUser', response?.data?.userObj)
 
@@ -354,9 +353,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+            `${BASE_URL}/user/getLikeMatchUser/${loginId}`
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get like match user is',response?.data)
           setLikeMatchUser(response?.data);
         }
@@ -392,9 +390,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+            `${BASE_URL}/user/getLikeMatchUser/${loginId}`
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get like match user is',response?.data)
           setLikeMatchUser(response?.data);
         }
@@ -420,9 +417,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getOnlineLikeUser/${loginId}`
+            `${BASE_URL}/user/getOnlineLikeUser/${loginId}`
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get online like user is',response?.data)
           setOnlineLikeUserObj(response?.data );
         }
@@ -455,9 +451,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getVisitorLikeUser/${loginId}`
+              `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
             );
-            // setLikesArray(response?.data?.anotherMatchUser || []);
             console.log('get visitor user is',response?.data)
             setVisitorLikeUserObj(response?.data);
           }
@@ -487,11 +482,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
        },[visitorLikeUserObj?.visitorLikes,visitorContent])
 
        useEffect(()=>{
-        if(completeLoginObjData._id){
-            dispatch(getBollywoodSongAsync(completeLoginObjData._id))
+        if(completeLoginObjData?._id){
+            dispatch(getBollywoodSongAsync(completeLoginObjData?._id))
         }
     
-          },[dispatch,completeLoginObjData._id])
+          },[dispatch,completeLoginObjData?._id])
           const finalContent=newAndOnlineContent || likeContent || visitorContent
           console.log('get all songs',getAllSongsSelector)
           console.log('finalContent',finalContent.songId)
@@ -622,16 +617,12 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       </View>
       
      </View>}
-     <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
+     <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, 
+      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}` }}>
         <Card.Content style={{height:'100%'}}>
         <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
-          {/* <TouchableOpacity  onPress={backHandler} >
-                <Image source={back}   style={{ width:19, height:19 }}/>
-          </TouchableOpacity> */}
-          {/* <Pressable  onPress={backHandler} >
-          <Image source={back}   style={{ width:15, height:15 }}/>
-          </Pressable> */}
-          <Button onPress={backHandler}><Image source={back}   style={{ width:15, height:15 }}/></Button>
+          <Button onPress={backHandler}><Image source={back}   style={{ width:15, height:15,
+            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/></Button>
               </View>
           <ScrollView style={{ flexGrow: 1 }}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}}>
@@ -673,30 +664,30 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:"black"}}>{newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName}</Text>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black'}}>{age}</Text>
-        <Text style={{fontSize:16,fontWeight:'semibold',color:'black'}}>{newAndOnlineContent?.city || likeContent?.city || visitorContent?.city}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{age}</Text>
+        <Text style={{fontSize:16,fontWeight:'semibold',color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{newAndOnlineContent?.city || likeContent?.city || visitorContent?.city}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text>Working as {newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession} </Text>
-<Text style={{paddingTop:2}}>Studied {newAndOnlineContent?.education || likeContent?.education || visitorContent?.profession} </Text>
+<Text style={{color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Working as {newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession} </Text>
+<Text style={{paddingTop:2,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Studied {newAndOnlineContent?.education || likeContent?.education || visitorContent?.profession} </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{mainNumber}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{mainNumber}</Text>
       </View>
 
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.relationship || likeContent?.relationship || visitorContent?.relationship}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.relationship || likeContent?.relationship || visitorContent?.relationship}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.looking || likeContent?.looking || visitorContent?.looking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.looking || likeContent?.looking || visitorContent?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -707,8 +698,9 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 10 }}>
       {
         row.map((rowItem, itemIndex) => (
-          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
-            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: rowItem === "Charitable activities" ? 60 : 40 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
+           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -721,8 +713,9 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 10 }}>
       {
         likeRow.map((rowItem, itemIndex) => (
-          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
-            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130,height: rowItem === "Charitable activities" ? 60 : 40 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
+           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -735,8 +728,9 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 10 }}>
       {
         likeRow.map((rowItem, itemIndex) => (
-          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
-            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: rowItem === "Charitable activities" ? 60 : 40 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
+           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -750,52 +744,57 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.education || likeContent?.education || visitorContent?.education}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.education || likeContent?.education || visitorContent?.education}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.drinking || likeContent?.drinking || visitorContent?.drinking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.drinking || likeContent?.drinking || visitorContent?.drinking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.smoking || likeContent?.smoking || visitorContent?.smoking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.smoking || likeContent?.smoking || visitorContent?.smoking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
       </View>
       { finalContent?.songId ==='none'|| !finalContent.songId?null:<View style={{paddingLeft:10,paddingTop:18}}>
       <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
         <View style={{flexDirection:'row',marginTop:8,gap:8}}>
           <Image source={{uri:songObj &&songObj.songImage}} style={{width:50,height:50,borderRadius:25}}/>
-          <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black',paddingTop:6}}>{songObj && songObj.songName}</Text>
+          <Text style={{fontSize:16 ,fontWeight:'semibold', color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,paddingTop:6}}>{songObj && songObj.songName}</Text>
           <Pressable  onPress={() => playSongHandler(songObj.songUrl)}> 
-          <Image  source={isPlaying && currentSongUrl === songObj.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20 }}/>
+          <Image  source={isPlaying && currentSongUrl === songObj.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20,
+            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/>
           </Pressable>
         </View>
       </View>}
           </ScrollView>
-          {commonVisitorLikeSkip===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+          {commonVisitorLikeSkip===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`
+          ,fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You skipped this profile</Text>}
 
-            {likeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            {likeMatch===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`,
+            fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You've both paired</Text>}
 
-            {selfLikeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            {selfLikeMatch===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`,
+            fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You Like this profile</Text>}
            
-            {selfVisitorLikeMatch===false  &&<Text style={{ color: 'rgba(117, 117, 117, 0.5)',fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
+            {selfVisitorLikeMatch===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`
+            ,fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You Like this profile</Text>}
 
        {commonVisitorLikeSkip===false || likeMatch===false ||
@@ -805,7 +804,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
                 <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'grey'}}>
           <Image source={dislike} style={{ width: 20, height:30,marginLeft:14,marginTop:6,tintColor:'white' }} />
                 </View>
-          <Text style={{fontSize:15,paddingTop:10,colour:'grey'}}>SKIP</Text>
+          <Text style={{fontSize:15,paddingTop:10,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'grey'}`}}>SKIP</Text>
             </View>
             </Pressable>
             <Pressable onPress={()=>likeUserHandler(likeContent, newAndOnlineContent,visitorContent)}>

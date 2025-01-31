@@ -10,7 +10,7 @@ import axios from "axios";
 import FilteredChatMessage from "../filteredChatMessage/filteredChatMessage";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
 const socket = io.connect("http://192.168.29.169:4000")
-const MessageCard=({finalMessageUser})=>{
+const MessageCard=({finalMessageUser,completeObj})=>{
     const [loginObj,setLoginObj]=useState({})
     const [chatIdArray, setChatIdArray] = useState([])
     const [filteredMessages, setFilteredMessages] = useState([])
@@ -57,9 +57,9 @@ useEffect(() => {
   useEffect(()=>{
     const fetchAllLoginIdUser = async () => {
       try {
-        if (loginObj._id) {
+        if (loginObj?._id) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginObj._id}`,
+            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginObj?._id}`,
           );
           // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get all login id user is', response?.data?.loginIdUserArray)
@@ -84,25 +84,25 @@ useEffect(() => {
       socket.off("getLoginUser");
       socket.off("deleteLoginIdUser");
     };
-  },[loginObj._id])
+  },[loginObj?._id])
 
   console.log('login id user array is',loginIdUserArray)
   useEffect(() => {
-    if (loginObj._id) {
+    if (loginObj?._id) {
       const getActiveLoginId = loginIdUserArray?.some(
         (item) => item === finalMessageUser?._id
       );
       setActiveLoginIdResponse(getActiveLoginId)
     }
-  }, [loginObj._id, loginIdUserArray, finalMessageUser]);
+  }, [loginObj?._id, loginIdUserArray, finalMessageUser]);
 
   
 useEffect(() => {
 
   const getMessageTyping = async () => {
     try {
-      if (loginObj._id) {
-        const response = await axios.get(`http://192.168.29.169:4000/chat/getTyping/${loginObj._id}`);
+      if (loginObj?._id) {
+        const response = await axios.get(`http://192.168.29.169:4000/chat/getTyping/${loginObj?._id}`);
         // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
         // console.log('fetch messages is', response.data.chatUserArray)
         // console.log('fetch message in reciever', response.data.recieverChatUserArray)
@@ -129,18 +129,18 @@ useEffect(() => {
     socket.off('getTyping')
     socket.off('typingChatDeleted');
   }
-}, [loginObj._id])
+}, [loginObj?._id])
 console.log('fetch typing id obj',fetchTypingIdObj)
 
 useEffect(() => {
-  if (loginObj._id) {
+  if (loginObj?._id) {
     const getTypingIdResponse = fetchTypingIdObj?.data?.some(
       (item) => item === finalMessageUser?._id
     );
     setShowTypingResponse(getTypingIdResponse)
     console.log('get typing id response:', getTypingIdResponse);
   }
-}, [loginObj._id, fetchTypingIdObj, finalMessageUser]);
+}, [loginObj?._id, fetchTypingIdObj, finalMessageUser]);
 
 
     const messageCardClickHandler=async(finalMessageUser)=>{
@@ -148,17 +148,17 @@ useEffect(() => {
     if(finalMessageUser){
       const addChatIdObj={
      id:loginObj?._id,
-     anotherId:finalMessageUser._id,
+     anotherId:finalMessageUser?._id,
      loginName:loginObj.name,
      anotherName:finalMessageUser.firstName
       }
       const deleteRecordMessageIdObj={
-        id:loginObj._id,
-        recieverId:finalMessageUser._id
+        id:loginObj?._id,
+        recieverId:finalMessageUser?._id
       }
       const anotherRecordMessageIdObj={
-        id:loginObj._id,
-        recieverId:finalMessageUser._id
+        id:loginObj?._id,
+        recieverId:finalMessageUser?._id
       }
       try {
         const deleteResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/deleteRecordMessage/${deleteRecordMessageIdObj.id}`,deleteRecordMessageIdObj);
@@ -204,8 +204,8 @@ useEffect(() => {
 
     const fetchMessage = async () => {
         try {
-          if(loginObj._id){
-            const response = await axios.get(`http://192.168.29.169:4000/chat/getMessage/${loginObj._id}`);
+          if(loginObj?._id){
+            const response = await axios.get(`http://192.168.29.169:4000/chat/getMessage/${loginObj?._id}`);
             // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
             // console.log('fetch messages is', response.data.chatUserArray)
             // console.log('fetch message in reciever', response.data.recieverChatUserArray)
@@ -222,7 +222,7 @@ useEffect(() => {
     })
     socket.on('messageDeleted', (deletedMessage) => {
         setFetchMessages((prevMessages) =>
-            prevMessages.filter((msg) => msg._id !== deletedMessage._id)
+            prevMessages.filter((msg) => msg?._id !== deletedMessage?._id)
         );
     });
   
@@ -230,7 +230,7 @@ useEffect(() => {
         socket.off('recieveMessage')
         socket.off('messageDeleted');
     }
-  }, [loginObj._id])
+  }, [loginObj?._id])
   
   
 
@@ -241,7 +241,7 @@ useEffect(() => {
         // Map through chatIdArray to find the closest message for each chatId
         const closestMessagesArray = chatIdArray.map(chatItem => {
             // Filter messages matching the current chatId
-            const matchingMessages = fetchMessages.filter(messageItem => messageItem.chatId === chatItem._id);
+            const matchingMessages = fetchMessages.filter(messageItem => messageItem.chatId === chatItem?._id);
 
             // Find the message with the closest timestamp to the current time
             if (matchingMessages.length > 0) {
@@ -273,22 +273,22 @@ console.log('fetch message in message card',filteredMessages)
 
 useEffect(() => {
   const checkMessage = filteredMessages.some(
-      filterItem => filterItem.senderId === finalMessageUser._id && filterItem.recieverId === loginObj._id
+      filterItem => filterItem.senderId === finalMessageUser?._id && filterItem.recieverId === loginObj?._id
   );
   const anotherCheckMessage = filteredMessages.some(
-      filterItem => filterItem.senderId === loginObj._id && filterItem.recieverId === finalMessageUser._id
+      filterItem => filterItem.senderId === loginObj?._id && filterItem.recieverId === finalMessageUser?._id
   );
   if (checkMessage || anotherCheckMessage) {
       setCheckMessages(true);
   }
-}, [filteredMessages, finalMessageUser._id, loginObj._id]);
+}, [filteredMessages, finalMessageUser?._id, loginObj?._id]);
 
 useEffect(() => {
 
   const fetchRecordMessage = async () => {
       try {
-        if(loginObj._id){
-          const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${loginObj._id}`);
+        if(loginObj?._id){
+          const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${loginObj?._id}`);
           // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
           // console.log('fetch messages is', response.data.chatUserArray)
           // console.log('fetch message in reciever', response.data.recieverChatUserArray)
@@ -311,16 +311,16 @@ useEffect(() => {
       socket.off('recieveRecordMessageId')
       // socket.off('recordMessageIdDeleted')
   }
-}, [loginObj._id])
+}, [loginObj?._id])
 
 console.log('record message array',recordMessage)
 
 useEffect(() => {
   const checkRecordMessageId = recordMessage?.recordMessageIdArray?.some(
-      recordId => recordId === finalMessageUser._id 
+      recordId => recordId === finalMessageUser?._id 
   );
   setRecordMessageId(checkRecordMessageId)
-}, [ recordMessage, finalMessageUser._id]);
+}, [ recordMessage, finalMessageUser?._id]);
 console.log('record message id response',recordMessageId)
 return (
     <>
@@ -329,7 +329,7 @@ return (
                 marginLeft: 8,
                 marginRight: 8,
                 marginTop: 20,
-                backgroundColor: "white",
+                backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`
               }}
               onPress={()=>messageCardClickHandler(finalMessageUser)}
             >
@@ -361,10 +361,10 @@ return (
                   </View>
                     <View>
                     <View style={{ flexDirection:'row',gap:10,paddingTop:7 }}>
-                    <Text style={{ color: "black", fontWeight: "500" }}>
+                    <Text style={{ color: "black", fontWeight: "500",color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>
                       {finalMessageUser?.firstName},
                     </Text>
-                    <Text style={{ color: "black", fontWeight: "500" }}>
+                    <Text style={{ color: "black", fontWeight: "500",color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>
                       {age}
                     </Text>
                   </View>
@@ -374,12 +374,14 @@ return (
                     
                         return (
                
-                          <FilteredChatMessage key={filterMessage?._id} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj} recordMessageId={recordMessageId} />
+                          <FilteredChatMessage key={filterMessage?._id} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj}
+                           recordMessageId={recordMessageId} completeObj={completeObj} />
                     
                         )
                       })
                     }
-                 {checkMessages===false && <Text style={{ color: "black", fontWeight: "500",paddingTop:2 }}>
+                 {checkMessages===false && <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,
+                  fontWeight: "500",paddingTop:2 }}>
            You have both paired
                     </Text>}
                     {showTypingResponse===true &&

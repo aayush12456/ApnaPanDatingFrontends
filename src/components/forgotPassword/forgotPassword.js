@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text,TextInput,Button } from "react-native-paper"
-import { Image, View, TouchableOpacity,  Pressable } from "react-native";
+import { Image, View, TouchableOpacity } from "react-native";
 import back from '../../../assets/signUpFormIcon/back.png';
 import { useNavigation } from '@react-navigation/native';
 import { loginWithOtpAsync } from "../../Redux/Slice/loginWithOtpSlice/loginWithOtpSlice";

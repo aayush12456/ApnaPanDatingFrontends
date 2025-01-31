@@ -4,12 +4,12 @@ import { passVideoDataSliceActions } from "../../Redux/Slice/passVideoSlice/pass
 import { playVideoModalActions } from "../../Redux/Slice/playVideoModalSlice/playVideoModalSlice";
 import { anotherPassDataSliceActions } from "../../Redux/Slice/anotherPassDataSlice/anotherPassDataSlice";
 import { useState } from "react";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import back from '../../../assets/signUpFormIcon/back.png'
 import play from '../../../assets/myProfileIcons/play.png'
 import PlayVideo from "../common/playVideo/playVideo";
-const MessageProfile=({messageProfile})=>{
+const MessageProfile=({messageProfile,completeObj})=>{
     const dispatch = useDispatch()
     const navigation=useNavigation()
     const [active, setActive] = useState(0); 
@@ -59,10 +59,12 @@ const MessageProfile=({messageProfile})=>{
    }
 return (
     <>
-       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, backgroundColor: 'white' }}>
+       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, 
+        backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`, }}>
         <Card.Content style={{height:'100%'}}>
         <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
-        <Button onPress={backHandler}><Image source={back}   style={{ width:15, height:15 }}/></Button>
+        <Button onPress={backHandler}><Image source={back}   style={{ width:15, height:15,
+          tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/></Button>
         </View>
         <ScrollView style={{ flexGrow: 1 }}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}}>
@@ -105,30 +107,36 @@ return (
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:"black"}}>{messageProfile?.firstName }</Text>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:'black'}}>{age}</Text>
-        <Text style={{fontSize:16,fontWeight:'semibold',color:'black'}}>{messageProfile?.city }</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{messageProfile?.firstName }</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold', 
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{age}</Text>
+        <Text style={{fontSize:16,fontWeight:'semibold', 
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{messageProfile?.city }</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text>Working as {messageProfile?.profession } </Text>
-<Text style={{paddingTop:2}}>Studied {messageProfile?.education } </Text>
+<Text style={{color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Working as {messageProfile?.profession } </Text>
+<Text style={{paddingTop:2,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Studied {messageProfile?.education } </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{mainNumber}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{mainNumber}</Text>
       </View>
 
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.relationship }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.relationship }</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.looking }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{messageProfile?.looking }</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -139,8 +147,9 @@ return (
     <View key={rowIndex} style={{ flexDirection: "row", gap: 12, paddingTop: 10 }}>
       {
         row.map((rowItem, itemIndex) => (
-          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
-            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6 }}>{rowItem}</Text>
+          <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: rowItem === "Charitable activities" ? 60 : 40 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
+            color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -156,30 +165,35 @@ return (
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.education }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, 
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.education }</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.profession }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, 
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.profession }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.drinking }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.drinking }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.smoking }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.smoking }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2 }}>{messageProfile?.eating }</Text>
+        <Text style={{fontSize:16 ,paddingTop:2,
+         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.eating }</Text>
       </View>
 
           </ScrollView>

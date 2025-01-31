@@ -10,8 +10,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import closeEye from '../../../assets/AllIcons/closedeye.png'
 import openEye from '../../../assets/AllIcons/openeye.png'
 const OPTIONS = [
-  { label: 'Male', value: 'male' },
-  { label: 'Female', value: 'female' },
+  { label: 'Male', value: 'Male' },
+  { label: 'Female', value: 'Female' },
 ];
 
 const SignUpForm = ({ navigation,allUserObj }) => {

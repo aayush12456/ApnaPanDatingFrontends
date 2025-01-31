@@ -1,5 +1,5 @@
 
-import {  ScrollView } from "react-native";
+import {  ScrollView,Text } from "react-native";
 import { useEffect,useState } from "react";
 import { useSelector } from "react-redux";
 import * as SecureStore from 'expo-secure-store';
@@ -7,7 +7,7 @@ import io from "socket.io-client";
 import axios from "axios";
 import MessageCard from "../messageCard/messageCard";
 const socket = io.connect("http://192.168.29.169:4000")
-const Message=()=>{
+const Message=({completeObj})=>{
     const [loginId,setLoginId]=useState('')
     const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
     const [blockUserObj,setBlockUserObj]=useState({})
@@ -114,14 +114,14 @@ const Message=()=>{
       const blockUserIds = [
         ...(blockUserObj?.blockUserArray || []),
         ...(blockUserObj?.anotherBlockUserArray || [])
-      ].map(user => user._id); // Extract block user IDs
+      ].map(user => user?._id); // Extract block user IDs
     
       const filteredMatchLikes = (likeMatchUserObj?.matchLikes || []).filter(
-        (user) => !blockUserIds.includes(user._id)
+        (user) => !blockUserIds.includes(user?._id)
       );
     
       const filteredAnotherMatchLikes = (likeMatchUserObj?.anotherMatchLikes || []).filter(
-        (user) => !blockUserIds.includes(user._id)
+        (user) => !blockUserIds.includes(user?._id)
       );
     let finalMessageArray
      finalMessageArray = blockUserIds.length
@@ -133,22 +133,22 @@ const Message=()=>{
       console.log('final message array',finalMessageArray)
        
       finalMessageArray = finalMessageArray.filter(
-        (user) => user._id !== loginId &&
-        !deactivateUserObj?.deactivatedIdArray?.includes(user._id) 
+        (user) => user?._id !== loginId &&
+        !deactivateUserObj?.deactivatedIdArray?.includes(user?._id) 
       );    
           
       finalMessageArray = finalMessageArray.filter(
-        (user) => user._id !== deactivateUserObj.selfDeactivate
+        (user) => user?._id !== deactivateUserObj.selfDeactivate
       );    
 return (
     <>
     <ScrollView>
-    {finalMessageArray?.map((finalMessageUser) => {
+    {finalMessageArray && finalMessageArray.length>0? finalMessageArray?.map((finalMessageUser) => {
         return (
          
-         <MessageCard key={finalMessageUser?._id} finalMessageUser={finalMessageUser} />
+         <MessageCard key={finalMessageUser?._id} finalMessageUser={finalMessageUser} completeObj={completeObj} />
         );
-      })}
+      }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200}}>No Message Profile is there</Text>}
     </ScrollView>
     </>
 )

@@ -1,5 +1,5 @@
-import { Text,TextInput,Button } from "react-native-paper"
-import { Image, View, TouchableOpacity,  Pressable } from "react-native";
+import { Text,Button } from "react-native-paper"
+import {  View, } from "react-native";
 import { OtpInput } from "react-native-otp-entry";
 import { useState} from "react";
 import { useNavigation } from '@react-navigation/native';

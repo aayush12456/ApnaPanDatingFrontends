@@ -17,13 +17,13 @@ import { playVideoModalActions } from "../../Redux/Slice/playVideoModalSlice/pla
 import { addCrossMatchAsync } from "../../Redux/Slice/addCrossMatchSlice/addCrossMatchSlice";
 import { passDataSliceActions } from "../../Redux/Slice/passDataSlice/passDataSlice";
 import * as SecureStore from 'expo-secure-store';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { addMatchUserAsync } from "../../Redux/Slice/addMatchUserSlice/addMatchUserSlice";
+
 import axios from 'axios'
 import Notification from "../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 const socket = io.connect("http://192.168.29.169:4000")
-const MatchCard=({matchObj})=>{
+const MatchCard=({matchObj,completeObj})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
   const [loginId,setLoginId]=useState('')
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [loginIdUserArray, setLoginIdUserArray] = useState([])
@@ -34,26 +34,12 @@ const MatchCard=({matchObj})=>{
   const [liked, setLiked] = useState(false);
     const navigation = useNavigation();
     const dispatch=useDispatch()
-    const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
-    // const addMatchUserData=useSelector((state)=>state.addMatchUserData.addMatchUserData.anotherMatchUser)
-    // console.log('add match user in match card',addMatchUserData)
-    // useEffect(() => {
-    //   const fetchLoginId = async () => {
-    //     try {
-    //      const loginId=await AsyncStorage.getItem('loginId')
-    //      setLoginId(loginId)
-    //     } catch (error) {
-    //       console.error('Error retrieving login data:', error);
-    //     }
-    //   };
-    
-    //   fetchLoginId();
-    // }, []);
+   
 
     useEffect(()=>{
-      if(loginResponse){
+      if(loginResponse || loginOtpResponse){
         const getLoginId = async () => {
           const loginIdData = await SecureStore.getItemAsync('loginId');
           setLoginId(loginIdData) 
@@ -69,9 +55,8 @@ const MatchCard=({matchObj})=>{
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginId}`,
+            `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
           console.log('get all login id user is', response?.data?.loginIdUserArray)
           setLoginIdUserArray(response?.data?.loginIdUserArray)
         }
@@ -129,9 +114,8 @@ const MatchCard=({matchObj})=>{
           try {
             if (loginId) {
               const response = await axios.get(
-                `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+                `${BASE_URL}/user/getDeactivateUser/${loginId}`,
               );
-              // setLikesArray(response?.data?.anotherMatchUser || []);
               console.log('get deactivate user obj is', response?.data)
               setDeactivateUserObj(response?.data)
             }
@@ -171,6 +155,7 @@ const MatchCard=({matchObj})=>{
             id:loginId,
             userId:id
           }
+          console.log('add cross obj',addCrossObj)
           if(addCrossObj.id===deactivateUserObj.selfDeactivate){
             setOpenDialog(true)
             const obj={
@@ -208,7 +193,7 @@ const MatchCard=({matchObj})=>{
         setLiked(false); // Set crosses back to false after a delay
       }, 700);
        try {
-        const response = await axios.post(`http://192.168.29.169:4000/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
+        const response = await axios.post(`${BASE_URL}/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
         console.log('response in match card is',response?.data?.likesArray)
         socket.emit('addMatchUser', response?.data?.likesArray)
     } catch (error) {
@@ -216,7 +201,7 @@ const MatchCard=({matchObj})=>{
     }
 
     try {
-      const response = await axios.post(`http://192.168.29.169:4000/user/addLikeCount/${addLikeObj.id}`, addLikeObj);
+      const response = await axios.post(`${BASE_URL}/user/addLikeCount/${addLikeObj.id}`, addLikeObj);
       console.log('response in add like count user',response?.data?.userObj)
       socket.emit('addLikeCountUser', response?.data?.userObj)
 
@@ -267,17 +252,9 @@ return (
       </View>
     </View>
   )}
-      <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10, backgroundColor: 'white'}}>
+      <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10,
+        backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`}}>
     <Card.Content>
-      {/* <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:30,zIndex:10,left:30}} >
-        <Pressable onPress={playVideoHandler}>
-        <Image source={play} style={{width:16,height:16,marginTop:3,tintColor:'white'}}/>
-        <Text style={{color:'white',paddingLeft:20,marginTop:-18}}>Watch Video</Text>
-        </Pressable>
-           <View style={{ backgroundColor:'green',borderRadius:15, width:80}}>
-        <Text style={{textAlign:'center',color:'white',paddingTop:6,paddingBottom:6}}>Online</Text>
-      </View>
-      </View> */}
       <View style={{flexDirection:"row",justifyContent:'space-between'}}>
       <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:15,zIndex:10,left:16}} >
         <Pressable onPress={playVideoHandler}>

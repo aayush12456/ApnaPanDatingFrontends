@@ -1,11 +1,11 @@
-import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { Interest } from '../../utils/EditPersonalInfo';
 import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice';
 import { useEffect, useState } from "react";
 
-const EditInterest = ({ navigation }) => {
+const EditInterest = ({ navigation,completeObj }) => {
   const [updateInterest, setUpdateInterest] = useState({});
   const dispatch = useDispatch();
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -32,7 +32,7 @@ const EditInterest = ({ navigation }) => {
 
   const interestSubmitHandler = () => {
     const interestObj = {
-      id: completeLoginObjData._id,
+      id: completeLoginObjData?._id,
       interest: selectedInterests,
     };
     dispatch(updatePersonalDataAsync(interestObj));
@@ -68,7 +68,7 @@ const EditInterest = ({ navigation }) => {
                     fontSize: 15,
                     textAlign: 'center',
                     paddingTop: 6,
-                    color: updateInterest?.interest?.includes(rowItem?.interest) ? 'white' : 'black',
+                    color: updateInterest?.interest?.includes(rowItem?.interest) ? 'white' :`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,
                   }}
                 >
                   {rowItem.interest}

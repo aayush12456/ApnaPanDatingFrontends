@@ -6,7 +6,7 @@ import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSli
 import { Eating } from '../../utils/EditPersonalInfo';
 import { useEffect, useState } from "react";
 
-const EditEating = ({ navigation }) => {
+const EditEating = ({ navigation,completeObj }) => {
     const [updateEating, setUpdateEating] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditEating = ({ navigation }) => {
 
     const selectEatingHandler = (eating) => {
         const updateEatingObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             eating: eating
         };
         dispatch(updatePersonalDataAsync(updateEatingObj));
@@ -42,7 +42,7 @@ const EditEating = ({ navigation }) => {
                                     paddingTop: 22,
                                     paddingLeft: 8,
                                     fontSize: 15,
-                                    color: `${updateEating?.eating === eating?.eating ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                    color: `${updateEating?.eating === eating?.eating ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                                 }}>
                                     {eating.eating}
                                 </Text>

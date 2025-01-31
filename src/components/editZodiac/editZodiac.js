@@ -6,7 +6,7 @@ import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSli
 import { zodiacSign } from '../../utils/EditPersonalInfo';
 import { useEffect, useState } from "react";
 
-const EditZodiac = ({ navigation }) => {
+const EditZodiac = ({ navigation,completeObj }) => {
     const [updateZodiac, setUpdateZodiac] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditZodiac = ({ navigation }) => {
 
     const selectZodiacHandler = (zodiac) => {
         const updateZodiacObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             zodiac: zodiac
         };
         dispatch(updatePersonalDataAsync(updateZodiacObj));
@@ -42,7 +42,7 @@ const EditZodiac = ({ navigation }) => {
                                     paddingTop: 22,
                                     paddingLeft: 8,
                                     fontSize: 15,
-                                    color: `${updateZodiac?.zodiac === zodiac?.zodiac ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                    color: `${updateZodiac?.zodiac === zodiac?.zodiac ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                                 }}>
                                     {zodiac.zodiac}
                                 </Text>

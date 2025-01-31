@@ -6,7 +6,7 @@ import { deleteProfileUserAsync } from '../../Redux/Slice/deleteProfileUserSlice
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
-const DeleteAccount=({loginId})=>{
+const DeleteAccount=({loginId,completeObj})=>{
   const dispatch=useDispatch()
   const navigation = useNavigation();
   const deleteProfileResponse=useSelector((state)=>state.deleteProfileData.deleteProfileUserObj.msg)
@@ -28,7 +28,7 @@ return (
     <View  style={{flexDirection:"row",justifyContent:"center",marginTop:20}}>
         <Image source={deleteIcon} style={{width:100,height:100}}/>
     </View>
-    <Text style={{textAlign:'center',paddingLeft:9,paddingRight:9,paddingTop:15}}>We're sad to see you go. Deleting your account would remove all your personal information, messages, photos, matches and purchases. This action cannot be undone.Some information may be stored as per Privacy Policy for legal reasons, which will also be deleted after a grace period.If you decide to come back later and use the same profile, you can deactivate your profile instead.</Text>
+    <Text style={{textAlign:'center',paddingLeft:9,paddingRight:9,paddingTop:15,color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>We're sad to see you go. Deleting your account would remove all your personal information, messages, photos, matches and purchases. This action cannot be undone.Some information may be stored as per Privacy Policy for legal reasons, which will also be deleted after a grace period.If you decide to come back later and use the same profile, you can deactivate your profile instead.</Text>
     <View style={{flexDirection:'row',justifyContent:'center',marginTop:20}}>
     <View style={{width:"90%"}}  >
             <Button

@@ -4,7 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import edit from '../../../assets/myProfileIcons/edit.png'
 import verify from '../../../assets/matchIcons/verify.png'
-const MyProfile=({navigation})=>{
+const MyProfile=({navigation,completeObj})=>{
     const [loginData, setLoginData] = useState(null);
     useEffect(()=>{
         const getLoginData = async () => {
@@ -39,7 +39,8 @@ return (
     </View>
     </View>
     <View style={{flexDirection:'row',justifyContent:'center',gap:5}}>
-        <Text style={{textAlign:'center',paddingTop:20,color:'Black',fontSize:21,fontWeight:'700'}}>{loginData?.name}, {age} </Text>
+        <Text style={{textAlign:'center',paddingTop:20,
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,fontSize:21,fontWeight:'700'}}>{loginData?.name}, {age} </Text>
         {/* <View style={{backgroundColor:'#0271fe',width:25,height:25,borderRadius:20,marginTop:22}}>
          <Image source={rightTik} style={{width:12,height:12,marginTop:7,marginLeft:6}}/>
         </View> */}

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView,Text } from "react-native";
 import io from "socket.io-client";
 import * as SecureStore from "expo-secure-store";
 import SmallCard from "../common/smallCard/smallCard";
@@ -270,7 +270,7 @@ const Likes = () => {
   return (
     <>
       <ScrollView>
-        {chunkedData.map((row, rowIndex) => (
+        {chunkedData && chunkedData.length>0 ?chunkedData.map((row, rowIndex) => (
           <View
             key={rowIndex}
             style={{
@@ -290,7 +290,7 @@ const Likes = () => {
               </View>
             ))}
           </View>
-        ))}
+        )):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200}}>No Likes Profile is there</Text>}
       </ScrollView>
     </>
   );

@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Image } from "react-native";
+import { Text, View, TouchableOpacity, Image, Pressable } from "react-native";
 import { Button } from "react-native-paper";
 import { uploadImages } from "../../utils/uploadImageData";
 import bulb from '../../../assets/signUpFormIcon/bulb.png';
@@ -17,18 +17,54 @@ const ImageUpload = ({ imageUpload }) => {
   const [uploadedImages, setUploadedImages] = useState(uploadImages); // Track uploaded images to be shown
   const [imgFileType,setImgFileType]=useState([])
   const [fileUploadError,setFileUploadError]=useState('')
-  console.log('image upload is', imageUpload.videoUrl);
+  const [error,setError]=useState('')
+  console.log('image upload is', imageUpload);
 
+  // const uploadImageData = async (index) => {
+  //   try {
+  //     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //     console.log('Permissions: ', permissionResult);
+
+  //     if (!permissionResult.granted) {
+  //       alert("Permission to access media library is required!");
+  //       return;
+  //     }
+
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsMultipleSelection: true,
+  //       allowsEditing: true,
+  //       aspect: [1, 1],
+  //       quality: 1,
+  //     });
+  //     console.log('result images',result)
+  //     setImgFileType((prevImageFile)=>[...prevImageFile,result.assets[0]])
+  //     if (!result.canceled && result.assets && result.assets.length > 0) {
+  //       const imgURI = result.assets[0].uri;
+  //       console.log('Selected Image URI:', imgURI);
+
+  //       // Update the image in the array with the selected one
+  //       const updatedImages = [...uploadedImages];
+  //       updatedImages[index].img = { uri: imgURI }; // Replace the image at the clicked index
+
+  //       setUploadedImages(updatedImages); // Update the state to reflect the change
+  //     } else {
+  //       console.log('No image selected or operation canceled.');
+  //     }
+  //   } catch (error) {
+  //     console.log('Error during media picking:', error);
+  //   }
+  // };
   const uploadImageData = async (index) => {
     try {
       let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       console.log('Permissions: ', permissionResult);
-
+  
       if (!permissionResult.granted) {
         alert("Permission to access media library is required!");
         return;
       }
-
+  
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: true,
@@ -36,32 +72,40 @@ const ImageUpload = ({ imageUpload }) => {
         aspect: [1, 1],
         quality: 1,
       });
-      console.log('result images',result)
-      setImgFileType((prevImageFile)=>[...prevImageFile,result.assets[0]])
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const imgURI = result.assets[0].uri;
-        console.log('Selected Image URI:', imgURI);
-
-        // Update the image in the array with the selected one
-        const updatedImages = [...uploadedImages];
-        updatedImages[index].img = { uri: imgURI }; // Replace the image at the clicked index
-
-        setUploadedImages(updatedImages); // Update the state to reflect the change
-      } else {
+  
+      console.log('Result:', result);
+  
+      // Check if the operation was canceled or no assets were returned
+      if (result.canceled || !result.assets || result.assets.length === 0) {
         console.log('No image selected or operation canceled.');
+        return;
       }
+  
+      // Proceed if a valid image is selected
+      const imgURI = result.assets[0].uri;
+      console.log('Selected Image URI:', imgURI);
+  
+      setImgFileType((prevImageFile) => [...prevImageFile, result.assets[0]]);
+  
+      // Update the image in the array with the selected one
+      const updatedImages = [...uploadedImages];
+      updatedImages[index].img = { uri: imgURI }; // Replace the image at the clicked index
+  
+      setUploadedImages(updatedImages); // Update the state to reflect the change
     } catch (error) {
       console.log('Error during media picking:', error);
     }
   };
-
+  
   console.log('Uploaded images:', uploadedImages);
 
+
   const compareFaces = async (image1, image2) => { // ye face comparison ka function hai
-    const apiKey = 'sUQMhJSpjkktCUQrm09X2prq2HmdmoYI'; // Replace with actual Face++ API Key
-    const apiSecret = 'kIzroGEgHys3_c8zbCPO7A3gG_rNbrUh'; // Replace with actual Face++ API Secret
+    const apiKey = 'DeIceKMrrwx5e4iS-v97d0lVAEWV8EvA'; // Replace with actual Face++ API Key
+    const apiSecret = 'VZrAWBOA58qiP0cw-US3_nOYJlpcUlND'; // Replace with actual Face++ API Secret
     const apiEndpoint = 'https://api-us.faceplusplus.com/facepp/v3/compare';
-  
+
+
     const formData = new FormData();
     formData.append('api_key', apiKey);
     formData.append('api_secret', apiSecret);
@@ -80,10 +124,26 @@ const ImageUpload = ({ imageUpload }) => {
       const response = await axios.post(apiEndpoint, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      console.log('compare face',response)
       return response.data;
     } catch (error) {
-      console.error('Error comparing faces:', error);
-      return null;
+      // console.error('Error comparing faces:', error);
+      if (error.response.status === 401) {
+        console.warn('API Key or Secret is invalid or expired.');
+        return { expiredApi: true }; // Custom flag for expired API
+      }
+      if (error.response && error.response.status === 413) {
+        console.error('Error: Total image size exceeds 10 MB.');
+        return {
+          errorMessage: 'Total image size exceeds 10 MB. Please upload smaller images.',
+        };
+      }
+  
+      // Handle other errors
+      // console.error('Error comparing faces:', error);
+      return {
+        errorMessage: 'An error occurred while comparing faces. Please try again later.',
+      };
     }
   };
   
@@ -147,70 +207,83 @@ const ImageUpload = ({ imageUpload }) => {
     }
   
     console.log('Uploaded images:', imgFileType);
-  
     // Call Face++ API for comparison
     const faceComparisonResult = await compareFaces(imgFileType[0], imgFileType[1]);
-    if (faceComparisonResult && faceComparisonResult.confidence >= 70) {
-      console.log('Face comparison passed with confidence:', faceComparisonResult.confidence);
-  
-      // Create FormData and proceed with the registration
-      const formData = new FormData();
-      formData.append('firstName', imageUpload.firstName);
-      formData.append('email', imageUpload.email);
-      formData.append('phone', imageUpload.phone);
-      formData.append('password', imageUpload.password);
-      formData.append('gender', imageUpload.gender);
-      formData.append('DOB', imageUpload.date);
-      formData.append('city', imageUpload.city);
-      formData.append('aboutUser', imageUpload.AboutMe);
-      formData.append('interest', JSON.stringify(imageUpload.interest));
-      formData.append('education', imageUpload.education);
-      formData.append('drinking', imageUpload.drinking);
-      formData.append('smoking', imageUpload.smoking);
-      formData.append('eating', imageUpload.eating);
-      formData.append('profession', imageUpload.profession);
-      formData.append('looking', imageUpload.looking);
-      formData.append('relationship', imageUpload.relation);
-      formData.append('zodiac', imageUpload.zodiac);
-      formData.append('songId', imageUpload.selectedSong);
-  
-      imgFileType.forEach((image, index) => {
-        formData.append(`images`, {
-          uri: image.uri,
-          name: `image_${index}.jpg`,
-          type: 'image/jpeg',
-        });
+    let proceedWithRegistration = false;
+
+  if (faceComparisonResult?.confidence >= 60) {
+    console.log('Face comparison passed with confidence:', faceComparisonResult.confidence);
+    proceedWithRegistration = true;
+  } else if (faceComparisonResult?.expiredApi) {
+    console.warn('Proceeding with registration as Face++ API key is expired.');
+    proceedWithRegistration = true;
+  }
+
+  if (proceedWithRegistration) {
+    const selectedSong=imageUpload.selectedSong?imageUpload.selectedSong:'none'
+    const formData = new FormData();
+    formData.append('firstName', imageUpload.firstName);
+    formData.append('email', imageUpload.email);
+    formData.append('phone', imageUpload.phone);
+    formData.append('password', imageUpload.password);
+    formData.append('gender', imageUpload.gender);
+    formData.append('DOB', imageUpload.date);
+    formData.append('city', imageUpload.city);
+    formData.append('aboutUser', imageUpload.AboutMe);
+    formData.append('interest', imageUpload.interest);
+    formData.append('language', imageUpload.language);
+    formData.append('education', imageUpload.education);
+    formData.append('drinking', imageUpload.drinking);
+    formData.append('smoking', imageUpload.smoking);
+    formData.append('eating', imageUpload.eating);
+    formData.append('profession', imageUpload.profession);
+    formData.append('looking', imageUpload.looking);
+    formData.append('relationship', imageUpload.relation);
+    formData.append('zodiac', imageUpload.zodiac);
+    formData.append('songId', selectedSong);
+
+    imgFileType.forEach((image, index) => {
+      formData.append(`images`, {
+        uri: image.uri,
+        name: `image_${index}.jpg`,
+        type: 'image/jpeg',
       });
-  
-      if (imageUpload.videoUrl?.uri) {
-        formData.append('videoUrl', {
-          uri: imageUpload.videoUrl.uri,
-          name: 'video.mp4',
-          type: 'video/mp4',
-        });
-      }
-  
-      console.log('Complete FormData:', formData);
-      dispatch(userRegisterAsync(formData));
-      dispatch(
-        showToasts({
-          types: 'SUCCESS',
-          titles: 'Thank You!',
-          textBodys: 'You have successfully register on ApnaPan Please login to check ',
-        })
-      );
-      navigation.navigate('FrontPage')
-    } else {
-      Dialog.show({
-        type: ALERT_TYPE.WARNING,
-        title: 'Warning',
-        textBody: 'Your capture image and upload image does not same make sure both images are same especially in case of face (both the capture image and upload image have same face)',
-        button: 'close',
-      })
-      // setFileUploadError('Face comparison failed. Please upload valid images.');
+    });
+
+    if (imageUpload.videoUrl?.uri) {
+      formData.append('videoUrl', {
+        uri: imageUpload.videoUrl.uri,
+        name: 'video.mp4',
+        type: 'video/mp4',
+      });
     }
+
+    console.log('Complete FormData:', formData);
+    dispatch(userRegisterAsync(formData));
+    dispatch(
+      showToasts({
+        types: 'SUCCESS',
+        titles: 'Thank You!',
+        textBodys: 'You have successfully registered on ApnaPan. Please login to check.',
+      })
+    );
+    navigation.navigate('FrontPage');
+  } else {
+    const errorMessage = faceComparisonResult?.errorMessage
+      ? faceComparisonResult.errorMessage
+      : 'Your captured image and uploaded image do not match. Make sure both images are the same, especially the face.To Understand How to make it similar please click on bulb button';
+
+    Dialog.show({
+      type: ALERT_TYPE.WARNING,
+      title: 'Warning',
+      textBody: errorMessage,
+      button: 'Close',
+    });
+  }
   };
-  
+  const guideImagesHandler=()=>{
+    navigation.navigate('CompareFacePage')
+  }
   return (
     <>
     <AlertNotificationRoot>
@@ -228,15 +301,17 @@ const ImageUpload = ({ imageUpload }) => {
 
       </View>
       {fileUploadError? <Text style={{color:"red",textAlign:'center'}}>{fileUploadError}</Text>:null}
+      <Pressable onPress={guideImagesHandler}>
       <View style={{
         backgroundColor: 'rgb(245, 158, 11)', borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
-        flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
       }}>
         <Image source={bulb} style={{ width: 25, height: 25, marginTop: 8, marginBottom: 8 }} />
         <Text style={{ fontSize: 15, color: 'black', paddingTop: 4, paddingBottom: 4 }}>
-          Upload video to show up in matches
+       How to upload image similar to Capture image
         </Text>
       </View>
+      </Pressable>
       <View style={{ width: '100%', overflow: 'hidden' }}>
          <Button
                       mode="contained"

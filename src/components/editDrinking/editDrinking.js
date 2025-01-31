@@ -6,7 +6,7 @@ import { Drinking } from '../../utils/EditPersonalInfo';
 import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice';
 import { useEffect, useState } from "react";
 
-const EditDrinking = ({ navigation }) => {
+const EditDrinking = ({ navigation,completeObj }) => {
     const [updateDrinking, setUpdateDrinking] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditDrinking = ({ navigation }) => {
 
     const selectDrinkingHandler = (drinking) => {
         const updateDrinkingObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             drinking: drinking
         };
         dispatch(updatePersonalDataAsync(updateDrinkingObj));
@@ -42,7 +42,7 @@ const EditDrinking = ({ navigation }) => {
                                     paddingTop: 22,
                                     paddingLeft: 8,
                                     fontSize: 15,
-                                    color: `${updateDrinking?.drinking === drinking?.drinking ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                    color: `${updateDrinking?.drinking === drinking?.drinking ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                                 }}>
                                     {drinking.drinking}
                                 </Text>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text,TextInput } from "react-native-paper"
-import { Image, View, TouchableOpacity,  Pressable } from "react-native";
+import { Image, View, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import back from '../../../assets/signUpFormIcon/back.png';
 import { Button } from 'react-native-paper';

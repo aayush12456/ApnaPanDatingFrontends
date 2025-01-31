@@ -37,37 +37,17 @@ const Login=({navigation})=>{
       const saveToSecureStore = async () => {
         try {
           await SecureStore.setItemAsync('loginObj', JSON.stringify(loginObj));
-          // await AsyncStorage.setItem('loginData',loginResponse)
           console.log("Login data stored successfully!");
         } catch (error) {
           console.error("Failed to store login data:", error);
         }
     };
       saveToSecureStore();
-      // navigation.navigate('HeaderPage');
     }
   }, [loginResponse]);
 
   
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const token = await SecureStore.getItemAsync('loginToken');
-//         console.log("Fetched Token:", token);
-//         setLoginToken(token)
-//       } catch (error) {
-//         console.error("Error fetching login token:", error);
-//       }
-//     };
 
-//     fetchData();
-//   }, []);
-//   console.log('Login token is:', loginToken);
-//   useEffect(()=>{
-// if(loginToken){
-//   navigation.navigate('HeaderPage');
-// }
-//   },[loginToken,navigation])
 useEffect(() => {
   if(loginResponse){
     const fetchData = async () => {

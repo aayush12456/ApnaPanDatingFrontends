@@ -1,9 +1,9 @@
 import { Text, View, Image } from "react-native"
 import { Button } from "react-native-paper";
 import { Dropdown } from 'react-native-paper-dropdown';
-import { Drinking, Eating, Smoking, education,relationshipStatus,lookingFor } from "../../utils/personalInfo";
+import { Drinking, Eating, Smoking, education,relationshipStatus } from "../../utils/personalInfo";
 import { profession } from "../../utils/personalInfo";
-import React, { useState } from "react";
+import React from "react";
 import { Formik } from 'formik';
 import { additonalInformationSchema } from "../../schemas";
 import bag from '../../../assets/signUpFormIcon/bag.png'
@@ -46,7 +46,6 @@ const AdditonalForm = ({ formData,navigation }) => {
               <Image source={bag} style={{ width: 25, height: 25 }} />
             </View>
             <View style={{ marginLeft: 4, marginRight: 20, marginTop: 9, width: "80%" }}>
-              {/* <Image source={bag}  style={{ width: 15, height: 15,marginTop:40 }}/> */}
               <Dropdown
                 label="Profession"
                 options={profession}
@@ -140,21 +139,6 @@ const AdditonalForm = ({ formData,navigation }) => {
             </View>
           </View> 
           <View style={{ width: '100%', overflow: 'hidden' }}>
-            {/* <TouchableOpacity
-              style={{
-                height: 50,
-                backgroundColor: '#F00000',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 20,
-                marginLeft: 12,
-                marginRight: 20,
-                borderRadius: 11
-              }}
-              onPress={handleSubmit}
-            >
-              <Text style={{ color: '#FFFFFF', fontSize: 16 }}>SUBMIT</Text>
-            </TouchableOpacity> */}
               <Button
                       mode="contained"
                       onPress={handleSubmit}

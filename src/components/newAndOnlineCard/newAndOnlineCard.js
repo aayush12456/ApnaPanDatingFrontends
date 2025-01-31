@@ -7,11 +7,10 @@ import { passDataSliceActions } from "../../Redux/Slice/passDataSlice/passDataSl
 import { useState,useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
-import { addVisitorEmailSenderAsync } from "../../Redux/Slice/addVisitorEmailSlice/addVisitorEmailSlice";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
-const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId})=>{
+const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     console.log('online like user obj in new and online card',onlineLikeUserObj)
     console.log('login id',loginId)
     console.log('all user',allUser)
@@ -173,7 +172,7 @@ return (
                 marginLeft: 8,
                 marginRight: 8,
                 marginTop: 20,
-                backgroundColor: "white",
+                backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`
               }}
               onPress={() => cardClickHandler(allUser)}
             >
@@ -204,14 +203,14 @@ return (
     />:null}
                   </View>
                   <View style={{ paddingTop: 1 }}>
-                    <Text style={{ color: "black", fontWeight: "500" }}>
+                    <Text style={{  color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, fontWeight: "500" }}>
                       {allUser?.firstName}
                     </Text>
                     <View style={{ flexDirection: "row", gap: 6, paddingTop: 3 }}>
-                      <Text>{age},</Text>
-                      <Text>{allUser?.city}</Text>
+                      <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{age},</Text>
+                      <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{allUser?.city}</Text>
                     </View>
-                    <Text style={{ paddingTop: 2 }}>{allUser?.relationship}</Text>
+                    <Text style={{ paddingTop: 2,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}>{allUser?.relationship}</Text>
                   </View>
                   {/* {selfLikeMatch==true?null:<View>
                     <Text style={{color:'black',paddingTop:8,fontWeight:"600"}}>Liked!</Text>

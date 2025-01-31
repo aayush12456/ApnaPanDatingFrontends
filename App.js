@@ -10,7 +10,6 @@ import {Toast, AlertNotificationRoot } from 'react-native-alert-notification';
 import {Image} from 'react-native'
 import {Text} from 'react-native-paper'
 import io from 'socket.io-client';
-import * as SecureStore from 'expo-secure-store';
 import store from './src/Redux/Store/store';
 
 import FrontPage from './src/components/frontPage/frontPage';
@@ -55,23 +54,27 @@ import LoginWithOtpDataPage from './src/Pages/loginWithOtpDataPage/loginWithOtpD
 import ForgotPasswordPage from './src/Pages/forgotPasswordPage/forgotPasswordPage';
 import ResetPasswordPage from './src/Pages/resetPasswordPage/resetPasswordPage';
 import ExpertChatPage from './src/Pages/expertChatPage/expertChatPage';
-import Notification from './src/components/notification/notification';
 import axios from 'axios'
 import EditSongsPage from './src/Pages/editSongsPage/editSongsPage';
 import CaptureImagePage from './src/Pages/captureImagePage/captureImagePage';
-import Message from './src/components/message/message';
+import right from './assets/signUpFormIcon/right.png';
+import EditBasicInfoPage from './src/Pages/editBasicInfoPage/editBasicInfoPage';
+import CompareFacePage from './src/Pages/compareFacePage/compareFacePage';
+import AppearancePage from './src/Pages/appearancePage/appearancePage';
+
+
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
 function AppContent() {
+  const BASE_URL = "http://192.168.29.169:4000";
   const socketRef = useRef(null);
-  // const [token,setLoginToken]=useState('')
   const [recordMessage, setRecordMessage] = useState([])
   const [visitorNotifyObj, setVisitorNotifyObj] = useState([])
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const completeLoginObj = useSelector(
     (state) => state?.loginData?.loginData?.completeLoginData
   );
   const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+  const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
   const lightColors = {
     label: '#000000',
     card: '#ffffff',
@@ -90,54 +93,7 @@ function AppContent() {
     warning: '#ffc107',
   };
   
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const token = await SecureStore.getItemAsync('loginToken');
-  //       console.log("Fetched Token:", token);
-  //       setLoginToken(token);
-
-  //       if (token) {
-  //         const result = await verifyToken(token);
-  //         console.log('Token verification result:', result);
-
-  //         if (result.message === 'Token is valid') {
-  //           setIsAuthenticated(true);
-  //         } else {
-  //           setIsAuthenticated(false);
-  //         }
-  //       } else {
-  //         setIsAuthenticated(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching login token:", error);
-  //       setIsAuthenticated(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-//  const verifyToken = async (token) => {
-//     try {
-//       const response = await axios.post(
-//         `http://192.168.29.169:4000/user/verifyToken`, 
-//         {
-//           method: 'POST',
-//         }, // Empty body for POST
-//         {
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data;
-//     } catch (error) {
-//       console.error('Error verifying token:', error.response?.data || error.message);
-//       throw error;
-//     }
-//   };
+  
 
 
 
@@ -181,12 +137,9 @@ function AppContent() {
 
     const fetchRecordMessage = async () => {
         try {
-          if(completeLoginObj?._id){
-            const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${completeLoginObj?._id}`);
-            // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-            // console.log('fetch messages is', response.data.chatUserArray)
-            // console.log('fetch message in reciever', response.data.recieverChatUserArray)
-            // setRecordMessage(response.data.recordMessageIdArray);
+          if(completeLoginObjData?._id){
+            const response = await axios.get(`${BASE_URL}/chat/getRecordMessage/${completeLoginObjData?._id}`);
+       
             setRecordMessage(response.data);
   
           }
@@ -198,32 +151,17 @@ function AppContent() {
     socket.on('recieveRecordMessageId', (newMessage) => {
       setRecordMessage(newMessage);
     })
-    // socket.on('recordMessageIdDeleted', (newMessage) => {
-    //   setRecordMessage(newMessage);
-    // })
+   
     return () => {
         socket.off('recieveRecordMessageId')
-        // socket.off('recordMessageIdDeleted')
+    
     }
-  }, [completeLoginObj?._id])
+  }, [completeLoginObjData?._id])
   console.log('record message array in app.js',recordMessage)
-//   const AuthenticatedStack = () => (
-//     <Stack.Navigator>
-//         <Stack.Screen name="HeaderPage" component={HeaderPage} options={{ headerShown: false }} />
-//         {/* Other authenticated screens */}
-//     </Stack.Navigator>
-// );
 
-// const UnauthenticatedStack = () => (
-//     <Stack.Navigator>
-//         <Stack.Screen name="FrontPage" component={FrontPage} options={{ headerShown: false }} />
-
-//         {/* Other unauthenticated screens */}
-//     </Stack.Navigator>
-// );
 
 useEffect(() => {
-  if (recordMessage?.messageNotify?.length > 0 && completeLoginObj._id===recordMessage.id) {
+  if (recordMessage?.messageNotify?.length > 0 && completeLoginObjData?._id===recordMessage?.id) {
     recordMessage.messageNotify.map((notify, index) => {
       Toast.show({
         textBody: (
@@ -250,10 +188,12 @@ useEffect(() => {
           
           <Text style={{color:'white'}} >please checkout your message</Text>
             </View>
+            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'white',marginLeft:40,marginTop:-10}}>
+            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3}}/>
+            </View>
           </View>
         ),
         autoClose: 13000, // Optional: automatically hide after 3 second
- 
       });
     });
   }
@@ -263,8 +203,8 @@ useEffect(() => {
 
   const fetchVisitorNotify = async () => {
       try {
-        if(completeLoginObj?._id){
-          const response = await axios.get(`http://192.168.29.169:4000/user/getVisitorCount/${completeLoginObj?._id}`);
+        if(completeLoginObjData?._id){
+          const response = await axios.get(`${BASE_URL}/user/getVisitorCount/${completeLoginObjData?._id}`);
           setVisitorNotifyObj(response.data.userObj);
 
         }
@@ -279,11 +219,11 @@ useEffect(() => {
   return () => {
       socket.off('getVisitorCountUser')
   }
-}, [completeLoginObj?._id])
+}, [completeLoginObjData?._id])
 console.log('visitor notify in app.js',visitorNotifyObj)
 
 useEffect(() => {
-  if (visitorNotifyObj?.visitorNotify?.length > 0 && completeLoginObj._id===visitorNotifyObj.id) {
+  if (visitorNotifyObj?.visitorNotify?.length > 0 && completeLoginObjData._id===visitorNotifyObj.id) {
     visitorNotifyObj?.visitorNotify.map((notify, index) => {
       Toast.show({
         textBody: (
@@ -309,6 +249,9 @@ useEffect(() => {
           <Text style={{color:'white'}}>{notify.visitorName} visited you</Text>
           
           <Text style={{color:'white'}} >please checkout your visitors</Text>
+            </View>
+            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'white',marginLeft:40,marginTop:-10}}>
+            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3}}/>
             </View>
           </View>
         ),
@@ -363,6 +306,11 @@ useEffect(() => {
           component={CaptureImagePage}
           options={{ headerShown: false }}
         />
+         <Stack.Screen
+          name="CompareFacePage"
+          component={CompareFacePage}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="ImageUploadPage"
           component={ImageUploadPage}
@@ -406,6 +354,11 @@ useEffect(() => {
         <Stack.Screen
           name="EditProfilePage"
           component={EditProfilePage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="EditBasicInfoPage"
+          component={EditBasicInfoPage}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -539,11 +492,10 @@ useEffect(() => {
           options={{ headerShown: false }}
         />
           <Stack.Screen
-          name="notification"
-          component={Notification}
+          name="AppearancePage"
+          component={AppearancePage}
           options={{ headerShown: false }}
         />
-            
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>

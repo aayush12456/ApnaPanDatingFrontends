@@ -6,7 +6,7 @@ import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSli
 import rightTik from '../../../assets/myProfileIcons/rightTik.png';
 import { useEffect, useState } from "react";
 
-const EditLookingFor = ({ navigation }) => {
+const EditLookingFor = ({ navigation,completeObj }) => {
     const [updateLooking, setUpdateLooking] = useState({});
     const dispatch = useDispatch();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
@@ -16,7 +16,7 @@ const EditLookingFor = ({ navigation }) => {
 
     const selectLookingForHandler = (looking) => {
         const updateLookingForObj = {
-            id: completeLoginObjData._id,
+            id: completeLoginObjData?._id,
             looking: looking
         };
         console.log('select looking', looking);
@@ -42,7 +42,7 @@ const EditLookingFor = ({ navigation }) => {
                                 paddingTop: 22,
                                 paddingLeft: 8,
                                 fontSize: 15,
-                                color: `${updateLooking?.looking === looking.looking ? 'rgba(0, 150, 255, 1)' : 'black'}`
+                                color: `${updateLooking?.looking === looking.looking ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
                             }}>
                                 {looking.looking}
                             </Text>
