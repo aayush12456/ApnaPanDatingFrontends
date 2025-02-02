@@ -101,8 +101,8 @@ const ImageUpload = ({ imageUpload }) => {
 
 
   const compareFaces = async (image1, image2) => { // ye face comparison ka function hai
-    const apiKey = 'DeIceKMrrwx5e4iS-v97d0lVAEWV8EvA'; // Replace with actual Face++ API Key
-    const apiSecret = 'VZrAWBOA58qiP0cw-US3_nOYJlpcUlND'; // Replace with actual Face++ API Secret
+    const apiKey = 'DeIceKMrrwx5e4iS-v97d0lVAEWV8EvA12'; // Replace with actual Face++ API Key
+    const apiSecret = 'VZrAWBOA58qiP0cw-US3_nOYJlpcUlND12'; // Replace with actual Face++ API Secret
     const apiEndpoint = 'https://api-us.faceplusplus.com/facepp/v3/compare';
 
 

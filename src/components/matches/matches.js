@@ -23,7 +23,7 @@ const completeLoginObj = useSelector(
 );
 const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
 
-const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
 console.log('complete login obj data',completeLoginObjData)
 
 const getCrossId=useSelector((state)=>state?.passFilterData?.passData)

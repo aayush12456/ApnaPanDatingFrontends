@@ -148,7 +148,7 @@ useEffect(()=>{
 console.log('get deactivate user obj in visitor',deactivateUserObj)
 let combineVisitorArray=[]
  combineVisitorArray=[...visitorArray].filter((visitorItem) => !deactivateUserObj?.deactivatedIdArray?.includes(visitorItem?.visitor?._id) ).
- filter((visitorItem) => visitorItem?.visitor?._id!==deactivateUserObj?.selfDeactivate)
+ filter((visitorItem) => visitorItem?.visitor?._id!==deactivateUserObj?.selfDeactivate).filter((visitorItem)=> visitorItem?.visitor?._id!==loginId)
 const visitorChunkArray = (array, chunkSize) => {
     const visitorChunks = [];
     for (let i = 0; i < array?.length; i += chunkSize) {
