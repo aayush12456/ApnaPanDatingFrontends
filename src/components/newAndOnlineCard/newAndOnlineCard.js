@@ -9,11 +9,14 @@ import io from "socket.io-client";
 import axios from "axios";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
-    console.log('online like user obj in new and online card',onlineLikeUserObj)
-    console.log('login id',loginId)
-    console.log('all user',allUser)
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+    // console.log('online like user obj in new and online card',onlineLikeUserObj)
+    // console.log('login id',loginId)
+    // console.log('all user',allUser)
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selfLikeMatch,setSelfLikeMatch]=useState(false)
@@ -35,10 +38,10 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginId}`,
+              `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
             );
             // setLikesArray(response?.data?.anotherMatchUser || []);
-            console.log('get all login id user is', response?.data?.loginIdUserArray)
+            // console.log('get all login id user is', response?.data?.loginIdUserArray)
             setLoginIdUserArray(response?.data?.loginIdUserArray)
           }
         } catch (error) {
@@ -60,7 +63,7 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
       };
     },[loginId])
   
-    console.log('login id user array is',loginIdUserArray)
+    // console.log('login id user array is',loginIdUserArray)
     useEffect(() => {
       if (loginId) {
         const getActiveLoginId = loginIdUserArray?.some(
@@ -75,10 +78,10 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
             // setLikesArray(response?.data?.anotherMatchUser || []);
-            console.log('get deactivate user obj is', response?.data)
+            // console.log('get deactivate user obj is', response?.data)
             setDeactivateUserObj(response?.data)
           }
         } catch (error) {
@@ -97,11 +100,11 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     },[loginId])
 
     const cardClickHandler = async (allUser) => {
-      if(loginId===deactivateUserObj.selfDeactivate){
+      if(loginId===deactivateUserObj?.selfDeactivate){
         setOpenDialog(true)
         const obj={
           type:'WARNING',
-          textBody:`You can't visited ${allUser.firstName}  profile untill you should activate yourself`
+          textBody:`You can't visited ${allUser?.firstName}  profile untill you should activate yourself`
         }
         setNotifyDeactivateObj(obj)
         return
@@ -110,30 +113,30 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
       if (allUser) {
         const addVisitorObj = {
           id: loginId,
-          userId: allUser._id,
+          userId: allUser?._id,
         };
         const visitorCountObj = {
           id: loginId,
-          visitorOnlineId: allUser._id,
+          visitorOnlineId: allUser?._id,
         };
         try {
           // Execute both API calls in parallel
           const [visitorResponse, countResponse] = await Promise.all([
             axios.post(
-              `http://192.168.29.169:4000/user/addVisitorUser/${addVisitorObj.id}`,
+              `${BASE_URL}/user/addVisitorUser/${addVisitorObj.id}`,
               addVisitorObj
             ),
             axios.post(
-              `http://192.168.29.169:4000/user/addVisitorCount/${visitorCountObj.id}`,
+              `${BASE_URL}/user/addVisitorCount/${visitorCountObj.id}`,
               visitorCountObj
             ),
           ]);
     
-          console.log("Visitor added:", visitorResponse.data);
-          console.log("Visitor count updated:", countResponse.data);
+          // console.log("Visitor added:", visitorResponse.data);
+          // console.log("Visitor count updated:", countResponse.data);
           // Emit socket events after both API calls succeed
-          socket.emit("addVisitorUser", visitorResponse.data.visitors);
-          socket.emit("addVisitorCountUser", countResponse.data.userObj);
+          socket.emit("addVisitorUser", visitorResponse?.data?.visitors);
+          socket.emit("addVisitorCountUser", countResponse?.data?.userObj);
         } catch (error) {
           console.error("Error in cardClickHandler:", error.response?.data || error.message);
         }
@@ -160,9 +163,9 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     );
     setSelfLikeMatch(isLiked);
 }, [onlineLikeUserObj?.selfOnlineLikeUser, allUser]);
-     console.log('self online like',selfLikeMatch)
+    //  console.log('self online like',selfLikeMatch)
 
-console.log('active login response',activeLoginIdResponse)
+// console.log('active login response',activeLoginIdResponse)
 return (
     <>
     <AlertNotificationRoot>
@@ -217,7 +220,9 @@ return (
                   </View>} */}
                       {selfLikeMatch && (
                         <View>
-                            <Text style={{ color: 'black', paddingTop: 8, fontWeight: "600" }}>
+                            <Text style={{ color: 'black', paddingTop: 8, fontWeight: "600",
+                           color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`
+                          }}>
                                 Liked!
                             </Text>
                         </View>
@@ -225,7 +230,7 @@ return (
                   <View>
                     <Button
                       mode="contained"
-                      onPress={() => addChatModalOpenHandler(allUser.firstName)}
+                      onPress={() => addChatModalOpenHandler(allUser?.firstName)}
                       style={{
                         width: "100%",
                         borderRadius: 10,

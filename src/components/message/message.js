@@ -1,17 +1,21 @@
 
-import {  ScrollView,Text } from "react-native";
+import {  ScrollView,Text,RefreshControl } from "react-native";
 import { useEffect,useState } from "react";
 import { useSelector } from "react-redux";
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import axios from "axios";
 import MessageCard from "../messageCard/messageCard";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Message=({completeObj})=>{
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const [loginId,setLoginId]=useState('')
     const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
     const [blockUserObj,setBlockUserObj]=useState({})
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
+    const [refreshing, setRefreshing] = useState(false); 
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
   useEffect(()=>{
@@ -29,14 +33,13 @@ const Message=({completeObj})=>{
           try {
             if (loginId) {
               const response = await axios.get(
-                `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+                `${BASE_URL}/user/getLikeMatchUser/${loginId}`
               );
-              // setLikesArray(response?.data?.anotherMatchUser || []);
-              console.log('get like match user is',response?.data)
+              // console.log('get like match user is',response?.data)
               setLikeMatchUserObj(response?.data );
             }
           } catch (error) {
-            console.error("Error fetching matches:", error);
+            // console.error("Error fetching matches:", error);
           }
         };
       
@@ -51,21 +54,20 @@ const Message=({completeObj})=>{
           socket.off("getLikeMatchUser");
         };
       }, [loginId]);
-      console.log('like match user obj in message',likeMatchUserObj)
+      // console.log('like match user obj in message',likeMatchUserObj)
 
       useEffect(() => {
         const fetchBlockProfileUser = async () => {
           try {
             if (loginId) {
               const response = await axios.get(
-                `http://192.168.29.169:4000/user/getBlockChatIdUser/${loginId}`,
+                `${BASE_URL}/user/getBlockChatIdUser/${loginId}`,
               );
-              // setLikesArray(response?.data?.anotherMatchUser || []);
-              console.log('get block user obj is block profile page', response?.data)
+              // console.log('get block user obj is block profile page', response?.data)
               setBlockUserObj(response?.data);
             }
           } catch (error) {
-            console.error("Error fetching in block user obj:", error);
+            // console.error("Error fetching in block user obj:", error);
           }
         };
     
@@ -86,14 +88,13 @@ const Message=({completeObj})=>{
           try {
             if (loginId) {
               const response = await axios.get(
-                `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+                `${BASE_URL}/user/getDeactivateUser/${loginId}`,
               );
-              // setLikesArray(response?.data?.anotherMatchUser || []);
-              console.log('get deactivate user obj is', response?.data)
+              // console.log('get deactivate user obj is', response?.data)
               setDeactivateUserObj(response?.data)
             }
           } catch (error) {
-            console.error("Error fetching in chat id obj:", error);
+            // console.error("Error fetching in chat id obj:", error);
           }
         };
         fetchDeactivateUser();
@@ -106,11 +107,8 @@ const Message=({completeObj})=>{
           socket.off("getDeactivateUser");
         };
       },[loginId])
-      console.log('get deactivate user obj in message',deactivateUserObj)
-      // const finalMessageArray = [
-      //   ...(likeMatchUserObj?.matchLikes || []),
-      //   ...(likeMatchUserObj?.anotherMatchLikes || [])
-      // ];
+      // console.log('get deactivate user obj in message',deactivateUserObj)
+
       const blockUserIds = [
         ...(blockUserObj?.blockUserArray || []),
         ...(blockUserObj?.anotherBlockUserArray || [])
@@ -130,7 +128,7 @@ const Message=({completeObj})=>{
             ...(likeMatchUserObj?.matchLikes || []),
             ...(likeMatchUserObj?.anotherMatchLikes || []),
           ];
-      console.log('final message array',finalMessageArray)
+      // console.log('final message array',finalMessageArray)
        
       finalMessageArray = finalMessageArray.filter(
         (user) => user?._id !== loginId &&
@@ -139,16 +137,49 @@ const Message=({completeObj})=>{
           
       finalMessageArray = finalMessageArray.filter(
         (user) => user?._id !== deactivateUserObj.selfDeactivate
-      );    
+      );
+      
+      const handleRefresh = async () => {
+        setRefreshing(true); // Start loading
+        // console.log("Refreshing Data...");
+    
+        try {
+            if (loginId) {
+                // Manually fetching data again
+                const [likeMatchResponse, blockUserResponse, deactivateUserResponse] = await Promise.all([
+                    axios.get(`${BASE_URL}/user/getLikeMatchUser/${loginId}`),
+                    axios.get(`${BASE_URL}/user/getBlockChatIdUser/${loginId}`),
+                    axios.get(`${BASE_URL}/user/getDeactivateUser/${loginId}`)
+                ]);
+    
+                // console.log("New Like Match Data:", likeMatchResponse?.data);
+                // console.log("New Block User Data:", blockUserResponse?.data);
+                // console.log("New Deactivate User Data:", deactivateUserResponse?.data);
+    
+                // Updating the states with new fetched data
+                setLikeMatchUserObj(likeMatchResponse?.data);
+                setBlockUserObj(blockUserResponse?.data);
+                setDeactivateUserObj(deactivateUserResponse?.data);
+            }
+        } catch (error) {
+            // console.error("Error refreshing data:", error);
+        }
+    
+        setRefreshing(false); // Stop loading
+    };
+      
 return (
     <>
-    <ScrollView>
+    <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
     {finalMessageArray && finalMessageArray.length>0? finalMessageArray?.map((finalMessageUser) => {
         return (
          
          <MessageCard key={finalMessageUser?._id} finalMessageUser={finalMessageUser} completeObj={completeObj} />
         );
-      }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200}}>No Message Profile is there</Text>}
+      }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200,
+      color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No Message Profile is there</Text>}
     </ScrollView>
     </>
 )

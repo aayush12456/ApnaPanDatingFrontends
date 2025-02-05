@@ -22,7 +22,7 @@ const LikesPage=()=>{
 return (
     <>
     <View  style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <Likes/>
+    <Likes completeObj={completeObj}/>
     </View>
     </>
 )

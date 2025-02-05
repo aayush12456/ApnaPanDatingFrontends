@@ -21,9 +21,11 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import pause from '../../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
 
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj,completeObj }) => {
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
@@ -143,7 +145,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
 
 
    const skipUserHandler=async(likeContent,newOnline,visitorContent)=>{
-    console.log('user is skipped',likeContent)
+    // console.log('user is skipped',likeContent)
     if(likeContent){
       const likeSkipUserObj={
         id:loginId,
@@ -160,12 +162,12 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       }
       try {
         const response = await axios.post(`${BASE_URL}/user/addCommonVisitorLikeSkipUser/${likeSkipUserObj.id}`, likeSkipUserObj);
-        console.log('response in like skip user is',response?.data?.likeSkip)
+        // console.log('response in like skip user is',response?.data?.likeSkip)
         socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
     } catch (error) {
-        console.error('Error sending message:', error);
+        // console.error('Error sending message:', error);
     }
-    console.log('like skip user is',likeSkipUserObj)
+    // console.log('like skip user is',likeSkipUserObj)
     }
     else if(newOnline){
       const onlineSkipUserObj={
@@ -191,10 +193,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       }
       try {
         const response = await axios.post(`${BASE_URL}/user/addCommonVisitorLikeSkipUser/${visitorSkipUserObj.id}`, visitorSkipUserObj);
-        console.log('response in like skip user is',response?.data?.likeSkip)
+        // console.log('response in like skip user is',response?.data?.likeSkip)
         socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
     } catch (error) {
-        console.error('Error sending message:', error);
+        // console.error('Error sending message:', error);
     }
     }
    }
@@ -207,11 +209,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
           const response = await axios.get(
             `${BASE_URL}/user/getCommonVisitorLikeSkipUser/${loginId}`
           );
-          console.log('get like skip user is',response?.data?.likeSkipUserArray)
+          // console.log('get like skip user is',response?.data?.likeSkipUserArray)
           setCommonVisitorLikeSkipUser(response?.data?.likeSkipUserArray || []);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
   
@@ -226,7 +228,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       socket.off("getCommonVisitorLikeSkipUser");
     };
   }, [loginId]);
-  console.log('get like skip user array',commonVisitorLikeSkipUser)
+  // console.log('get like skip user array',commonVisitorLikeSkipUser)
 
 
   useEffect(()=>{
@@ -244,7 +246,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
        },[commonVisitorLikeSkipUser,visitorContent])
        
    const likeUserHandler=async(likeUser,newOnline,visitorContent)=>{
-    console.log('new user handler',newOnline)
+    // console.log('new user handler',newOnline)
     if(likeUser){
       const likeMatchUserObj={
         id:loginId,
@@ -261,14 +263,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       }
       try {
         const response = await axios.post(`${BASE_URL}/user/addLikeMatchUser/${likeMatchUserObj.id}`, likeMatchUserObj);
-        console.log('response in like match user is',response?.data)
+        // console.log('response in like match user is',response?.data)
         socket.emit('addLikeMatchUser', response?.data)
         if(response){
           startAnimation()
           setAnimateObj(response?.data)
         }
     } catch (error) {
-        console.error('Error sending message:', error);
+        // console.error('Error sending message:', error);
     }
       const likeMatchCountObj={
         id:loginId,
@@ -276,11 +278,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       }
       try {
         const response = await axios.post(`${BASE_URL}/user/addLikeCount/${likeMatchCountObj.id}`,likeMatchCountObj);
-        console.log('response in add like count user',response?.data?.userObj)
+        // console.log('response in add like count user',response?.data?.userObj)
         socket.emit('addLikeCountUser', response?.data?.userObj)
     
     } catch (error) {
-        console.error('Error sending message:', error);
+        // console.error('Error sending message:', error);
     }
     }
     else if(newOnline){
@@ -288,14 +290,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         id:loginId,
         onlinePersonLikeUserId:newOnline?._id
       }
-      console.log("Online like user in new", onlineLikeUserObj);
+      // console.log("Online like user in new", onlineLikeUserObj);
           try {
         const response = await axios.post(`${BASE_URL}/user/addOnlineLikeUser/${onlineLikeUserObj.id}`,onlineLikeUserObj);
-        console.log('response in online like user',response?.data)
+        // console.log('response in online like user',response?.data)
         socket.emit('addOnlineLikeUser', response?.data)
     
     } catch (error) {
-        console.error('Error sending message:', error);
+        // console.error('Error sending message:', error);
     }
     const onlineLikeCountObj={
       id:loginId,
@@ -303,11 +305,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
     try {
       const response = await axios.post(`${BASE_URL}/user/addLikeCount/${onlineLikeCountObj.id}`,onlineLikeCountObj);
-      console.log('response in online like count user',response?.data?.userObj)
+      // console.log('response in online like count user',response?.data?.userObj)
       socket.emit('addLikeCountUser', response?.data?.userObj)
   
   } catch (error) {
-      console.error('Error sending message:', error);
+      // console.error('Error sending message:', error);
   }
     }
     else if(visitorContent){
@@ -330,20 +332,20 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
      try {
       const response = await axios.post(`${BASE_URL}/user/addVisitorLikeUser/${visitorLikeUserObj.id}`,visitorLikeUserObj);
-      console.log('response in visitor like  user',response?.data)
+      // console.log('response in visitor like  user',response?.data)
       socket.emit('addVisitorLikeUser', response?.data)
   
   } catch (error) {
-      console.error('Error sending message:', error);
+      // console.error('Error sending message:', error);
   }
 
   try {
     const response = await axios.post(`${BASE_URL}/user/addLikeCount/${visitorLikeCountObj.id}`,visitorLikeCountObj);
-    console.log('response in add like count user',response?.data?.userObj)
+    // console.log('response in add like count user',response?.data?.userObj)
     socket.emit('addLikeCountUser', response?.data?.userObj)
 
 } catch (error) {
-    console.error('Error sending message:', error);
+    // console.error('Error sending message:', error);
 }
     }
    }
@@ -355,11 +357,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
           const response = await axios.get(
             `${BASE_URL}/user/getLikeMatchUser/${loginId}`
           );
-          console.log('get like match user is',response?.data)
+          // console.log('get like match user is',response?.data)
           setLikeMatchUser(response?.data);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
   
@@ -374,7 +376,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       socket.off("getLikeMatchUser");
     };
   }, [loginId]);
-  console.log('get like match user obj',likeMatchUser)
+  // console.log('get like match user obj',likeMatchUser)
 
 
   useEffect(()=>{
@@ -392,11 +394,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
           const response = await axios.get(
             `${BASE_URL}/user/getLikeMatchUser/${loginId}`
           );
-          console.log('get like match user is',response?.data)
+          // console.log('get like match user is',response?.data)
           setLikeMatchUser(response?.data);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
   
@@ -419,11 +421,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
           const response = await axios.get(
             `${BASE_URL}/user/getOnlineLikeUser/${loginId}`
           );
-          console.log('get online like user is',response?.data)
+          // console.log('get online like user is',response?.data)
           setOnlineLikeUserObj(response?.data );
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
   
@@ -453,11 +455,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
             const response = await axios.get(
               `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
             );
-            console.log('get visitor user is',response?.data)
+            // console.log('get visitor user is',response?.data)
             setVisitorLikeUserObj(response?.data);
           }
         } catch (error) {
-          console.error("Error fetching visitor like user:", error);
+          // console.error("Error fetching visitor like user:", error);
         }
       };
     
@@ -472,7 +474,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         socket.off("getVisitorLikeUser");
       };
     }, [loginId]);
-    console.log('visitor like user obj',visitorLikeUserObj)
+    // console.log('visitor like user obj',visitorLikeUserObj)
 
     useEffect(()=>{
       const selfVisitorLike= visitorLikeUserObj?.visitorLikes?.some((visitorLike)=>visitorLike?.firstName===visitorContent?.firstName)
@@ -488,8 +490,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     
           },[dispatch,completeLoginObjData?._id])
           const finalContent=newAndOnlineContent || likeContent || visitorContent
-          console.log('get all songs',getAllSongsSelector)
-          console.log('finalContent',finalContent.songId)
+          // console.log('get all songs',getAllSongsSelector)
+          // console.log('finalContent',finalContent.songId)
           useEffect(() => {
             if (finalContent && getAllSongsSelector?.length > 0) {
               const foundSong = getAllSongsSelector.find(
@@ -498,7 +500,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
               setSongObj(foundSong || null);
             }
           }, [getAllSongsSelector, finalContent]);
-          console.log('get song large card',songObj)
+          // console.log('get song large card',songObj)
           const playSongHandler = async (songUrl) => {
             try {
                 if (sound && currentSongUrl === songUrl) {
@@ -528,7 +530,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
                 await newSound.playAsync();
                 setIsPlaying(true);
             } catch (error) {
-                console.error("Error playing sound:", error);
+                // console.error("Error playing sound:", error);
             }
         };
         const leftImagePosition = useRef(new Animated.Value(-width)).current; // Start from left

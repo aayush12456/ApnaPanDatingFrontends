@@ -4,7 +4,7 @@ import { useEffect,useState } from "react";
 import { useSelector } from "react-redux";
 const MessageProfilePage=({route})=>{
     const { formData } = route?.params;
-    console.log('form data in message profile',formData)
+    // console.log('form data in message profile',formData)
     const [completeObj,setCompleteObj]=useState({})
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
     const completeLoginObj = useSelector(

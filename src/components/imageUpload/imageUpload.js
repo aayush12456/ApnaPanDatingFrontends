@@ -18,7 +18,7 @@ const ImageUpload = ({ imageUpload }) => {
   const [imgFileType,setImgFileType]=useState([])
   const [fileUploadError,setFileUploadError]=useState('')
   const [error,setError]=useState('')
-  console.log('image upload is', imageUpload);
+  // console.log('image upload is', imageUpload);
 
   // const uploadImageData = async (index) => {
   //   try {
@@ -58,7 +58,7 @@ const ImageUpload = ({ imageUpload }) => {
   const uploadImageData = async (index) => {
     try {
       let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log('Permissions: ', permissionResult);
+      // console.log('Permissions: ', permissionResult);
   
       if (!permissionResult.granted) {
         alert("Permission to access media library is required!");
@@ -73,17 +73,17 @@ const ImageUpload = ({ imageUpload }) => {
         quality: 1,
       });
   
-      console.log('Result:', result);
+      // console.log('Result:', result);
   
       // Check if the operation was canceled or no assets were returned
       if (result.canceled || !result.assets || result.assets.length === 0) {
-        console.log('No image selected or operation canceled.');
+        // console.log('No image selected or operation canceled.');
         return;
       }
   
       // Proceed if a valid image is selected
       const imgURI = result.assets[0].uri;
-      console.log('Selected Image URI:', imgURI);
+      // console.log('Selected Image URI:', imgURI);
   
       setImgFileType((prevImageFile) => [...prevImageFile, result.assets[0]]);
   
@@ -93,16 +93,16 @@ const ImageUpload = ({ imageUpload }) => {
   
       setUploadedImages(updatedImages); // Update the state to reflect the change
     } catch (error) {
-      console.log('Error during media picking:', error);
+      // console.log('Error during media picking:', error);
     }
   };
   
-  console.log('Uploaded images:', uploadedImages);
+  // console.log('Uploaded images:', uploadedImages);
 
 
   const compareFaces = async (image1, image2) => { // ye face comparison ka function hai
-    const apiKey = 'DeIceKMrrwx5e4iS-v97d0lVAEWV8EvA12'; // Replace with actual Face++ API Key
-    const apiSecret = 'VZrAWBOA58qiP0cw-US3_nOYJlpcUlND12'; // Replace with actual Face++ API Secret
+    const apiKey = 'yYyvy7pCxlu3jMIuMxZwimXMOsOMPp65'; // Replace with actual Face++ API Key
+    const apiSecret = '8Q6G4bbRCCTQOgWLi1_UvJRFhzTDCJRS'; // Replace with actual Face++ API Secret
     const apiEndpoint = 'https://api-us.faceplusplus.com/facepp/v3/compare';
 
 
@@ -124,16 +124,16 @@ const ImageUpload = ({ imageUpload }) => {
       const response = await axios.post(apiEndpoint, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log('compare face',response)
+      // console.log('compare face',response)
       return response.data;
     } catch (error) {
       // console.error('Error comparing faces:', error);
       if (error.response.status === 401) {
-        console.warn('API Key or Secret is invalid or expired.');
+        // console.warn('API Key or Secret is invalid or expired.');
         return { expiredApi: true }; // Custom flag for expired API
       }
       if (error.response && error.response.status === 413) {
-        console.error('Error: Total image size exceeds 10 MB.');
+        // console.error('Error: Total image size exceeds 10 MB.');
         return {
           errorMessage: 'Total image size exceeds 10 MB. Please upload smaller images.',
         };
@@ -206,16 +206,16 @@ const ImageUpload = ({ imageUpload }) => {
       return;
     }
   
-    console.log('Uploaded images:', imgFileType);
+    // console.log('Uploaded images:', imgFileType);
     // Call Face++ API for comparison
     const faceComparisonResult = await compareFaces(imgFileType[0], imgFileType[1]);
     let proceedWithRegistration = false;
 
   if (faceComparisonResult?.confidence >= 60) {
-    console.log('Face comparison passed with confidence:', faceComparisonResult.confidence);
+    // console.log('Face comparison passed with confidence:', faceComparisonResult.confidence);
     proceedWithRegistration = true;
   } else if (faceComparisonResult?.expiredApi) {
-    console.warn('Proceeding with registration as Face++ API key is expired.');
+    // console.warn('Proceeding with registration as Face++ API key is expired.');
     proceedWithRegistration = true;
   }
 
@@ -258,7 +258,7 @@ const ImageUpload = ({ imageUpload }) => {
       });
     }
 
-    console.log('Complete FormData:', formData);
+    // console.log('Complete FormData:', formData);
     dispatch(userRegisterAsync(formData));
     dispatch(
       showToasts({

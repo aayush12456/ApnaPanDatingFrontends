@@ -62,7 +62,7 @@ const AdditionalDataForm = ({ navigation, additionalFormData,uploadSongs }) => {
             ...additionalFormData,
             ...values
           };
-          console.log('additional form data values', additionalData); 
+          // console.log('additional form data values', additionalData); 
           navigation.navigate('AboutMePage', { formData: additionalData });
         }}
       >

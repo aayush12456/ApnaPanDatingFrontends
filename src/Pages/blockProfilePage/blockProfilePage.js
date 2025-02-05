@@ -7,9 +7,11 @@ import axios from "axios";
 import io from "socket.io-client";
 import { Text } from "react-native-paper";
 import { View } from "react-native";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const BlockProfilePage=({route})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData } = route?.params;
     const loginResponse = useSelector((state) => state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
@@ -49,11 +51,11 @@ const BlockProfilePage=({route})=>{
               const response = await axios.get(
                 `${BASE_URL}/user/getBlockChatIdUser/${loginId}`,
               );
-              console.log('get block user obj is block profile page', response?.data)
+              // console.log('get block user obj is block profile page', response?.data)
               setBlockUserObj(response?.data);
             }
           } catch (error) {
-            console.error("Error fetching in block user obj:", error);
+            // console.error("Error fetching in block user obj:", error);
           }
         };
     
@@ -68,14 +70,14 @@ const BlockProfilePage=({route})=>{
           socket.off("getBlockUser");
         };
       }, [loginId]);
-      console.log('block user obj',blockUserObj)
+      // console.log('block user obj',blockUserObj)
 return (
     <>
     <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
     <CommonHeader commonHeaderName={formData.headerName}/>
         {
       blockUserObj?.blockUserArray?.length>0? blockUserObj?.blockUserArray?.map((blockUserData,index)=>{
-            console.log('block user data',blockUserData)
+            // console.log('block user data',blockUserData)
             return (
   
                 <BlockProfile blockProfileUser={blockUserData} key={blockUserData?._id} loginId={loginId} completeObj={completeObj}/>

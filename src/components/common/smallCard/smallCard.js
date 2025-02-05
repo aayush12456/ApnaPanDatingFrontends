@@ -5,9 +5,12 @@ import { useSelector } from 'react-redux';
 import * as SecureStore from 'expo-secure-store';
 import { useState,useEffect } from 'react';
 import io from "socket.io-client";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const SmallCard = ({ likesData,visitorData }) => {
-  console.log('visitor data',visitorData)
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  // console.log('visitor data',visitorData)
     const navigation = useNavigation();
     const [loginId,setLoginId]=useState('')
     const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
@@ -18,9 +21,9 @@ const SmallCard = ({ likesData,visitorData }) => {
     const [likeMatchUser,setLikeMatchUser]=useState({})
     const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
     const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
-    const loginResponse=useSelector((state)=>state.loginData.loginData.token)
-    console.log('likes image obj', likesData?.images?.[0]); // Safer logging
-    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
+    const loginResponse=useSelector((state)=>state?.loginData?.loginData?.token)
+    // console.log('likes image obj', likesData?.images?.[0]); // Safer logging
+    const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // otp login token
 
     const getProfile = () => likesData || visitorData?.visitor || {}; // Fallback to an empty object
     const dob = getProfile()?.DOB || ""; // Fallback to an empty string
@@ -29,7 +32,7 @@ const SmallCard = ({ likesData,visitorData }) => {
     const currentYear = new Date().getFullYear();
     const age = year ? currentYear - parseInt(year) : ""; // Ensure safe calculation
     const imagePressHandler = async (likeData, visitorData) => {
-      console.log('image is pressed');
+      // console.log('image is pressed');
   
       if (likeData) {
           navigation.navigate('LikePageContent', { formData: likeData });
@@ -42,17 +45,17 @@ const SmallCard = ({ likesData,visitorData }) => {
           try {
               // Make the API call
               const deleteVisitorNotifyIdObj = await axios.post(
-                  `http://192.168.29.169:4000/user/deleteVisitorNotify/${deleteVisitorNotifyObj.id}`,
+                  `${BASE_URL}/user/deleteVisitorNotify/${deleteVisitorNotifyObj.id}`,
                   deleteVisitorNotifyObj
               );
   
-              console.log('Response from deleteVisitorNotify API:', deleteVisitorNotifyIdObj?.data?.userObj);
+              // console.log('Response from deleteVisitorNotify API:', deleteVisitorNotifyIdObj?.data?.userObj);
   
               // Emit socket event with the response data
               socket.emit('deleteVisitorNotify', deleteVisitorNotifyIdObj?.data?.userObj);
   
           } catch (error) {
-              console.error('Error calling deleteVisitorNotify API:', error);
+              // console.error('Error calling deleteVisitorNotify API:', error);
           }
   
           // Navigate to the VisitorPageContent
@@ -79,14 +82,14 @@ const SmallCard = ({ likesData,visitorData }) => {
           try {
             if (loginId) {
               const response = await axios.get(
-                `http://192.168.29.169:4000/user/getCommonVisitorLikeSkipUser/${loginId}`
+                `${BASE_URL}/user/getCommonVisitorLikeSkipUser/${loginId}`
               );
               // setLikesArray(response?.data?.anotherMatchUser || []);
-              console.log('get like skip user is',response?.data?.likeSkipUserArray)
+              // console.log('get like skip user is',response?.data?.likeSkipUserArray)
               setCommonVisitorLikeSkipUser(response?.data?.likeSkipUserArray || []);
             }
           } catch (error) {
-            console.error("Error fetching matches:", error);
+            // console.error("Error fetching matches:", error);
           }
         };
       
@@ -101,7 +104,7 @@ const SmallCard = ({ likesData,visitorData }) => {
           socket.off("getCommonVisitorLikeSkipUser");
         };
       }, [loginId]);
-      console.log('get like skip user array',commonVisitorLikeSkipUser)
+      // console.log('get like skip user array',commonVisitorLikeSkipUser)
       useEffect(()=>{
         const likeSkipData= commonVisitorLikeSkipUser?.some((likeSkip)=>likeSkip?.firstName===likesData?.firstName)
         if(likeSkipData){
@@ -120,14 +123,14 @@ const SmallCard = ({ likesData,visitorData }) => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+            `${BASE_URL}/user/getLikeMatchUser/${loginId}`
           );
           // setLikesArray(response?.data?.anotherMatchUser || []);
-          console.log('get like match user is',response?.data)
+          // console.log('get like match user is',response?.data)
           setLikeMatchUser(response?.data);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
   
@@ -142,7 +145,7 @@ const SmallCard = ({ likesData,visitorData }) => {
       socket.off("getLikeMatchUser");
     };
   }, [loginId]);
-  console.log('get like match user obj',likeMatchUser)
+  // console.log('get like match user obj',likeMatchUser)
 
 
          useEffect(()=>{
@@ -166,14 +169,14 @@ const SmallCard = ({ likesData,visitorData }) => {
               try {
                 if (loginId) {
                   const response = await axios.get(
-                    `http://192.168.29.169:4000/user/getVisitorLikeUser/${loginId}`
+                    `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
                   );
                   // setLikesArray(response?.data?.anotherMatchUser || []);
-                  console.log('get visitor user is',response?.data)
+                  // console.log('get visitor user is',response?.data)
                   setVisitorLikeUserObj(response?.data);
                 }
               } catch (error) {
-                console.error("Error fetching visitor like user:", error);
+                // console.error("Error fetching visitor like user:", error);
               }
             };
           
@@ -188,7 +191,7 @@ const SmallCard = ({ likesData,visitorData }) => {
               socket.off("getVisitorLikeUser");
             };
           }, [loginId]);
-          console.log('visitor like user obj in small card',visitorLikeUserObj)
+          // console.log('visitor like user obj in small card',visitorLikeUserObj)
 
           useEffect(()=>{
             const selfVisitorLike= visitorLikeUserObj?.visitorLikes?.some((visitorLike)=>visitorLike?.firstName===visitorData?.visitor?.firstName)
@@ -196,7 +199,7 @@ const SmallCard = ({ likesData,visitorData }) => {
               setSelfVisitorLikeMatch(false)
             }
              },[visitorLikeUserObj?.visitorLikes,visitorData])
-           console.log('visitor like in small card',selfVisitorLikeMatch)
+          //  console.log('visitor like in small card',selfVisitorLikeMatch)
     return (
         <View>
             <Pressable onPress={()=>imagePressHandler(likesData,visitorData)}>

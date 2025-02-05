@@ -6,9 +6,11 @@ import {useSelector} from 'react-redux'
 import { View } from "react-native";
 import axios from 'axios'
 import io from "socket.io-client";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const DeactivateAccountPage=({route})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData } = route?.params;
     const [loginId,setLoginId]=useState('')
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
@@ -46,11 +48,11 @@ const DeactivateAccountPage=({route})=>{
             const response = await axios.get(
               `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
-            console.log('get deactivate user obj is', response?.data)
+            // console.log('get deactivate user obj is', response?.data)
             setDeactivateUserObj(response?.data)
           }
         } catch (error) {
-          console.error("Error fetching in chat id obj:", error);
+          // console.error("Error fetching in chat id obj:", error);
         }
       };
       fetchDeactivateUser();
@@ -63,7 +65,7 @@ const DeactivateAccountPage=({route})=>{
         socket.off("getDeactivateUser");
       };
     },[loginId])
-   console.log('get deactivate user obj',deactivateUserObj)
+  //  console.log('get deactivate user obj',deactivateUserObj)
 return (
     <>
     <View  style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>

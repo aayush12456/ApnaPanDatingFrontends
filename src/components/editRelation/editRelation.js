@@ -13,13 +13,13 @@ const EditRelation = ({navigation,completeObj}) => {
     const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
 
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
-    console.log('update personal relation obj',updatePersonalInfoSelector)
+    // console.log('update personal relation obj',updatePersonalInfoSelector)
     const selectRelationHandler=(relation)=>{
         const updateRelationObj={
             id:completeLoginObjData?._id,
             relationship:relation
         }
-  console.log('select relation',relation)
+  // console.log('select relation',relation)
   dispatch(updatePersonalDataAsync(updateRelationObj))
   navigation.navigate('EditProfilePage')
     }

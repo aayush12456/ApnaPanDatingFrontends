@@ -11,9 +11,11 @@ import { Audio } from 'expo-av';
 import { getBollywoodSongAsync } from '../../Redux/Slice/getBollyWoodSongSlice/getBollywoodSongSlice';
 import axios from 'axios'
 import io from "socket.io-client";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const EditProfile=({navigation,completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const dispatch=useDispatch()
   const [active,setActive]=useState(0)
   const [loginObj,setLoginObj]=useState({})
@@ -27,7 +29,7 @@ const [position, setPosition] = useState(0);
 const [isSliding, setIsSliding] = useState(false);
 const [songLoginObj,setSongLoginObj]=useState({})
     const width = Dimensions.get('window').width-50;
-    console.log('widht us',width)
+    // console.log('widht us',width)
     const height=width *1.2
     const change=({nativeEvent})=>{
    const slide=Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width)
@@ -36,18 +38,18 @@ const [songLoginObj,setSongLoginObj]=useState({})
    }
     }
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
-    console.log('complete  login response data in login',completeLoginObj)
+    // console.log('complete  login response data in login',completeLoginObj)
    
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
 
 
      const completeLoginObjData=completeLoginObj  || completeLoginObjForOtp
-     console.log('complete logn obj data',completeLoginObjData.songId)
+    //  console.log('complete logn obj data',completeLoginObjData.songId)
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
 
     
     const getAllSongsSelector=useSelector((state)=>state?.getBollyWoodSong?.getBollywoodSongUserObj?.uploadSongsData)
-    console.log('get all songs selector',getAllSongsSelector)
+    // console.log('get all songs selector',getAllSongsSelector)
   
     const getProfile = () =>completeLoginObjData
     const dob = getProfile()?.DOB;
@@ -59,7 +61,7 @@ const [songLoginObj,setSongLoginObj]=useState({})
 
 
 
-  console.log('about user us',completeLoginObjData?.aboutUser)
+  // console.log('about user us',completeLoginObjData?.aboutUser)
 
   const editInfoHandler=()=>{
     navigation.navigate('EditBasicInfoPage')
@@ -139,11 +141,11 @@ const [songLoginObj,setSongLoginObj]=useState({})
               const response = await axios.get(
                 `${BASE_URL}/user/getSelectedSong/${completeLoginObjData?._id}`
               );
-              console.log('get Song login obj is',response?.data?.loginUser)
+              // console.log('get Song login obj is',response?.data?.loginUser)
               setSongLoginObj(response?.data?.loginUser || {});
             }
           } catch (error) {
-            console.error("Error song login fetch:", error);
+            // console.error("Error song login fetch:", error);
           }
         };
       
@@ -159,17 +161,17 @@ const [songLoginObj,setSongLoginObj]=useState({})
         };
       }, [completeLoginObjData?._id]);
    const finalSongObj=songLoginObj  || completeLoginObjData
-   console.log('finalSongObj',finalSongObj)
+  //  console.log('finalSongObj',finalSongObj)
    useEffect(() => {
     if (finalSongObj && getAllSongsSelector?.length > 0 && finalSongObj?.songId!=='none') {
-      console.log("Final Song Object:", finalSongObj);
-      console.log("All Songs Selector:", getAllSongsSelector);
+      // console.log("Final Song Object:", finalSongObj);
+      // console.log("All Songs Selector:", getAllSongsSelector);
 
       const completeSongObj = getAllSongsSelector.filter(
         (song) => song?._id === finalSongObj?.songId
       );
 
-      console.log("Filtered Song Object:", completeSongObj);
+      // console.log("Filtered Song Object:", completeSongObj);
 
       if (completeSongObj?.length > 0) {
         setSongObj(completeSongObj[0]);
@@ -181,7 +183,7 @@ const [songLoginObj,setSongLoginObj]=useState({})
       setSongObj(finalSongObj)
     }
   }, [finalSongObj, getAllSongsSelector]);
-   console.log('song obj in edit',songObj)
+  //  console.log('song obj in edit',songObj)
 
 //    const playSongHandler = async (songUrl) => {
 //     try {
@@ -255,7 +257,7 @@ const playSongHandler = async (songUrl) => {
       await newSound.playAsync();
       setIsPlaying(true);
   } catch (error) {
-      console.error("Error playing sound:", error);
+      // console.error("Error playing sound:", error);
   }
 };
 
@@ -267,7 +269,7 @@ const handleSlidingComplete = async (value) => {
       setIsSliding(false);
   }
 };
-console.log('song obj',songObj)
+// console.log('song obj',songObj)
 return (
     <>
     <Card style={{marginLeft:8,marginRight:8,marginTop:20,

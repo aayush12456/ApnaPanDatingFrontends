@@ -15,11 +15,11 @@ const LoginWithOtp=({allPhoneNumberArray})=>{
     const handleSendOtp = () => {
       if (!phoneNumber.trim()) {
           setError("Please enter your phone number"); // Show error if phone number is empty
-      } else if (!allPhoneNumberArray.includes(phoneNumber.trim())) {
+      } else if (!allPhoneNumberArray?.includes(phoneNumber?.trim())) {
           setError("Phone number does not exist"); // Show error if phone number is not in the array
       } else {
           setError(""); // Clear the error
-          console.log("Phone Number:", phoneNumber); // Log the phone number
+          // console.log("Phone Number:", phoneNumber); // Log the phone number
           const phoneObj = {
               phone: phoneNumber,
               reset: 'login data',

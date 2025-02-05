@@ -10,18 +10,18 @@ export const finalLoginWithOtpAsync = createAsyncThunk(
       });
 
       const Responedata = response.data;
-      console.log('final  login with otp data',Responedata)
+      // console.log('final  login with otp data',Responedata)
       if (Responedata?.token) {
         await SecureStore.setItemAsync('loginToken', Responedata?.token);
-        console.log('Token stored securely in SecureStore',Responedata?.token);
+        // console.log('Token stored securely in SecureStore',Responedata?.token);
       }
       if(Responedata?.loginData?._id){
         await SecureStore.setItemAsync('loginId', Responedata?.loginData?._id);
-        console.log('loginId stored securely in SecureStore',Responedata?.loginData?._id);
+        // console.log('loginId stored securely in SecureStore',Responedata?.loginData?._id);
       }
       if (Responedata?.loginData) {
         await SecureStore.setItemAsync('loginObj', JSON.stringify(Responedata?.loginData)); // Stringify the object
-        console.log('login obj stored securely in SecureStore', Responedata?.loginData);
+        // console.log('login obj stored securely in SecureStore', Responedata?.loginData);
       }
       
       return Responedata;
@@ -46,7 +46,7 @@ const finalLoginWithOtpSlice = createSlice({
     // Additional extra reducers if needed
     builder.addCase(finalLoginWithOtpAsync.rejected, (state, action) => {
       state.finalLoginWithOtpData = action.payload; // Update responseData even for rejected login attempt
-      console.error('  Login with otp attempt failed:', action.payload)
+      // console.error('  Login with otp attempt failed:', action.payload)
     });
   },
 });

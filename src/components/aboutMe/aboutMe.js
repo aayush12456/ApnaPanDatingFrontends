@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import { TextInput } from 'react-native-paper';
 import { AboutMeSchema } from "../../schemas";
 const AboutMe=({aboutMe,navigation})=>{
-    console.log('about me ',aboutMe)
+    // console.log('about me ',aboutMe)
 return (
     <>
     <Formik
@@ -17,7 +17,7 @@ return (
           ...aboutMe,
           ...values
         }
-        console.log('about me values', aboutMeData); // Handle form submission
+        // console.log('about me values', aboutMeData); // Handle form submission
           navigation.navigate('VideoRecordPage',{formData:aboutMeData})
       }}
     >

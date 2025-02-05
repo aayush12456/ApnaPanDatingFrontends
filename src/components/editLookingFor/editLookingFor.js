@@ -19,7 +19,7 @@ const EditLookingFor = ({ navigation,completeObj }) => {
             id: completeLoginObjData?._id,
             looking: looking
         };
-        console.log('select looking', looking);
+        // console.log('select looking', looking);
         dispatch(updatePersonalDataAsync(updateLookingForObj));
         navigation.navigate('EditProfilePage');
     };

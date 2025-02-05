@@ -13,7 +13,7 @@ const Appearance=()=>{
       
       const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
       const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
-      console.log('appear mode data is',appearModeSelector?.appearanceMode)
+    //   console.log('appear mode data is',appearModeSelector?.appearanceMode)
     const appearArray=[
         {id:1,name:'Dark Mode'},
         {id:2,name:'Light Mode'}
@@ -24,7 +24,7 @@ const Appearance=()=>{
             mode:item.name
         }
         dispatch(appearModeAsync(appearObj))
-console.log('item',item)
+// console.log('item',item)
     }
     useEffect(()=>{
     if(appearModeSelector){

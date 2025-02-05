@@ -5,9 +5,9 @@ import { getBollywoodSongAsync } from "../../Redux/Slice/getBollyWoodSongSlice/g
 const AdditionalDataPage=({route,navigation})=>{
     const dispatch=useDispatch()
     const getAllSongsSelector=useSelector((state)=>state.getBollyWoodSong.getBollywoodSongUserObj.uploadSongsData)
-    console.log('get all songs',getAllSongsSelector)
+    // console.log('get all songs',getAllSongsSelector)
     const { formData } = route.params;
-    console.log('form data in addiotnal data',formData)
+    // console.log('form data in addiotnal data',formData)
     const id='1'
     useEffect(()=>{
         if(id){

@@ -18,7 +18,7 @@ const ChangePassword=({completeObj})=>{
     const loginResponse = useSelector((state) => state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
     const passwordUpdateObj=useSelector((state)=>state.passwordUpdate.addPasswordUpdateData)
-    console.log('password update obj',passwordUpdateObj)
+    // console.log('password update obj',passwordUpdateObj)
     const cancelClickHandler=()=>{
         navigation.navigate('AccountSettingsPage',{formData:{headerName:'Account Settings'}})
     }
@@ -52,7 +52,7 @@ return (
            setNotMatch('Both the passwords you typed do not match. Please use identical passwords in both the form fields.')
           return
        }
-        console.log('password obj  is', passwordObj); // Handle form submissio
+        // console.log('password obj  is', passwordObj); // Handle form submissio
           dispatch(PasswordUpdateAsync(passwordObj))
           dispatch(
             showToast({

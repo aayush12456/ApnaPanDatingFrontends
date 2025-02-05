@@ -3,10 +3,10 @@ import {useSelector } from 'react-redux';
 
 const EditBasicInfo=({completeObj})=>{
     const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
-    console.log('complete  login response data in login',completeLoginObj)
+    // console.log('complete  login response data in login',completeLoginObj)
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
      const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
-     console.log('complete logn obj data',completeLoginObjData)
+    //  console.log('complete logn obj data',completeLoginObjData)
      const getProfile = () =>completeLoginObjData
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");

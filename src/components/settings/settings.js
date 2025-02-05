@@ -3,7 +3,6 @@ import {View,Image, Pressable} from 'react-native'
 import rightArrow from '../../../assets/settingIcons/rightArrow.png'
 import { useNavigation } from "@react-navigation/native"
 
-// rgba(117, 117, 117, 0.7)
 const Settings=({completeObj})=>{
     const navigation = useNavigation();
     
@@ -11,7 +10,7 @@ const Settings=({completeObj})=>{
         const skipProfileObj={
             headerName:'Skipped Profiles'
         }
-        console.log('skip profile')
+        // console.log('skip profile')
         navigation.navigate('SkipProfilePage', {formData:skipProfileObj});
     }
     const blockProfileHandler=()=>{

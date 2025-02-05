@@ -6,7 +6,7 @@ const ForgotPasswordPage=({route})=>{
     const { formData } = route?.params;
     const dispatch=useDispatch()
     const allPhoneNumberArraySelector=useSelector((state)=>state?.getAllPhoneNumber?.getAllPhoneNumbersArray?.phoneNumberArray)
-    console.log('all phone number array',allPhoneNumberArraySelector)
+    // console.log('all phone number array',allPhoneNumberArraySelector)
     const id='1'
     useEffect(()=>{
   if(id){

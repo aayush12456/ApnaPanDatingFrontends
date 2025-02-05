@@ -9,17 +9,19 @@ import pause from '../../../assets/myProfileIcons/pause.png'
 import rightTik from '../../../assets/myProfileIcons/rightTik.png';
 import { useNavigation } from '@react-navigation/native';
 import io from "socket.io-client";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 import axios from 'axios'
 const EditSongs=({completeObj})=>{
-    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
     const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
     const getAllSongsSelector=useSelector((state)=>state.getBollyWoodSong.getBollywoodSongUserObj.uploadSongsData)
-    console.log('get all songs',getAllSongsSelector)
+    // console.log('get all songs',getAllSongsSelector)
     const [sound, setSound] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSongUrl, setCurrentSongUrl] = useState(null);
@@ -65,7 +67,7 @@ const EditSongs=({completeObj})=>{
                 await newSound.playAsync();
                 setIsPlaying(true);
             } catch (error) {
-                console.error("Error playing sound:", error);
+                // console.error("Error playing sound:", error);
             }
         };
     
@@ -76,13 +78,13 @@ const songObj={
 }
 try {
     const response = await axios.post(`${BASE_URL}/user/addSelectedSong/${songObj.id}`, songObj);
-    console.log('response in song obj user is',response?.data?.loginUser)
+    // console.log('response in song obj user is',response?.data?.loginUser)
     socket.emit('addSongObj', response?.data?.loginUser)
     if(response?.data?.loginUser){
         navigation.navigate('EditProfilePage');
     }
 } catch (error) {
-    console.error('Error sending message:', error);
+    // console.error('Error sending message:', error);
 }
 }
 useEffect(() => {
@@ -93,11 +95,11 @@ useEffect(() => {
             `${BASE_URL}/user/getSelectedSong/${completeLoginObjData?._id}`
           );
           // setLikesArray(response?.data?.anotherMatchUser || []);
-          console.log('get Song login obj is',response?.data?.loginUser)
+        //   console.log('get Song login obj is',response?.data?.loginUser)
           setSongLoginObj(response?.data?.loginUser || {});
         }
       } catch (error) {
-        console.error("Error song login fetch:", error);
+        // console.error("Error song login fetch:", error);
       }
     };
   
@@ -127,19 +129,20 @@ const noneSongHandler=async()=>{
     }
     try {
         const response = await axios.post(`${BASE_URL}/user/addNoneSong/${noneSongObj.id}`, noneSongObj);
-        console.log('response in none song obj user is',response?.data?.loginUser)
+        // console.log('response in none song obj user is',response?.data?.loginUser)
         socket.emit('addSongObj', response?.data?.loginUser)
         if(response?.data?.loginUser){
             navigation.navigate('EditProfilePage');
         }
     } catch (error) {
-        console.error('Error sending message:', error);
+        // console.error('Error sending message:', error);
     }
 
 }
 return(
     <>
-<View style={{marginTop:10}}>
+    <ScrollView>
+    <View style={{marginTop:10}}>
     <ScrollView>
     {
             getAllSongsSelector?.map((getSong)=>{
@@ -158,7 +161,8 @@ return(
                                     ? pause
                                     : play
                             }
-                            style={{ width: 27, height: 27, marginTop: 12, marginRight: 20 }}
+                            style={{ width: 27, height: 27, marginTop: 12, marginRight: 20,
+                                tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}
                         />
                     </Pressable>}
                    {updateSong?.songId === getSong?._id && updateSong?.songId!=='none' &&
@@ -172,6 +176,8 @@ return(
         </Pressable>
     </ScrollView>
     </View>
+    </ScrollView>
+
     </>
 )
 }

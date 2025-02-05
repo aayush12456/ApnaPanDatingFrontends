@@ -10,16 +10,16 @@ import { hideToast } from "../../Redux/Slice/toastSlice/toastSlice";
 import { hideToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
 const FrontPage = ({navigation,route}) => {
   const formData=route?.params?.formData
-  console.log('form data',formData)
+  // console.log('form data',formData)
   const dispatch=useDispatch()
   const { visible, type, title, textBody } = useSelector((state) => state.toastData);
   const { visibles, types, titles, textBodys } = useSelector((state) => state.toasts);
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteToastObj,setDeleteToastObj]=useState({})
-  console.log('toast data',visible,type,title,textBody)
-  console.log('toast datas',visibles,types,titles,textBodys)
+  // console.log('toast data',visible,type,title,textBody)
+  // console.log('toast datas',visibles,types,titles,textBodys)
   const deleteProfileResponse=useSelector((state)=>state.deleteProfileData.deleteProfileUserObj.msg)
-  console.log('delete profile in front',deleteProfileResponse)
+  // console.log('delete profile in front',deleteProfileResponse)
   const lightColors = {
     label: '#000000',
     card: '#ffffff',
@@ -31,7 +31,7 @@ const FrontPage = ({navigation,route}) => {
   
 useEffect(() => {
     if (visible===true ) {
-      console.log('Toast Data:', { type, title, textBody });
+      // console.log('Toast Data:', { type, title, textBody });
       Dialog.show({
         type: ALERT_TYPE[type],
         title: title,

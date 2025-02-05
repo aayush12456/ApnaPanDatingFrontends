@@ -42,7 +42,7 @@ const SignUpForm = ({ navigation,allUserObj }) => {
       }}
       validationSchema={signUpSchema}
       onSubmit={(values) => {
-        console.log(values); // Handle form submission
+        // console.log(values); // Handle form submission
         const emailExists = allUserObj.emailArray.includes(values.email);
         const phoneExists = allUserObj.phoneNumberArray.includes(values.phone.trim());
         if (emailExists || phoneExists) {
@@ -115,7 +115,7 @@ const SignUpForm = ({ navigation,allUserObj }) => {
               onConfirm={(date) => {
                 const selectedDate = date.toLocaleDateString(); // Convert date to string
                 setFieldValue('date', selectedDate); // Set date in Formik state
-                console.log("Selected date: ", selectedDate);
+                // console.log("Selected date: ", selectedDate);
                 hideDatePicker();
               }}
               onCancel={hideDatePicker}
@@ -151,19 +151,6 @@ const SignUpForm = ({ navigation,allUserObj }) => {
                 />
                 {touched.firstName && errors.firstName && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.firstName}</Text>}
               </View>
-
-              {/* <View>
-                <TextInput
-                  label="Password"
-                  style={{ marginLeft: 12, marginRight: 20, marginTop: 9 }}
-                  mode="outlined"
-                  secureTextEntry
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                />
-                {touched.password && errors.password && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.password}</Text>}
-              </View> */}
  <View>
             <View style={{flexDirection:'row'}}>
             <TextInput

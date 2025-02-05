@@ -13,7 +13,7 @@ const MyProfile=({navigation,completeObj})=>{
           };
           getLoginData()
     },[])
-        console.log('data of login in my porifle',loginData)
+        // console.log('data of login in my porifle',loginData)
         
         const editProfileHandler=()=>{
       navigation.navigate('EditProfilePage')

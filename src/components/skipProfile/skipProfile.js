@@ -4,9 +4,10 @@ import { useDispatch } from "react-redux";
 import axios from 'axios'
 import { passSkipProfileSliceActions } from "../../Redux/Slice/passSkipProfileSlice/passSkipProfileSlice";
 const SkipProfile=({skipProfileUser,loginId,completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const dispatch=useDispatch()
-    console.log('skip profile user',skipProfileUser)
+    // console.log('skip profile user',skipProfileUser)
     const getProfile = () => skipProfileUser;
     const dob = getProfile()?.DOB;
     const dobBreak = dob?.split("/");
@@ -15,14 +16,14 @@ const SkipProfile=({skipProfileUser,loginId,completeObj})=>{
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
     const resetSkipProfileHandler=async(resetProfile)=>{
-  console.log('reset profile',resetProfile)
+  // console.log('reset profile',resetProfile)
   const deleteUserId=resetProfile?._id
   dispatch(passSkipProfileSliceActions.passSkipProfile(deleteUserId))
   try {
     const response = await axios.delete(`${BASE_URL}/user/deleteSkipProfile/${loginId}`,{params:{deleteUserId}});
-    console.log('response in delete skip profile',response?.data)
+    // console.log('response in delete skip profile',response?.data)
 } catch (error) {
-    console.error('Error sending message in delete skip profile:', error);
+    // console.error('Error sending message in delete skip profile:', error);
 }
 
     }

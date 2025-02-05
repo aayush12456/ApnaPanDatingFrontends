@@ -7,7 +7,8 @@ import SkipProfile from "../../components/skipProfile/skipProfile";
 import { Text } from "react-native-paper";
 import {View} from 'react-native'
 const SkipProfilePage=({route})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData } = route?.params;
     const [loginId,setLoginId]=useState('')
     const [fetchMatchSkipUser,setFetchMatchSkipUser]=useState([])
@@ -16,7 +17,7 @@ const SkipProfilePage=({route})=>{
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)
     const passSkipProfileId=useSelector((state)=>state.passSkipProfile.passSkipProfile)
-    console.log('pass skip profile id',passSkipProfileId)
+    // console.log('pass skip profile id',passSkipProfileId)
 
     const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
     const completeLoginObj = useSelector(
@@ -51,17 +52,17 @@ const SkipProfilePage=({route})=>{
               const response = await axios.get(
                 `${BASE_URL}/user/getSkipUser/${loginId}`
               );
-              console.log('get fetch match skip user is',response?.data)
+              // console.log('get fetch match skip user is',response?.data)
               setFetchMatchSkipUser(response?.data?. matchSkipUser);
             }
           } catch (error) {
-            console.error("Error fetching visitor like user:", error);
+            // console.error("Error fetching visitor like user:", error);
           }
         };
       
         fetchMatchSkipUsers();
       }, [loginId]);
-      console.log('fetch match skip user',fetchMatchSkipUser)
+      // console.log('fetch match skip user',fetchMatchSkipUser)
 
       useEffect(() => {
         const fetchOnlineSkipUsers = async () => {
@@ -70,17 +71,17 @@ const SkipProfilePage=({route})=>{
               const response = await axios.get(
                 `${BASE_URL}/user/getOnlineSkipUser/${loginId}`
               );
-              console.log('get fetch online skip user is',response?.data)
+              // console.log('get fetch online skip user is',response?.data)
               setFetchOnlineSkipUser(response?.data?.getOnlineSkipUser);
             }
           } catch (error) {
-            console.error("Error fetching visitor like user:", error);
+            // console.error("Error fetching visitor like user:", error);
           }
         };
       
         fetchOnlineSkipUsers();
       }, [loginId]);
-      console.log('fetch online skip user',fetchOnlineSkipUser)
+      // console.log('fetch online skip user',fetchOnlineSkipUser)
     
       useEffect(() => {
         if (passSkipProfileId) {
@@ -93,7 +94,7 @@ const SkipProfilePage=({route})=>{
         }
       }, [passSkipProfileId]);
       const combineSkipUserArray=[...fetchMatchSkipUser,...fetchOnlineSkipUser]
-      console.log('combine skip user array',combineSkipUserArray)
+      // console.log('combine skip user array',combineSkipUserArray)
     
 return (
     <>
@@ -101,7 +102,7 @@ return (
     <CommonHeader commonHeaderName={formData.headerName}/>
     {
       combineSkipUserArray.length>0?  combineSkipUserArray.map((skipUserData,index)=>{
-            console.log('skip user data',skipUserData)
+            // console.log('skip user data',skipUserData)
             return (
                 <SkipProfile skipProfileUser={skipUserData} key={skipUserData?._id} loginId={loginId} completeObj={completeObj}/>
 

@@ -9,7 +9,7 @@ export const getMatchesData = createAsyncThunk(
       const response = await axios.get(`/filterUsers/${userId}`,{
         headers: { 'Cache-Control': 'no-cache' }
       }); 
-      console.log('response of filter user',response.data)
+      // console.log('response of filter user',response.data)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data);

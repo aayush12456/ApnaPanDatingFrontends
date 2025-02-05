@@ -5,7 +5,7 @@ import { getAllPhoneNumbersData } from "../../Redux/Slice/getAllPhoneNumberSlice
 const SignUpPage=({navigation})=>{
     const dispatch=useDispatch()
     const allUserSelector=useSelector((state)=>state.getAllPhoneNumber.getAllPhoneNumbersObj)
-    console.log('all User selector',allUserSelector)
+    // console.log('all User selector',allUserSelector)
     const id='1'
     useEffect(()=>{
         if(id){

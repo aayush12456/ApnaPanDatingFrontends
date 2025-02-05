@@ -13,7 +13,7 @@ export const addCrossMatchAsync = createAsyncThunk(
       }
      
       const Responedata = response.data;
-      console.log('addCross data is',Responedata)
+      // console.log('addCross data is',Responedata)
   
       return Responedata;
       

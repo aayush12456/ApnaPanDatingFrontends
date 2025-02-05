@@ -7,7 +7,7 @@ export const getAllPhoneNumbersData = createAsyncThunk(
 
     try {
       const response = await axios.get(`/completeAllUser/${userId}`); 
-      console.log('response of all phone number',response.data)
+      // console.log('response of all phone number',response.data)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data);

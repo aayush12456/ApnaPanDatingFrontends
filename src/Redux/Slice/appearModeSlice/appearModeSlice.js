@@ -13,7 +13,7 @@ export const appearModeAsync = createAsyncThunk(
       }
      
       const Responedata = response.data;
-      console.log('add appear mode is',Responedata)
+      // console.log('add appear mode is',Responedata)
   
       return Responedata;
       

@@ -3,9 +3,11 @@ import axios from "axios";
 import { Text, View, Image } from "react-native";
 import { Card, Button } from "react-native-paper";
 import io from "socket.io-client";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const BlockProfile=({blockProfileUser,loginId,completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const getProfile = () => blockProfileUser;
     const dob = getProfile()?.DOB;
     const dobBreak = dob?.split("/");
@@ -14,14 +16,14 @@ const BlockProfile=({blockProfileUser,loginId,completeObj})=>{
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
       const unblockProfileHandler=async(unblockProfile)=>{
-       console.log('unblock profile',unblockProfile)
+      //  console.log('unblock profile',unblockProfile)
        const blockId=unblockProfile?._id
     try {
       const response = await axios.post(`${BASE_URL}/user/deleteBlockIdUser/${loginId}`,{blockId});
-      console.log('response in delete block profile',response?.data)
+      // console.log('response in delete block profile',response?.data)
       socket.emit('deleteBlockUser', response?.data)
   } catch (error) {
-      console.error('Error sending message in delete block profile:', error);
+      // console.error('Error sending message in delete block profile:', error);
   }
       }
 return (

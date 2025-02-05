@@ -8,7 +8,7 @@ const playVideoModalSlice = createSlice({
   reducers: {
     playVideoModalToggle(state){
         state.playVideoModalToggle = !state.playVideoModalToggle;
-        console.log('playVideo modal',state.playVideoModalToggle)
+        // console.log('playVideo modal',state.playVideoModalToggle)
       
     },
   },

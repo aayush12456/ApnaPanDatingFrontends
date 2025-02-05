@@ -29,7 +29,7 @@ const AdditonalForm = ({ formData,navigation }) => {
           ...formData,
           ...values
         }
-        console.log('additional values', data); // Handle form submission
+        // console.log('additional values', data); // Handle form submission
           navigation.navigate('AdditionalDataPage',{formData:data})
         // action.resetForm();
       }}

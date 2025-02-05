@@ -5,9 +5,11 @@ import io from "socket.io-client";
 import * as SecureStore from 'expo-secure-store';
 import { useState,useEffect } from "react";
 import {View} from 'react-native'
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsPageContent=({route})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData } = route?.params;
     const [loginId,setLoginId]=useState('')
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
@@ -47,11 +49,11 @@ const MessageDetailsPageContent=({route})=>{
             const response = await axios.get(
               `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
-            console.log('get deactivate user obj is', response?.data)
+            // console.log('get deactivate user obj is', response?.data)
             setDeactivateUserObj(response?.data)
           }
         } catch (error) {
-          console.error("Error fetching in chat id obj:", error);
+          // console.error("Error fetching in chat id obj:", error);
         }
       };
       fetchDeactivateUser();
@@ -64,7 +66,7 @@ const MessageDetailsPageContent=({route})=>{
         socket.off("getDeactivateUser");
       };
     },[loginId])
-   console.log('get deactivate user obj in like page',deactivateUserObj)
+  //  console.log('get deactivate user obj in like page',deactivateUserObj)
 return (
     <>
     <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>

@@ -9,8 +9,11 @@ import io from "socket.io-client";
 import axios from "axios";
 import FilteredChatMessage from "../filteredChatMessage/filteredChatMessage";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageCard=({finalMessageUser,completeObj})=>{
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const [loginObj,setLoginObj]=useState({})
     const [chatIdArray, setChatIdArray] = useState([])
     const [filteredMessages, setFilteredMessages] = useState([])
@@ -22,7 +25,7 @@ const MessageCard=({finalMessageUser,completeObj})=>{
     const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
     const [showTypingResponse,setShowTypingResponse]=useState(false)
     const [recordMessageId,setRecordMessageId]=useState(false)
-    console.log('final message user in message card',finalMessageUser)
+    // console.log('final message user in message card',finalMessageUser)
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
     const navigation = useNavigation();
@@ -42,37 +45,36 @@ useEffect(() => {
           const parsedLoginObj = JSON.parse(loginObjData); // Parse the JSON string
           setLoginObj(parsedLoginObj); // Set the parsed object in state
         } else {
-          console.error('No loginObj found in SecureStore');
+          // console.error('No loginObj found in SecureStore');
         }
       } catch (error) {
-        console.error('Error fetching loginObj from SecureStore:', error);
+        // console.error('Error fetching loginObj from SecureStore:', error);
       }
     };
     getLoginObj();
   }
 }, [loginResponse,loginOtpResponse]);
 
-  console.log('login obj',loginObj)
+  // console.log('login obj',loginObj)
 
   useEffect(()=>{
     const fetchAllLoginIdUser = async () => {
       try {
         if (loginObj?._id) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getAllLoginIdUser/${loginObj?._id}`,
+            `${BASE_URL}/user/getAllLoginIdUser/${loginObj?._id}`,
           );
-          // setLikesArray(response?.data?.anotherMatchUser || []);
-          console.log('get all login id user is', response?.data?.loginIdUserArray)
+          // console.log('get all login id user is', response?.data?.loginIdUserArray)
           setLoginIdUserArray(response?.data?.loginIdUserArray)
         }
       } catch (error) {
-        console.error("Error fetching in chat id obj:", error);
+        // console.error("Error fetching in chat id obj:", error);
       }
     };
     fetchAllLoginIdUser();
 
     socket.on("getLoginUser", (newUser) => {
-       console.log('on get login user array',newUser)
+      //  console.log('on get login user array',newUser)
       setLoginIdUserArray(newUser)
     });
 
@@ -86,7 +88,7 @@ useEffect(() => {
     };
   },[loginObj?._id])
 
-  console.log('login id user array is',loginIdUserArray)
+  // console.log('login id user array is',loginIdUserArray)
   useEffect(() => {
     if (loginObj?._id) {
       const getActiveLoginId = loginIdUserArray?.some(
@@ -102,26 +104,19 @@ useEffect(() => {
   const getMessageTyping = async () => {
     try {
       if (loginObj?._id) {
-        const response = await axios.get(`http://192.168.29.169:4000/chat/getTyping/${loginObj?._id}`);
-        // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-        // console.log('fetch messages is', response.data.chatUserArray)
-        // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+        const response = await axios.get(`${BASE_URL}/chat/getTyping/${loginObj?._id}`);
    setFetchTypingIdObj(response.data)
 
       }
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      // console.error("Error fetching messages:", error);
     }
   };
   getMessageTyping()
   socket.on('getTyping', (newTypingId) => {
-    // setFetchTypingIdArray(preTypingId => [...preTypingId, newTypingId])
     setFetchTypingIdObj(newTypingId)
   })
   socket.on('typingChatDeleted', (deleteTyping) => {
-    // setFetchMessages((prevMessages) =>
-    //   prevMessages.filter((msg) => msg._id !== deletedMessage._id)
-    // );
     setFetchTypingIdObj(deleteTyping)
   });
 
@@ -130,7 +125,7 @@ useEffect(() => {
     socket.off('typingChatDeleted');
   }
 }, [loginObj?._id])
-console.log('fetch typing id obj',fetchTypingIdObj)
+// console.log('fetch typing id obj',fetchTypingIdObj)
 
 useEffect(() => {
   if (loginObj?._id) {
@@ -138,13 +133,13 @@ useEffect(() => {
       (item) => item === finalMessageUser?._id
     );
     setShowTypingResponse(getTypingIdResponse)
-    console.log('get typing id response:', getTypingIdResponse);
+    // console.log('get typing id response:', getTypingIdResponse);
   }
 }, [loginObj?._id, fetchTypingIdObj, finalMessageUser]);
 
 
     const messageCardClickHandler=async(finalMessageUser)=>{
-    console.log('final message user',finalMessageUser)
+    // console.log('final message user',finalMessageUser)
     if(finalMessageUser){
       const addChatIdObj={
      id:loginObj?._id,
@@ -161,40 +156,38 @@ useEffect(() => {
         recieverId:finalMessageUser?._id
       }
       try {
-        const deleteResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/deleteRecordMessage/${deleteRecordMessageIdObj.id}`,deleteRecordMessageIdObj);
-        console.log('response in delete recoird id user is',deleteResponseIdObj?.data)
-            //  socket.emit('deleteRecordMessageId', deleteResponseIdObj?.data?.recordMessageIdArray)
+        const deleteResponseIdObj = await axios.post(`${BASE_URL}/chat/deleteRecordMessage/${deleteRecordMessageIdObj.id}`,deleteRecordMessageIdObj);
+        // console.log('response in delete recoird id user is',deleteResponseIdObj?.data)
             socket.emit('deleteRecordMessageId', deleteResponseIdObj?.data)
     } catch (error) {
-        console.error('Error sending message in delete id:', error);
+        // console.error('Error sending message in delete id:', error);
     }
     try {
-      const anotherResponseIdObj = await axios.post(`http://192.168.29.169:4000/chat/addAnotherRecordMessage/${anotherRecordMessageIdObj.id}`,anotherRecordMessageIdObj);
-      console.log('response in another record message id user is',anotherResponseIdObj?.data?.anotherRecordMessageIdArray)
+      const anotherResponseIdObj = await axios.post(`${BASE_URL}/chat/addAnotherRecordMessage/${anotherRecordMessageIdObj.id}`,anotherRecordMessageIdObj);
+      // console.log('response in another record message id user is',anotherResponseIdObj?.data?.anotherRecordMessageIdArray)
   } catch (error) {
-      console.error('Error sending another response in another response id:', error);
+      // console.error('Error sending another response in another response id:', error);
   }
       try {
-        const response = await axios.post(`http://192.168.29.169:4000/chat/addChatId`, addChatIdObj);
-        console.log('response in add chat id user is',response?.data?.chatIdUser)
+        const response = await axios.post(`${BASE_URL}/chat/addChatId`, addChatIdObj);
+        // console.log('response in add chat id user is',response?.data?.chatIdUser)
         navigation.navigate('MessageDetailsPageContent', {
           formData: finalMessageUser,
         });
     } catch (error) {
-        console.error('Error sending message in add chat id:', error);
+        // console.error('Error sending message in add chat id:', error);
     }
     }
     }
     useEffect(() => {
       const fetchAllChatId = async () => {
           try {
-              const response = await axios.get(`http://192.168.29.169:4000/chat/getAllChatId`);
-              // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getAllChatId`);
-              console.log('fetch chat id messages is',response.data)
+              const response = await axios.get(`${BASE_URL}/chat/getAllChatId`);
+              // console.log('fetch chat id messages is',response.data)
               setChatIdArray(response.data.chatIdArray)
 
           } catch (error) {
-              console.error("Error fetching messages:", error);
+              // console.error("Error fetching messages:", error);
           }
       };
       fetchAllChatId()
@@ -205,15 +198,12 @@ useEffect(() => {
     const fetchMessage = async () => {
         try {
           if(loginObj?._id){
-            const response = await axios.get(`http://192.168.29.169:4000/chat/getMessage/${loginObj?._id}`);
-            // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-            // console.log('fetch messages is', response.data.chatUserArray)
-            // console.log('fetch message in reciever', response.data.recieverChatUserArray)
+            const response = await axios.get(`${BASE_URL}/chat/getMessage/${loginObj?._id}`);
             setFetchMessages(response.data.chatUserArray);
   
           }
         } catch (error) {
-            console.error("Error fetching messages:", error);
+            // console.error("Error fetching messages:", error);
         }
     };
     fetchMessage()
@@ -265,7 +255,7 @@ useEffect(() => {
         setFilteredMessages(closestMessagesArray)
     }
 }, [fetchMessages, chatIdArray]);
-console.log('fetch message in message card',filteredMessages)
+// console.log('fetch message in message card',filteredMessages)
 
 
 
@@ -288,32 +278,24 @@ useEffect(() => {
   const fetchRecordMessage = async () => {
       try {
         if(loginObj?._id){
-          const response = await axios.get(`http://192.168.29.169:4000/chat/getRecordMessage/${loginObj?._id}`);
-          // const response = await axios.get(`https://apnapandaitingwebsitebackend.up.railway.app/chat/getMessage/${id}`);
-          // console.log('fetch messages is', response.data.chatUserArray)
-          // console.log('fetch message in reciever', response.data.recieverChatUserArray)
-          // setRecordMessage(response.data.recordMessageIdArray);
+          const response = await axios.get(`${BASE_URL}/chat/getRecordMessage/${loginObj?._id}`);
           setRecordMessage(response.data);
 
         }
       } catch (error) {
-          console.error("Error fetching messages:", error);
+          // console.error("Error fetching messages:", error);
       }
   };
   fetchRecordMessage()
   socket.on('recieveRecordMessageId', (newMessage) => {
     setRecordMessage(newMessage);
   })
-  // socket.on('recordMessageIdDeleted', (newMessage) => {
-  //   setRecordMessage(newMessage);
-  // })
   return () => {
       socket.off('recieveRecordMessageId')
-      // socket.off('recordMessageIdDeleted')
   }
 }, [loginObj?._id])
 
-console.log('record message array',recordMessage)
+// console.log('record message array',recordMessage)
 
 useEffect(() => {
   const checkRecordMessageId = recordMessage?.recordMessageIdArray?.some(
@@ -321,7 +303,7 @@ useEffect(() => {
   );
   setRecordMessageId(checkRecordMessageId)
 }, [ recordMessage, finalMessageUser?._id]);
-console.log('record message id response',recordMessageId)
+// console.log('record message id response',recordMessageId)
 return (
     <>
       <Card

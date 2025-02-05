@@ -14,7 +14,7 @@ export const userRegisterAsync = createAsyncThunk(
     
 
       const Responedata = response.data;
-      console.log( 'register response data ',Responedata)
+      // console.log( 'register response data ',Responedata)
             const token = response.data.token;
          const personalSignUpData={
           firstName:response.data.user.firstName,
@@ -56,7 +56,7 @@ const userRegisterSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(userRegisterAsync.fulfilled, (state, action) => {
       state.registerDataObj = action.payload; // Update responseData in the state after successful login
-      console.log('register data in slice',state.registerDataObj)
+      // console.log('register data in slice',state.registerDataObj)
     });
     // Additional extra reducers if needed
     builder.addCase(userRegisterAsync.rejected, (state, action) => {

@@ -7,7 +7,8 @@ import { useNavigation } from "@react-navigation/native"
 import { useEffect,useState } from "react";
 import axios from 'axios'
 const AccountSettings=({completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const navigation = useNavigation();
     const [loginId, setLoginId] = useState('')
     const completeLoginObj = useSelector(
@@ -28,11 +29,11 @@ const AccountSettings=({completeObj})=>{
           getLoginId()
         }
       }, [loginResponse,loginOtpResponse])
-      console.log('login id in otp',loginId)
+      // console.log('login id in otp',loginId)
       const logoutHandler=async()=>{
         try {
           if(!loginId){
-            console.error('loginId is not set');
+            // console.error('loginId is not set');
             return;
           }
           const response = await axios.post(
@@ -42,10 +43,10 @@ const AccountSettings=({completeObj})=>{
             await SecureStore.deleteItemAsync('loginObj')
             await SecureStore.deleteItemAsync('loginToken')
             await SecureStore.deleteItemAsync('loginId')
-            console.log('User logged out and login data removed from AsyncStorage');
+            // console.log('User logged out and login data removed from AsyncStorage');
             navigation.navigate('FrontPage');
           } catch (error) {
-            console.error('Error removing login data:', error);
+            // console.error('Error removing login data:', error);
           }
       }
       const changePasswordHandler=()=>{

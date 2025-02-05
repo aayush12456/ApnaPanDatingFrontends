@@ -8,12 +8,12 @@ import { View,Pressable, ScrollView ,Image} from "react-native";
 // import { Image } from 'expo-image';
 import { useState } from "react";
 import axios from 'axios'
-const ExpertChat=({obj})=>{
-  const API_KEY='AIzaSyCcEe4JMmbqRe_IEdhN8KmN3rOopHO__u8'
+const ExpertChat=({obj,completeObj})=>{
+  const API_KEY='AIzaSyD4lhZRaUC6MxCmSxpuWoXDKmFvjXYrl8E'
   const [queryText,setQueryText]=useState('')
   const [responseExpertObj,setResponseExpertObj]=useState(null)
   const [isLoading, setIsLoading] = useState(false);
-  console.log('obj in expert chat',obj.loginName)
+  // console.log('obj in expert chat',obj.loginName)
     const navigation = useNavigation();
     const backHandler=()=>{
         navigation.navigate('MessageDetailsPageContent',{formData:obj})
@@ -26,7 +26,7 @@ const ExpertChat=({obj})=>{
         const queryObj={
           query:queryText
           }
-          console.log('query obj is',queryObj)
+          // console.log('query obj is',queryObj)
           setIsLoading(true); 
           setQueryText('')
           try {
@@ -44,9 +44,9 @@ const ExpertChat=({obj})=>{
           const data=response.data.candidates[0].content.parts[0]
           data.text = data.text.replace(/\*/g, '');
           setResponseExpertObj(data)
-            console.log('message of gpt data is', data);
+            // console.log('message of gpt data is', data);
           } catch (error) {
-            console.error('Error sending message:', error);
+            // console.error('Error sending message:', error);
           } 
           finally {
             setIsLoading(false);  // Stop loading
@@ -59,24 +59,25 @@ return (
     <View
           style={{
             flexDirection:'row',
-            backgroundColor: "white",
+            backgroundColor: `${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`,
             marginTop: 40,
             gap:60
           }}
         >
              <View style={{ marginTop: 5,marginBottom:5 }}>
             <Button onPress={backHandler}>
-              <Image source={back} style={{ width: 15, height: 15 }} />
+              <Image source={back} style={{ width: 15, height: 15,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }} />
             </Button>
           </View>
           <View>
-            <Text style={{textAlign:'center',paddingLeft:5,paddingTop:9, fontSize: 17, fontWeight: '600', color: 'black',paddingBottom:5}}>Guru Expert</Text>
+            <Text style={{textAlign:'center',paddingLeft:5,paddingTop:9, fontSize: 17, fontWeight: '600', 
+            color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,paddingBottom:5}}>Guru Expert</Text>
           </View>
         </View>
        {responseExpertObj===null && isLoading===false && <View style={{flexDirection:"row",justifyContent:'center',marginTop:20}}>
           <View>
           <Image source={guru} style={{width:'100%'}}/>
-          <Text style={{paddingTop:14,fontSize:15}}>Hello <Text style={{fontWeight:'600',color:'#0000ff'}}>{obj.loginName}</Text> how may I help you in case of <Text style={{fontWeight:'600',color:'#4682b4'}}>{obj.firstName}</Text></Text>
+          <Text style={{paddingTop:14,fontSize:15,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>Hello <Text style={{fontWeight:'600',color:'#0000ff'}}>{obj.loginName}</Text> how may I help you in case of <Text style={{fontWeight:'600',color:'#4682b4'}}>{obj.firstName}</Text></Text>
           </View>
         </View>}
       { isLoading===true && <View style={{flexDirection:'row',gap:5,marginLeft:10 ,marginTop:20}}> 
@@ -85,20 +86,18 @@ return (
         </View>}
         {responseExpertObj!=null && isLoading==false &&<View style={{flex: 1, marginBottom: 80}}>
           <ScrollView>
-        <Text style={{textAlign:'center',paddingTop:20,paddingLeft:4,paddingRight:4}}>{responseExpertObj.text}</Text>
+        <Text style={{textAlign:'center',paddingTop:20,paddingLeft:4,paddingRight:4,
+        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{responseExpertObj.text}</Text>
           </ScrollView>
         </View>}
         <View
           style={{
             position: "absolute",
-            bottom: 0,
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: "#f5f5f5",
-            width: "100%",
-            paddingVertical: 10,
-            paddingHorizontal: 10,
-            bottom: -6,
+            width:'100%',
+            bottom:1,
           }}
         >
           <TextInput
@@ -107,12 +106,12 @@ return (
               height: 40,
               borderWidth: 1,
               borderColor: "#ccc",
-              paddingHorizontal: 10,
               borderRadius: 5,
               backgroundColor: "#fff",
               // marginLeft:-20
-              marginRight: 12,
-              height: 50
+              height: 50,
+              paddingRight: 50, // Space for the image
+              textAlignVertical: "top", // Align text properly
             }}
             placeholder="Message Expert"
             onChangeText={(text) => textChangeHandler(text)}

@@ -8,11 +8,11 @@ const AddChat=()=>{
     const toggleModalHandler = () => {
       dispatch(addChatModalActions.addChatVisibleToggle());
     };
-    const chatModalOpenSelector=useSelector((state)=>state.addChatModalData.addChatModalToggle)
-    console.log('add chat modal selector in type',chatModalOpenSelector)
+    const chatModalOpenSelector=useSelector((state)=>state?.addChatModalData?.addChatModalToggle)
+    // console.log('add chat modal selector in type',chatModalOpenSelector)
 
     const chatSelector=useSelector((state)=>state?.passFilterData?.passData)
-    console.log('chat in add chat',chatSelector)
+    // console.log('chat in add chat',chatSelector)
 return (
     <>
       <Portal>

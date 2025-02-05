@@ -5,7 +5,7 @@ import { getAllPhoneNumbersData } from "../../Redux/Slice/getAllPhoneNumberSlice
 const LoginWithOtpPage=()=>{
     const dispatch=useDispatch()
     const allPhoneNumberArraySelector=useSelector((state)=>state.getAllPhoneNumber.getAllPhoneNumbersObj.phoneNumberArray)
-    console.log('all phone number array',allPhoneNumberArraySelector)
+    // console.log('all phone number array',allPhoneNumberArraySelector)
     const id='1'
   useEffect(()=>{
 if(id){

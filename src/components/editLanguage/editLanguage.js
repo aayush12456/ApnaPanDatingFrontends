@@ -13,7 +13,7 @@ const EditLanguage = ({ navigation,completeObj }) => {
   const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
   const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
-  console.log('update personal language obj', updatePersonalInfoSelector);
+  // console.log('update personal language obj', updatePersonalInfoSelector);
 
   const selectLanguageHandler = (language) => {
     setSelectedLanguages((prevLanguages) => {
@@ -24,7 +24,7 @@ const EditLanguage = ({ navigation,completeObj }) => {
       }
     });
   };
-console.log('langusage array in language',selectedLanguages)
+// console.log('langusage array in language',selectedLanguages)
   const submitEditLanguage = () => {
     const languageString = selectedLanguages.join(', ');
     const updateLanguageObj = {
@@ -32,7 +32,7 @@ console.log('langusage array in language',selectedLanguages)
       language: languageString, 
     };
 
-    console.log('language obj in submit', updateLanguageObj);
+    // console.log('language obj in submit', updateLanguageObj);
     dispatch(updatePersonalDataAsync(updateLanguageObj));
     navigation.navigate('EditProfilePage');
   };

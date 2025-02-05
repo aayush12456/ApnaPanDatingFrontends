@@ -18,7 +18,7 @@ const CaptureImage = ({captureImages, navigation }) => {
           allowsEditing: true,
           quality: 1,
         });
-        console.log('Image capture result:', result);
+        // console.log('Image capture result:', result);
 
         // Check if the user has captured an image
         if (!result.canceled) {
@@ -27,10 +27,10 @@ const CaptureImage = ({captureImages, navigation }) => {
           setImageUrl(result.assets[0])
         }
       } else {
-        console.log('Camera permission denied');
+        // console.log('Camera permission denied');
       }
     } catch (error) {
-      console.log('Error during image capture:', error);
+      // console.log('Error during image capture:', error);
     }
   };
 const sumbitImageHandler=()=>{
@@ -65,7 +65,7 @@ const downloadImageHandler = async () => {
       Alert.alert('Error', 'No image to save.');
     }
   } catch (error) {
-    console.log('Error saving image:', error);
+    // console.log('Error saving image:', error);
     Alert.alert('Error', 'Failed to save the image.');
   }
 };

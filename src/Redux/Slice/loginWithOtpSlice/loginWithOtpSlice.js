@@ -9,7 +9,7 @@ export const loginWithOtpAsync = createAsyncThunk(
       });
 
       const Responedata = response.data;
-      console.log('login with otp data',Responedata)
+      // console.log('login with otp data',Responedata)
       
       return Responedata;
     } catch (error) {
@@ -33,7 +33,7 @@ const loginWithOtpSlice = createSlice({
     // Additional extra reducers if needed
     builder.addCase(loginWithOtpAsync.rejected, (state, action) => {
       state.loginWithOtpData = action.payload; // Update responseData even for rejected login attempt
-      console.error('  Login with otp attempt failed:', action.payload)
+      // console.error('  Login with otp attempt failed:', action.payload)
     });
   },
 });

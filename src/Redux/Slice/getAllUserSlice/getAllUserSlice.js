@@ -7,7 +7,7 @@ export const getAllUserData = createAsyncThunk(
 
     try {
       const response = await axios.get(`/allUsers/${userId}`); 
-      console.log('response of all user',response.data)
+      // console.log('response of all user',response.data)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data)

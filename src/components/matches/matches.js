@@ -7,16 +7,18 @@ import io from "socket.io-client";
 import MatchCard from '../MatchCard/MatchCard';
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store';
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Matches=({completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [filterMatchArray,setFilterMatchArray]=useState([])
   const [loginId,setLoginId]=useState('')
   const [refreshing, setRefreshing] = useState(false);
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const dispatch=useDispatch()
   const getFilterUser=useSelector((state)=>state.getMatchesData.getMatchesArray.interestUsers)
-console.log('get match filter user',getFilterUser)
+// console.log('get match filter user',getFilterUser)
 const [matchArray,setMatchArray]=useState(getFilterUser)
 const completeLoginObj = useSelector(
   (state) => state.loginData.loginData.completeLoginData
@@ -24,13 +26,13 @@ const completeLoginObj = useSelector(
 const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
 
 const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
-console.log('complete login obj data',completeLoginObjData)
+// console.log('complete login obj data',completeLoginObjData)
 
 const getCrossId=useSelector((state)=>state?.passFilterData?.passData)
-console.log('cross id is',getCrossId)
+// console.log('cross id is',getCrossId)
 const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
 const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
-console.log('login otp response token',loginOtpResponse)
+// console.log('login otp response token',loginOtpResponse)
 useEffect(()=>{
   if(loginResponse  ){
     const getLoginId = async () => {
@@ -43,7 +45,7 @@ useEffect(()=>{
 },[loginResponse])
 
 
-console.log('login id in likes',loginId)
+// console.log('login id in likes',loginId)
 // useEffect(()=>{
 // if(getFilterUser){
 // setMatchArray(getFilterUser)
@@ -61,7 +63,7 @@ useEffect(() => {
         setFilterMatchArray(response?.data?.likesArray || []);
       }
     } catch (error) {
-      console.error("Error fetching matches:", error);
+      // console.error("Error fetching matches:", error);
     }
   };
 
@@ -76,7 +78,7 @@ useEffect(() => {
     socket.off("getMatchUser");
   };
 }, [loginId]);
-console.log('filter match array in matches',filterMatchArray)
+// console.log('filter match array in matches',filterMatchArray)
 useEffect(()=>{
 if(completeLoginObjData?._id){
   dispatch(getMatchesData(completeLoginObjData?._id))
@@ -119,7 +121,7 @@ useEffect(() => {
             headers: { 'Cache-Control': 'no-cache' }
           }
         );
-        console.log('get deactivate user obj is', response?.data);
+        // console.log('get deactivate user obj is', response?.data);
         setDeactivateUserObj(response?.data);
 
         // If deactivatedIdArray is available, filter the allUser array
@@ -133,7 +135,7 @@ useEffect(() => {
         }
       }
     } catch (error) {
-      console.error("Error fetching deactivate user:", error);
+      // console.error("Error fetching deactivate user:", error);
     }
   };
 
@@ -158,8 +160,8 @@ useEffect(() => {
   };
 }, [loginId,getFilterUser]); // Re-run effect whenever loginId or getAllUserArray changes
 
-console.log('get deactivate user obj in likes',deactivateUserObj)
-console.log('match card',matchArray)
+// console.log('get deactivate user obj in likes',deactivateUserObj)
+// console.log('match card',matchArray)
 const handleRefresh = () => {
   setRefreshing(true);
   dispatch(getMatchesData(completeLoginObj?._id)).finally(() =>

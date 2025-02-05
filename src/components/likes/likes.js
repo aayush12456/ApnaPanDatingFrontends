@@ -1,20 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { View, ScrollView,Text } from "react-native";
+import { View, ScrollView,Text,RefreshControl  } from "react-native";
 import io from "socket.io-client";
 import * as SecureStore from "expo-secure-store";
 import SmallCard from "../common/smallCard/smallCard";
 import axios from "axios";
 
-const socket = io.connect("http://192.168.29.169:4000");
-
-const Likes = () => {
+// const socket = io.connect("http://192.168.29.169:4000");
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const Likes = ({completeObj}) => {
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [loginId, setLoginId] = useState("");
   const [likesArray, setLikesArray] = useState([]);
   const [likeMatchUser, setLikeMatchUser] = useState({});
   const [onlineLikeUserObj, setOnlineLikeUserObj] = useState({});
   const [blockUserObj,setBlockUserObj]=useState({})
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
+  const [refreshing, setRefreshing] = useState(false); 
   const dispatch = useDispatch();
 
   const completeLoginObj = useSelector(
@@ -38,7 +41,7 @@ const Likes = () => {
     }
   }, [loginResponse,loginOtpResponse]);
 
-  console.log("login id in likes", loginId);
+  // console.log("login id in likes", loginId);
 
   // Fetch and update likesArray
   useEffect(() => {
@@ -46,12 +49,12 @@ const Likes = () => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getMatchUser/${loginId}`
+            `${BASE_URL}/user/getMatchUser/${loginId}`
           );
           setLikesArray(response?.data?.likesArray || []);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
 
@@ -72,7 +75,7 @@ const Likes = () => {
     };
   }, [loginId]);
 
-  console.log("get likes data array", likesArray);
+  // console.log("get likes data array", likesArray);
 
   // Fetch and update likeMatchUser
   useEffect(() => {
@@ -80,12 +83,12 @@ const Likes = () => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+            `${BASE_URL}/user/getLikeMatchUser/${loginId}`
           );
           setLikeMatchUser(response?.data);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
 
@@ -118,7 +121,7 @@ const Likes = () => {
     };
   }, [loginId]);
 
-  console.log("get like match user in socket", likeMatchUser);
+  // console.log("get like match user in socket", likeMatchUser);
 
   // Fetch and update onlineLikeUserObj
   useEffect(() => {
@@ -126,12 +129,12 @@ const Likes = () => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getOnlineLikeUser/${loginId}`
+            `${BASE_URL}/user/getOnlineLikeUser/${loginId}`
           );
           setOnlineLikeUserObj(response?.data);
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
 
@@ -157,21 +160,21 @@ const Likes = () => {
     };
   }, [loginId]);
 
-  console.log("online like user obj", onlineLikeUserObj);
+  // console.log("online like user obj", onlineLikeUserObj);
 
   useEffect(() => {
     const fetchBlockProfileUser = async () => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getBlockChatIdUser/${loginId}`,
+            `${BASE_URL}/user/getBlockChatIdUser/${loginId}`,
           );
           // setLikesArray(response?.data?.anotherMatchUser || []);
-          console.log('get block user obj is block profile page', response?.data)
+          // console.log('get block user obj is block profile page', response?.data)
           setBlockUserObj(response?.data);
         }
       } catch (error) {
-        console.error("Error fetching in block user obj:", error);
+        // console.error("Error fetching in block user obj:", error);
       }
     };
 
@@ -193,14 +196,14 @@ const Likes = () => {
       try {
         if (loginId) {
           const response = await axios.get(
-            `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+            `${BASE_URL}/user/getDeactivateUser/${loginId}`,
           );
           // setLikesArray(response?.data?.anotherMatchUser || []);
-          console.log('get deactivate user obj is', response?.data)
+          // console.log('get deactivate user obj is', response?.data)
           setDeactivateUserObj(response?.data)
         }
       } catch (error) {
-        console.error("Error fetching in chat id obj:", error);
+        // console.error("Error fetching in chat id obj:", error);
       }
     };
     fetchDeactivateUser();
@@ -213,7 +216,7 @@ const Likes = () => {
       socket.off("getDeactivateUser");
     };
   },[loginId])
-  console.log('get deactivate user obj in likes',deactivateUserObj)
+  // console.log('get deactivate user obj in likes',deactivateUserObj)
 
   const finalLikesArray =
     likesArray.length > 0
@@ -234,9 +237,9 @@ const Likes = () => {
         )
       : [];
 
-  console.log("final like array", finalLikesArray);
-  console.log("another match like array", anotherMatchLikesArray);
-  console.log("online like array", onlineLikeUserArray);
+  // console.log("final like array", finalLikesArray);
+  // console.log("another match like array", anotherMatchLikesArray);
+  // console.log("online like array", onlineLikeUserArray);
   
   const blockUserIds = [
     ...(blockUserObj?.blockUserArray || []),
@@ -266,10 +269,41 @@ const Likes = () => {
   };
 
   const chunkedData = chunkArray(combineLikeArray, 2);
+const handleRefresh=async()=>{
+  setRefreshing(true)
+  try {
+    if (loginId) {
+        // Manually fetching data again
+        const [getMatchUserResponse,getLikeMatchUserResponse,getOnlineLikeUserResponse, blockUserResponse, deactivateUserResponse] = await Promise.all([
+          axios.get(`${BASE_URL}/user/getMatchUser/${loginId}`),
+            axios.get(`${BASE_URL}/user/getLikeMatchUser/${loginId}`),
+            axios.get(`${BASE_URL}/user/getOnlineLikeUser/${loginId}`),
+            axios.get(`${BASE_URL}/user/getBlockChatIdUser/${loginId}`),
+            axios.get(`${BASE_URL}/user/getDeactivateUser/${loginId}`)
+        ]);
 
+        // console.log("New Like Match Data:", likeMatchResponse?.data);
+        // console.log("New Block User Data:", blockUserResponse?.data);
+        // console.log("New Deactivate User Data:", deactivateUserResponse?.data);
+
+        // Updating the states with new fetched data
+        setLikesArray(getMatchUserResponse?.data?.likesArray || []);
+        setLikeMatchUser(getLikeMatchUserResponse?.data);
+        setOnlineLikeUserObj(getOnlineLikeUserResponse?.data);
+        setBlockUserObj(blockUserResponse?.data);
+        setDeactivateUserObj(deactivateUserResponse?.data);
+    }
+} catch (error) {
+    // console.error("Error refreshing data:", error);
+}
+
+setRefreshing(false); // Stop loading
+}
   return (
     <>
-      <ScrollView>
+      <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
         {chunkedData && chunkedData.length>0 ?chunkedData.map((row, rowIndex) => (
           <View
             key={rowIndex}
@@ -290,7 +324,8 @@ const Likes = () => {
               </View>
             ))}
           </View>
-        )):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200}}>No Likes Profile is there</Text>}
+        )):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200,
+        color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No Likes Profile is there</Text>}
       </ScrollView>
     </>
   );

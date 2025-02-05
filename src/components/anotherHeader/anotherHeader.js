@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 const AnotherHeader = ({ editObj,navigation,completeObj }) => {
     const objSelector=useSelector((state)=>state.anotherPassData.anotherPassData)
     const anotherObjSelector=useSelector((state)=>state.passMatchData.passMatchData)
-    console.log('another obj in another header',anotherObjSelector)
+    // console.log('another obj in another header',anotherObjSelector)
     const backArrowHandler = (name) => {
-        console.log('name is',name)
-        console.log('Back arrow clicked');
+        // console.log('name is',name)
+        // console.log('Back arrow clicked');
         if(name==='Edit Profile'){
         navigation.navigate('HeaderPage')
         }

@@ -7,7 +7,7 @@ export const getMatchUserAsync = createAsyncThunk(
 
     try {
       const response = await axios.get(`/getMatchUser/${userId}`); 
-      console.log('getmatch  user',response.data)
+      // console.log('getmatch  user',response.data)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data);

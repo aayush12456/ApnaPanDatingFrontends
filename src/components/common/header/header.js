@@ -22,9 +22,11 @@ import NewAndOnlinePage from '../../../Pages/newAndOnlinePage/newAndOnlinePage.j
 import MatchesPage from '../../../Pages/matchesPage/matchesPage.js';
 import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
 
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Header=()=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation();
     const [loginData, setLoginData] = useState(null);
@@ -57,7 +59,7 @@ const Header=()=>{
           };
           getLoginData()
     },[])
-        console.log('data of login in obj',loginData)
+        // console.log('data of login in obj',loginData)
  const newIcon=loginData?.gender === 'Female' ? boy : girl
  
  const loginResponse=useSelector((state)=>state.loginData.loginData.token)
@@ -72,7 +74,7 @@ const Header=()=>{
       getLoginId()
     }
   },[loginResponse,loginOtpResponse])
-  console.log('login id in header',loginId)
+  // console.log('login id in header',loginId)
  useEffect(() => {
     const fetchLikeCountId = async () => {
       try {
@@ -83,7 +85,7 @@ const Header=()=>{
      setLikeCountObj(response?.data?.userObj)
         }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        // console.error("Error fetching matches:", error);
       }
     };
   
@@ -99,13 +101,13 @@ const Header=()=>{
 
     };
   }, [loginId]);
-  console.log('like count id is',likeCountObj)
+  // console.log('like count id is',likeCountObj)
 
 const deleteFunction = async () => {
-    console.log('delete func invoked');
+    // console.log('delete func invoked');
     try {
         if (!loginId) {
-            console.error('loginId is not set');
+            // console.error('loginId is not set');
             return;
         }
 
@@ -113,10 +115,10 @@ const deleteFunction = async () => {
             `${BASE_URL}/user/deleteLikeCount`,
              {loginId} 
         );
-        console.log('Response in delete like count user', response?.data?.userObj);
+        // console.log('Response in delete like count user', response?.data?.userObj);
         setLikeCountObj(response?.data?.userObj);
     } catch (error) {
-        console.error('Error deleting like count:', error?.response?.data || error.message);
+        // console.error('Error deleting like count:', error?.response?.data || error.message);
     }
 };
 
@@ -130,7 +132,7 @@ useEffect(() => {
    setVisitorCountObj(response?.data?.userObj)
       }
     } catch (error) {
-      console.error("Error fetching matches:", error);
+      // console.error("Error fetching matches:", error);
     }
   };
 
@@ -146,12 +148,12 @@ useEffect(() => {
 
   };
 }, [loginId]);
-console.log('visitor count obj',visitorCountObj)
+// console.log('visitor count obj',visitorCountObj)
 const deleteVisitorFunction = async () => {
-  console.log('delete visitor func invoked');
+  // console.log('delete visitor func invoked');
   try {
       if (!loginId) {
-          console.error('loginId is not set');
+          // console.error('loginId is not set');
           return;
       }
 
@@ -159,10 +161,10 @@ const deleteVisitorFunction = async () => {
           `${BASE_URL}/user/deleteVisitorCount`,
            {loginId} 
       );
-      console.log('Response in delete visitor count user', response?.data?.userObj);
+      // console.log('Response in delete visitor count user', response?.data?.userObj);
       setVisitorCountObj(response?.data?.userObj);
   } catch (error) {
-      console.error('Error deleting visitor count:', error?.response?.data || error.message);
+      // console.error('Error deleting visitor count:', error?.response?.data || error.message);
   }
 };
 
@@ -176,7 +178,7 @@ useEffect(() => {
 
         }
       } catch (error) {
-          console.error("Error fetching messages:", error);
+          // console.error("Error fetching messages:", error);
       }
   };
   fetchRecordMessage()
@@ -188,7 +190,7 @@ useEffect(() => {
   }
 }, [loginId])
 
-console.log('record message obj',recordMessage)
+// console.log('record message obj',recordMessage)
 const { width, height } = Dimensions.get('window')
 const count=parseInt(likeCountObj?.counter || 0)+parseInt(visitorCountObj?.visitorCounter || 0)
 

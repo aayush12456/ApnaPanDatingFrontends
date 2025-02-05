@@ -64,9 +64,11 @@ import AppearancePage from './src/Pages/appearancePage/appearancePage';
 
 
 const Stack = createNativeStackNavigator();
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 function AppContent() {
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const socketRef = useRef(null);
   const [recordMessage, setRecordMessage] = useState([])
   const [visitorNotifyObj, setVisitorNotifyObj] = useState([])
@@ -75,18 +77,11 @@ function AppContent() {
   );
   const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
   const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
-  const lightColors = {
-    label: '#000000',
-    card: '#ffffff',
-    overlay: '#f1f1f1',
-    success: '#28a745',
-    danger: '#dc3545',
-    warning: '#ffc107',
-  };
+  
   
   const darkColors = {
     label: '#ffffff',
-    card: 'red',
+    card: 'white',
     overlay: '#444444',
     success: '#28a745',
     danger: '#dc3545',
@@ -97,9 +92,45 @@ function AppContent() {
 
 
 
+  // useEffect(() => {
+  //   if (!socketRef.current) {
+  //     socketRef.current = io('http://192.168.29.169:4000', {
+  //       transports: ['websocket'], // Only use WebSocket transport
+  //       reconnection: true,
+  //       reconnectionAttempts: 10,
+  //       reconnectionDelay: 1000,
+  //       reconnectionDelayMax: 5000,
+  //       timeout: 20000,
+  //       pingTimeout: 60000,
+  //       pingInterval: 25000,
+  //     });
+
+  //     socketRef.current.emit('setup', completeLoginObj?._id);
+
+  //     socketRef.current.on('connect', () => {
+  //       console.log('Connected to server');
+  //       console.log('Socket ID:', socketRef.current.id);
+  //     });
+
+  //     socketRef.current.on('disconnect', () => {
+  //       console.log('Disconnected from server');
+  //     });
+
+  //     socketRef.current.on('connected', () => {
+  //       console.log('Socket is connected');
+  //     });
+  //   }
+
+  //   return () => {
+  //     if (socketRef.current) {
+  //       socketRef.current.disconnect();
+  //     }
+  //   };
+  // }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
+
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io('http://192.168.29.169:4000', {
+      socketRef.current = io('https://apnapandatingbackend.onrender.com', {
         transports: ['websocket'], // Only use WebSocket transport
         reconnection: true,
         reconnectionAttempts: 10,
@@ -144,7 +175,7 @@ function AppContent() {
   
           }
         } catch (error) {
-            console.error("Error fetching messages:", error);
+            // console.error("Error fetching messages:", error);
         }
     };
     fetchRecordMessage()
@@ -157,7 +188,7 @@ function AppContent() {
     
     }
   }, [completeLoginObjData?._id])
-  console.log('record message array in app.js',recordMessage)
+  // console.log('record message array in app.js',recordMessage)
 
 
 useEffect(() => {
@@ -184,12 +215,12 @@ useEffect(() => {
               }}
             />
             <View>
-          <Text style={{color:'white'}}>{notify.recieverName} message you</Text>
+          <Text style={{color:'black'}}>{notify.recieverName} message you</Text>
           
-          <Text style={{color:'white'}} >please checkout your message</Text>
+          <Text style={{color:'black'}} >please checkout your message</Text>
             </View>
-            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'white',marginLeft:40,marginTop:-10}}>
-            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3}}/>
+            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'black',marginLeft:40,marginTop:-10}}>
+            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3,tintColor:'white'}}/>
             </View>
           </View>
         ),
@@ -197,7 +228,7 @@ useEffect(() => {
       });
     });
   }
-}, [recordMessage]);
+}, [recordMessage,completeLoginObjData,recordMessage?.messageNotify?.length > 0]);
 
 useEffect(() => {
 
@@ -209,7 +240,7 @@ useEffect(() => {
 
         }
       } catch (error) {
-          console.error("Error fetching messages:", error);
+          // console.error("Error fetching messages:", error);
       }
   };
   fetchVisitorNotify()
@@ -220,7 +251,7 @@ useEffect(() => {
       socket.off('getVisitorCountUser')
   }
 }, [completeLoginObjData?._id])
-console.log('visitor notify in app.js',visitorNotifyObj)
+// console.log('visitor notify in app.js',visitorNotifyObj)
 
 useEffect(() => {
   if (visitorNotifyObj?.visitorNotify?.length > 0 && completeLoginObjData._id===visitorNotifyObj.id) {
@@ -246,12 +277,12 @@ useEffect(() => {
               }}
             />
             <View>
-          <Text style={{color:'white'}}>{notify.visitorName} visited you</Text>
+          <Text style={{color:'black'}}>{notify.visitorName} visited you</Text>
           
-          <Text style={{color:'white'}} >please checkout your visitors</Text>
+          <Text style={{color:'black'}} >please checkout your visitors</Text>
             </View>
-            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'white',marginLeft:40,marginTop:-10}}>
-            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3}}/>
+            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'black',marginLeft:40,marginTop:-10}}>
+            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3,tintColor:'white'}}/>
             </View>
           </View>
         ),
@@ -260,7 +291,7 @@ useEffect(() => {
       });
     });
   }
-}, [visitorNotifyObj]);
+}, [visitorNotifyObj,completeLoginObjData,visitorNotifyObj?.visitorNotify?.length>0]);
   return (
     <AlertNotificationRoot colors={[darkColors]}  >
     <NavigationContainer>

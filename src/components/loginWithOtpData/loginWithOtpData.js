@@ -9,8 +9,8 @@ import { useNavigation } from "@react-navigation/native";
 import {  finalLoginWithOtpAsync } from "../../Redux/Slice/finalLoginWithOtpSlice/finalLoginWithOtpSlice";
 import * as SecureStore from 'expo-secure-store';
 const LoginWithOtpData=({phoneNumber,otp})=>{
-  console.log('phone number in otp data',phoneNumber)
-  console.log('otp in otp data',otp)
+  // console.log('phone number in otp data',phoneNumber)
+  // console.log('otp in otp data',otp)
   const dispatch=useDispatch()
   const navigation=useNavigation()
   const [otpData,setOtpData]=useState('')
@@ -23,18 +23,18 @@ const LoginWithOtpData=({phoneNumber,otp})=>{
   };
 
   const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)
-  console.log('login otp response token',loginOtpResponse)
+  // console.log('login otp response token',loginOtpResponse)
   const loginOtpObj=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.loginData)
-  console.log('login otp response login obj',loginOtpObj)
+  // console.log('login otp response login obj',loginOtpObj)
 
   useEffect(() => {
     if (loginOtpResponse) {
       const saveToSecureStore = async () => {
         try {
           await SecureStore.setItemAsync('loginObj', JSON.stringify(loginOtpObj));
-          console.log("Login data stored successfully!");
+          // console.log("Login data stored successfully!");
         } catch (error) {
-          console.error("Failed to store login data:", error);
+          // console.error("Failed to store login data:", error);
         }
       };
       saveToSecureStore();
@@ -46,13 +46,13 @@ const LoginWithOtpData=({phoneNumber,otp})=>{
       const fetchData = async () => {
         try {
           const token = await SecureStore.getItemAsync('loginToken');
-          console.log("Fetched Token:", token);
+          // console.log("Fetched Token:", token);
     
           if (token) {
             navigation.navigate('HeaderPage'); // Navigate if token exists
           }
         } catch (error) {
-          console.error("Error fetching login token:", error);
+          // console.error("Error fetching login token:", error);
         }
       };
       fetchData();
@@ -77,20 +77,20 @@ const LoginWithOtpData=({phoneNumber,otp})=>{
       setError(""); // Clear the error
       
     }
-    console.log('match otp is',otpData)
+    // console.log('match otp is',otpData)
     dispatch(finalLoginWithOtpAsync({otp:otpData}))
     setOtpData('')
   }
 
   const resetOtpHandler=()=>{
-    console.log('phone number for reset')
+    // console.log('phone number for reset')
     setCountdown(10); 
     setPhone(phoneNumber)
     dispatch(loginWithOtpAsync(phoneObj))
     setResendDisabled(true);
   }
   const changeHandler=()=>{
-    console.log('change had')
+    // console.log('change had')
 navigation.navigate('LoginWithOtpPage')
   }
 

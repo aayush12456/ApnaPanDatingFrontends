@@ -8,7 +8,7 @@ const addChatModalSlice = createSlice({
   reducers: {
     addChatVisibleToggle(state){
         state.addChatModalToggle = !state.addChatModalToggle;
-        console.log('add chat modal',state.addChatModalToggle)
+        // console.log('add chat modal',state.addChatModalToggle)
       
     },
   },

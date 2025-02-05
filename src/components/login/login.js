@@ -13,7 +13,8 @@ import * as SecureStore from 'expo-secure-store';
 import closeEye from '../../../assets/AllIcons/closedeye.png'
 import openEye from '../../../assets/AllIcons/openeye.png'
 import io from "socket.io-client";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Login=({navigation})=>{
   const [loginToken,setLoginToken]=useState(null)
   const [showPassword, setShowPassword] = useState(false);
@@ -21,15 +22,15 @@ const Login=({navigation})=>{
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)
   const loginObj=useSelector((state)=>state.loginData.loginData.loginData)
   const loginError=useSelector((state)=>state.loginData.error)
-  console.log('login eror is',loginError)
+  // console.log('login eror is',loginError)
   const getAllLoginIdUserArray=useSelector((state)=>state.loginData.loginData.loginIdUserArray)
-  console.log('get all login id user array',getAllLoginIdUserArray)
-  console.log(' login response data in login',loginObj)
+  // console.log('get all login id user array',getAllLoginIdUserArray)
+  // console.log(' login response data in login',loginObj)
 
   useEffect(() => {
     if (getAllLoginIdUserArray) {
       socket.emit('loginUser',getAllLoginIdUserArray);
-      console.log('Emitted login data:',getAllLoginIdUserArray);
+      // console.log('Emitted login data:',getAllLoginIdUserArray);
     }
   }, [getAllLoginIdUserArray]);
   useEffect(() => {
@@ -37,9 +38,9 @@ const Login=({navigation})=>{
       const saveToSecureStore = async () => {
         try {
           await SecureStore.setItemAsync('loginObj', JSON.stringify(loginObj));
-          console.log("Login data stored successfully!");
+          // console.log("Login data stored successfully!");
         } catch (error) {
-          console.error("Failed to store login data:", error);
+          // console.error("Failed to store login data:", error);
         }
     };
       saveToSecureStore();
@@ -53,14 +54,14 @@ useEffect(() => {
     const fetchData = async () => {
       try {
         const token = await SecureStore.getItemAsync('loginToken');
-        console.log("Fetched Token:", token);
+        // console.log("Fetched Token:", token);
         setLoginToken(token);
   
         if (token) {
           navigation.navigate('HeaderPage'); // Navigate if token exists
         }
       } catch (error) {
-        console.error("Error fetching login token:", error);
+        // console.error("Error fetching login token:", error);
       }
     };
     fetchData();
@@ -77,7 +78,7 @@ const togglePasswordVisibility = () => {
   setShowPassword(!showPassword);
 };
 const loginWithOtpHandler=()=>{
-  console.log('login with otp')
+  // console.log('login with otp')
   navigation.navigate('LoginWithOtpPage');
 }
 const forgotPasswordHandler=()=>{
@@ -95,7 +96,7 @@ return (
        dispatch(userLoginAsync(values)).unwrap().then(()=>{ // form me password ya email galat nhi hai to form clear ho jayega ye check
         action.resetForm();                                 // hoga backend se jo response aa rha hai usse
        }). catch(() => {
-        console.log("Login failed, form not reset.");
+        // console.log("Login failed, form not reset.");
       });
       
       }}

@@ -8,10 +8,13 @@ import AddChat from "../common/addChat/addChat";
 import NewAndOnlineCard from "../newAndOnlineCard/newAndOnlineCard";
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const NewAndOnline = ({route,completeObj}) => {
+    // const BASE_URL = "http://192.168.29.169:4000";
+    const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const { formData = {} } = route.params || {}; // Fallback to an empty object
-  console.log('form data in new ', formData);
+  // console.log('form data in new ', formData);
 
   const dispatch = useDispatch();
   const completeLoginObj = useSelector(
@@ -22,11 +25,11 @@ const NewAndOnline = ({route,completeObj}) => {
   const getAllUserArray = useSelector(
     (state) => state.getAllUserData.getAllUserArray.users
   );
-  console.log("get all user array in new ", getAllUserArray);
+  // console.log("get all user array in new ", getAllUserArray);
   const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
-  console.log('login response in new and pnline',loginResponse)
+  // console.log('login response in new and pnline',loginResponse)
   const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)// ye login otp token
-  console.log('login otp response token in new and online',loginOtpResponse)
+  // console.log('login otp response token in new and online',loginOtpResponse)
 
   const [allUser,setAllUser]=useState(getAllUserArray)
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
@@ -52,7 +55,7 @@ const NewAndOnline = ({route,completeObj}) => {
       getLoginId()
     }
 },[loginResponse,loginOtpResponse])
-console.log('login id in new and online',loginId)
+// console.log('login id in new and online',loginId)
   useEffect(()=>{
     if(formData?.onlinePersonSkipUserId){
       let updateArray=allUser?.filter((filterItem)=>filterItem?._id!==formData?.onlinePersonSkipUserId)
@@ -63,20 +66,20 @@ console.log('login id in new and online',loginId)
     }
     
     },[formData?.onlinePersonSkipUserId,getAllUserArray])
-console.log('all user array',allUser)
+// console.log('all user array',allUser)
     useEffect(() => {
       const fetchOnlineLikeUsers = async () => {
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getOnlineLikeUser/${loginId}`
+              `${BASE_URL}/user/getOnlineLikeUser/${loginId}`
             );
             // setLikesArray(response?.data?.anotherMatchUser || []);
-            console.log('get online like user is',response?.data)
+            // console.log('get online like user is',response?.data)
             setOnlineLikeUserObj(response?.data );
           }
         } catch (error) {
-          console.error("Error fetching matches:", error);
+          // console.error("Error fetching matches:", error);
         }
       };
     
@@ -111,14 +114,14 @@ console.log('all user array',allUser)
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getLikeMatchUser/${loginId}`
+              `${BASE_URL}/user/getLikeMatchUser/${loginId}`
             );
             // setLikesArray(response?.data?.anotherMatchUser || []);
-            console.log('get like match user is',response?.data)
+            // console.log('get like match user is',response?.data)
             setLikeMatchUserObj(response?.data );
           }
         } catch (error) {
-          console.error("Error fetching matches:", error);
+          // console.error("Error fetching matches:", error);
         }
       };
     
@@ -139,13 +142,13 @@ console.log('all user array',allUser)
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getVisitorUser/${loginId}`
+              `${BASE_URL}/user/getVisitorUser/${loginId}`
             );
-            console.log('visitor user in new and online response',response?.data)
+            // console.log('visitor user in new and online response',response?.data)
             setVisitorArray(response?.data?.visitors || []);
           }
         } catch (error) {
-          console.error("Error fetching visitors:", error);
+          // console.error("Error fetching visitors:", error);
         }
       };
     
@@ -161,7 +164,7 @@ console.log('all user array',allUser)
       };
     }, [loginId]);
 
-console.log('visitor user in new and online',visitorArray)
+// console.log('visitor user in new and online',visitorArray)
   //   useEffect(() => {
   //     if (visitorArray?.length > 0 && allUser?.length > 0) {
   //       const updatedArray = allUser.filter(
@@ -181,14 +184,14 @@ console.log('visitor user in new and online',visitorArray)
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getVisitorLikeUser/${loginId}`
+              `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
             );
             // setLikesArray(response?.data?.anotherMatchUser || []);
-            console.log('get visitor like user is',response?.data)
+            // console.log('get visitor like user is',response?.data)
             setVisitorLikeUserObj(response?.data);
           }
         } catch (error) {
-          console.error("Error fetching visitor like user:", error);
+          // console.error("Error fetching visitor like user:", error);
         }
       };
     
@@ -203,7 +206,7 @@ console.log('visitor user in new and online',visitorArray)
         socket.off("getVisitorLikeUser");
       };
     }, [loginId]);
-    console.log('visitor like user obj',visitorLikeUserObj)
+    // console.log('visitor like user obj',visitorLikeUserObj)
 
     useEffect(() => {
       if (visitorLikeUserObj?.likes?.length > 0 && allUser?.length > 0) {
@@ -224,9 +227,9 @@ console.log('visitor user in new and online',visitorArray)
         try {
           if (loginId) {
             const response = await axios.get(
-              `http://192.168.29.169:4000/user/getDeactivateUser/${loginId}`,
+              `${BASE_URL}/user/getDeactivateUser/${loginId}`,
             );
-            console.log('get deactivate user obj is', response?.data);
+            // console.log('get deactivate user obj is', response?.data);
             setDeactivateUserObj(response?.data);
     
             // If deactivatedIdArray is available, filter the allUser array
@@ -240,7 +243,7 @@ console.log('visitor user in new and online',visitorArray)
             }
           }
         } catch (error) {
-          console.error("Error fetching deactivate user:", error);
+          // console.error("Error fetching deactivate user:", error);
         }
       };
     
@@ -265,7 +268,7 @@ console.log('visitor user in new and online',visitorArray)
       };
     }, [loginId, getAllUserArray]); // Re-run effect whenever loginId or getAllUserArray changes
     
-    console.log('get deactivate user obj in likes',deactivateUserObj)
+    // console.log('get deactivate user obj in likes',deactivateUserObj)
     
     const handleRefresh = () => {
       setRefreshing(true); // Show loading spinner

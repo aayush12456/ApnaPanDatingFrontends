@@ -19,9 +19,11 @@ import { moreChatActions } from "../../Redux/Slice/moreChatSlice/moreChatSlice";
 import { dotsOpenModalToggleActions } from "../../Redux/Slice/dotsOpenModalSlice/dotsOpenModalSlice";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) => {
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
   const [messageText, setMessageText] = useState('')
   const [loginId, setLoginId] = useState('')
@@ -36,17 +38,17 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
   const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
   const windowHeight = Dimensions.get('window').height;
-  console.log('window heigth', windowHeight)
+  // console.log('window heigth', windowHeight)
   const navigation = useNavigation();
   const dispatch = useDispatch()
-  console.log("message details is", messageDetails);
+  // console.log("message details is", messageDetails);
   const loginResponse = useSelector((state) => state.loginData.loginData.token)
   const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token || '') // otp login token
-  console.log('login otp reposne in message detail card',loginOtpResponse)
+  // console.log('login otp reposne in message detail card',loginOtpResponse)
   const deleteChatSelector = useSelector((state) => state.moreChatData.moreChatToggle)
   const dotOpenHandler=useSelector((state)=>state.dotsOpenData.dotsOpenToggle)
-  console.log("dot open selector", dotOpenHandler);
-  console.log("delete chat selector", deleteChatSelector);
+  // console.log("dot open selector", dotOpenHandler);
+  // console.log("delete chat selector", deleteChatSelector);
   const backHandler = async() => {
     const deleteAnotherRecordMessageIdObj={
       id:loginObj?._id,
@@ -54,9 +56,9 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
     }
     try {
       const deleteAnotherResponseIdObj = await axios.post(`${BASE_URL}/chat/deleteAnotherRecordMessage/${deleteAnotherRecordMessageIdObj.id}`,deleteAnotherRecordMessageIdObj);
-      console.log('response in another record message id user is',deleteAnotherResponseIdObj?.data?.anotherRecordMessageIdArray)
+      // console.log('response in another record message id user is',deleteAnotherResponseIdObj?.data?.anotherRecordMessageIdArray)
   } catch (error) {
-      console.error('Error sending in delete another response in another response id:', error);
+      // console.error('Error sending in delete another response in another response id:', error);
   }
     navigation.navigate("Messages");
   };
@@ -79,10 +81,10 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
             const parsedLoginObj = JSON.parse(loginObjData); // Parse the JSON string
             setLoginObj(parsedLoginObj); // Set the parsed object in state
           } else {
-            console.error('No loginObj found in SecureStore');
+            // console.error('No loginObj found in SecureStore');
           }
         } catch (error) {
-          console.error('Error fetching loginObj from SecureStore:', error);
+          // console.error('Error fetching loginObj from SecureStore:', error);
         }
       };
       getLoginObj();
@@ -96,11 +98,11 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
           const response = await axios.get(
             `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
           );
-          console.log('get all login id user is', response?.data?.loginIdUserArray)
+          // console.log('get all login id user is', response?.data?.loginIdUserArray)
           setLoginIdUserArray(response?.data?.loginIdUserArray)
         }
       } catch (error) {
-        console.error("Error fetching in chat id obj:", error);
+        // console.error("Error fetching in chat id obj:", error);
       }
     };
     fetchAllLoginIdUser();
@@ -118,7 +120,7 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
    
   },[loginId])
 
-  console.log('login id user array is',loginIdUserArray)
+  // console.log('login id user array is',loginIdUserArray)
   useEffect(() => {
     if (loginId) {
       const getActiveLoginId = loginIdUserArray?.some(
@@ -137,11 +139,11 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
             params: { loginId: loginId, anotherId: messageDetails?._id } // Pass the object as query parameters
           }
           );
-          console.log('get chat id user is', response?.data?.chatIdUser)
+          // console.log('get chat id user is', response?.data?.chatIdUser)
           setGetChatDetailObj(response?.data?.chatIdUser);
         }
       } catch (error) {
-        console.error("Error fetching in chat id obj:", error);
+        // console.error("Error fetching in chat id obj:", error);
       }
     };
 
@@ -149,7 +151,7 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
 
   }, [loginId]);
 
-  console.log('get chat details obj', getChatDetailObj)
+  // console.log('get chat details obj', getChatDetailObj)
 
 
 
@@ -162,8 +164,8 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
       recieverId: messageDetails?._id,
     };
   
-    console.log('text is', text);
-    console.log('post typing is', postTypingObj);
+    // console.log('text is', text);
+    // console.log('post typing is', postTypingObj);
   
     try {
       if (text.length > messageText.length) {
@@ -172,21 +174,21 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
           `${BASE_URL}/chat/postTyping/${postTypingObj.loginId}`,
           postTypingObj
         );
-        console.log('Send typing message of data is', response.data);
+        // console.log('Send typing message of data is', response.data);
         socket.emit('postTyping', response.data);
       } else if (text.length <= messageText.length  ) {
         const response = await axios.post(
           `${BASE_URL}/chat/deleteTyping`,
           postTypingObj
         );
-        console.log('Delete typing message of data is', response.data);
+        // console.log('Delete typing message of data is', response.data);
       }
    
     } catch (error) {
-      console.error(
-        'Error sending or deleting message:',
-        error.response || error.message || error
-      );
+      // console.error(
+      //   'Error sending or deleting message:',
+      //   error.response || error.message || error
+      // );
     }
   };
   
@@ -201,7 +203,7 @@ useEffect(() => {
 
       }
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      // console.error("Error fetching messages:", error);
     }
   };
   getMessageTyping()
@@ -217,7 +219,7 @@ useEffect(() => {
     socket.off('typingChatDeleted');
   }
 }, [loginId])
-console.log('fetch typing id obj',fetchTypingIdObj)
+// console.log('fetch typing id obj',fetchTypingIdObj)
 
 useEffect(() => {
   if (loginId) {
@@ -225,7 +227,7 @@ useEffect(() => {
       (item) => item === messageDetails?._id
     );
     setShowTypingResponse(getTypingIdResponse)
-    console.log('get typing id response:', getTypingIdResponse);
+    // console.log('get typing id response:', getTypingIdResponse);
   }
 }, [loginId, fetchTypingIdObj, messageDetails]);
 
@@ -250,7 +252,7 @@ useEffect(() => {
         recieverId: messageDetails?._id,
       };
   
-      console.log("Message sent:", messageSubmitData);
+      // console.log("Message sent:", messageSubmitData);
   
       try {
         // Call addSendMessage API
@@ -258,7 +260,7 @@ useEffect(() => {
           `${BASE_URL}/chat/addSendMessage/${messageSubmitData.id}`,
           messageSubmitData
         );
-        console.log('Send message data:', response.data);
+        // console.log('Send message data:', response.data);
         socket.emit('sendMessage', response.data.chatUser);
         setMessageText('');
   
@@ -267,25 +269,25 @@ useEffect(() => {
           `${BASE_URL}/chat/deleteTyping`,
           deleteTypingObj
         );
-        console.log('Delete typing message data:', responseData.data);
+        // console.log('Delete typing message data:', responseData.data);
   
         // Call addRecordMessage API
-        console.log('About to call addRecordMessage API with:', addRecordMessageObj);
+        // console.log('About to call addRecordMessage API with:', addRecordMessageObj);
         const recordResponseData = await axios.post(
           `${BASE_URL}/chat/addRecordMessage/${addRecordMessageObj.id}`,
           addRecordMessageObj
         );
-        console.log('Add record message ID array is:', recordResponseData.data);
+        // console.log('Add record message ID array is:', recordResponseData.data);
         socket.emit('addRecordMessageId', recordResponseData.data
         );
       } catch (error) {
-        console.error(
-          'Error during API calls:',
-          error.response ? error.response.data : error.message
-        );
+        // console.error(
+        //   'Error during API calls:',
+        //   error.response ? error.response.data : error.message
+        // );
       }
     } else {
-      console.log("Message text is empty");
+      // console.log("Message text is empty");
     }
   };
   useEffect(() => {
@@ -298,7 +300,7 @@ useEffect(() => {
 
         }
       } catch (error) {
-        console.error("Error fetching messages:", error);
+        // console.error("Error fetching messages:", error);
       }
     };
     fetchMessage()
@@ -326,10 +328,10 @@ useEffect(() => {
 
     }
   }, [loginId, fetchMessages, getChatDetailObj?._id])
-  console.log('final message array', finalMessageArray)
+  // console.log('final message array', finalMessageArray)
 
   const messageClickHandler = (finalMessage, index) => {
-    console.log('final message', finalMessage)
+    // console.log('final message', finalMessage)
     setOpenIndex(index)
     dispatch(moreChatActions.moreChatToggle())
   }
@@ -339,7 +341,7 @@ useEffect(() => {
       await axios.post(`${BASE_URL}/chat/deleteChat`, deleteChatMessage);
 
     } catch (error) {
-      console.error('Error sending message:', error);
+      // console.error('Error sending message:', error);
     }
     dispatch(moreChatActions.moreChatToggle())
   }
@@ -347,7 +349,7 @@ useEffect(() => {
     navigation.navigate('MessageProfilePage', { formData: messageDetailProfile });
   }
   const dotPressHandler = () => {
-    console.log('dot is pressed')
+    // console.log('dot is pressed')
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
   const viewProfileHandler=(messageDetailProfile)=>{
@@ -370,11 +372,11 @@ useEffect(() => {
     }
     try {
       const response = await axios.post(`${BASE_URL}/user/addBlockChatIdUser/${blockChatIdObj.id}`,blockChatIdObj);
-      console.log('response in block chat user',response?.data)
+      // console.log('response in block chat user',response?.data)
       socket.emit('addBlockUser', response?.data)
   
   } catch (error) {
-      console.error('Error sending user in block', error);
+      // console.error('Error sending user in block', error);
   }
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
     navigation.navigate("Messages");
@@ -433,7 +435,7 @@ useEffect(() => {
               </Text>
              {showTypingResponse===true? <View style={{flexDirection:'row',gap:3}}>
               <Image source={typingIcon} style={{width:15}}/>
-              <Text>typing</Text>
+              <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'#32cd32':'black'}`}}>typing</Text>
               </View>:null}
               {activeLoginIdResponse===true && !showTypingResponse===true?<Text style={{color:'#32cd32'}}>Online</Text>:null}
               </View>

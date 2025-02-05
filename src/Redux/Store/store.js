@@ -65,6 +65,10 @@ const store=configureStore({
         getBollyWoodSong:getBollywoodSongSlice,
         toasts:changePasswordToastSlice,
         appearMode:appearModeSlice
-    }
+    },
+    middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+        serializableCheck: false, // ⬅️ यह middleware disable कर दिया
+    }),
 })
 export default store

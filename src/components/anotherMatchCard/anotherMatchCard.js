@@ -7,7 +7,7 @@ import play from '../../../assets/myProfileIcons/play.png'
 import pause from '../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
 const AnotherMatchCard=({anotherMatch,songs,completeObj})=>{
-  console.log('songs is',songs)
+  // console.log('songs is',songs)
     const navigation = useNavigation();
     const [active, setActive] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -71,7 +71,7 @@ navigation.navigate('Matches')
         await newSound.playAsync();
         setIsPlaying(true);
     } catch (error) {
-        console.error("Error playing sound:", error);
+        // console.error("Error playing sound:", error);
     }
 };
 return (

@@ -16,7 +16,7 @@ const VideoUpload = ({ VideoUpload,navigation }) => {
     try {
       const maxFileSize=5*1024*1024
       let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log('Permissions: ', permissionResult);
+      // console.log('Permissions: ', permissionResult);
 
       if (!permissionResult.granted) {
         alert("Permission to access media library is required!");
@@ -30,20 +30,20 @@ const VideoUpload = ({ VideoUpload,navigation }) => {
         quality: 1,
       });
       setFileType(result.assets[0])
-      console.log('video upload result data',result)
+      // console.log('video upload result data',result)
       if(result.assets[0].fileSize>=maxFileSize){
 setFileUploadError('file size should not be more than 5 mb')
 return
       }
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const videoURI = result.assets[0].uri;
-        console.log('Video URI:', videoURI);
+        // console.log('Video URI:', videoURI);
         setFile(videoURI);
       } else {
-        console.log('No video selected or operation canceled.');
+        // console.log('No video selected or operation canceled.');
       }
     } catch (error) {
-      console.log('Error during media picking:', error);
+      // console.log('Error during media picking:', error);
     }
   };
 const videoSubmitHandler=()=>{
@@ -55,7 +55,7 @@ const videoSubmitHandler=()=>{
     ...VideoUpload,
     videoUrl:fileType
   }
-  console.log('video complete data',videoSubmitData)
+  // console.log('video complete data',videoSubmitData)
   navigation.navigate('CaptureImagePage',{formData:videoSubmitData})
 }
   return (

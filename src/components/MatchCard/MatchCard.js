@@ -21,9 +21,11 @@ import * as SecureStore from 'expo-secure-store';
 import axios from 'axios'
 import Notification from "../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MatchCard=({matchObj,completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [loginId,setLoginId]=useState('')
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [loginIdUserArray, setLoginIdUserArray] = useState([])
@@ -34,8 +36,8 @@ const MatchCard=({matchObj,completeObj})=>{
   const [liked, setLiked] = useState(false);
     const navigation = useNavigation();
     const dispatch=useDispatch()
-    const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
-    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
+    const loginResponse=useSelector((state)=>state?.loginData?.loginData?.token)// ye loginToken
+    const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // ye loginOtpToken
    
 
     useEffect(()=>{
@@ -48,7 +50,7 @@ const MatchCard=({matchObj,completeObj})=>{
       }
   },[loginResponse,loginOtpResponse])
 
-  console.log('login id in match card',loginId)
+  // console.log('login id in match card',loginId)
 
   useEffect(()=>{
     const fetchAllLoginIdUser = async () => {
@@ -57,11 +59,11 @@ const MatchCard=({matchObj,completeObj})=>{
           const response = await axios.get(
             `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
           );
-          console.log('get all login id user is', response?.data?.loginIdUserArray)
+          // console.log('get all login id user is', response?.data?.loginIdUserArray)
           setLoginIdUserArray(response?.data?.loginIdUserArray)
         }
       } catch (error) {
-        console.error("Error fetching in login id obj:", error);
+        // console.error("Error fetching in login id obj:", error);
       }
     };
     fetchAllLoginIdUser();
@@ -79,7 +81,7 @@ const MatchCard=({matchObj,completeObj})=>{
     };
   },[loginId])
 
-  console.log('login id user array is',loginIdUserArray)
+  // console.log('login id user array is',loginIdUserArray)
   useEffect(() => {
     if (loginId) {
       const getActiveLoginId = loginIdUserArray?.some(
@@ -92,9 +94,9 @@ const MatchCard=({matchObj,completeObj})=>{
 
     const [active, setActive] = useState(0); 
     const width = Dimensions.get('window').width - 50;
-    console.log('width is',width)
+    // console.log('width is',width)
     const height = width===334?width*1.2:width*1.8
-    console.log('height is',height)
+    // console.log('height is',height)
     const change = ({ nativeEvent }) => {
         const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
         if (slide !== active) {
@@ -116,11 +118,11 @@ const MatchCard=({matchObj,completeObj})=>{
               const response = await axios.get(
                 `${BASE_URL}/user/getDeactivateUser/${loginId}`,
               );
-              console.log('get deactivate user obj is', response?.data)
+              // console.log('get deactivate user obj is', response?.data)
               setDeactivateUserObj(response?.data)
             }
           } catch (error) {
-            console.error("Error fetching in deactivate user id obj:", error);
+            // console.error("Error fetching in deactivate user id obj:", error);
           }
         };
         fetchDeactivateUser();
@@ -133,9 +135,9 @@ const MatchCard=({matchObj,completeObj})=>{
           socket.off("getDeactivateUser");
         };
       },[loginId])
-     console.log('get deactivate user obj',deactivateUserObj)
+    //  console.log('get deactivate user obj',deactivateUserObj)
       const upArrowClickHandler=()=>{
-        console.log('another match data ardcae')
+        // console.log('another match data ardcae')
         navigation.navigate('AnotherMatchCardPage',{formData:matchObj})
       }
       const openImageHandler=(image)=>{
@@ -155,8 +157,8 @@ const MatchCard=({matchObj,completeObj})=>{
             id:loginId,
             userId:id
           }
-          console.log('add cross obj',addCrossObj)
-          if(addCrossObj.id===deactivateUserObj.selfDeactivate){
+          // console.log('add cross obj',addCrossObj)
+          if(addCrossObj.id===deactivateUserObj?.selfDeactivate){
             setOpenDialog(true)
             const obj={
               type:'WARNING',
@@ -178,7 +180,7 @@ const MatchCard=({matchObj,completeObj})=>{
             id:loginId,
             matchLikeId:id
           }
-          if(addLikeObj.id===deactivateUserObj.selfDeactivate){
+          if(addLikeObj.id===deactivateUserObj?.selfDeactivate){
             setOpenDialog(true)
             const obj={
               type:'WARNING',
@@ -194,19 +196,19 @@ const MatchCard=({matchObj,completeObj})=>{
       }, 700);
        try {
         const response = await axios.post(`${BASE_URL}/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
-        console.log('response in match card is',response?.data?.likesArray)
+        // console.log('response in match card is',response?.data?.likesArray)
         socket.emit('addMatchUser', response?.data?.likesArray)
     } catch (error) {
-        console.error('Error match response', error);
+        // console.error('Error match response', error);
     }
 
     try {
       const response = await axios.post(`${BASE_URL}/user/addLikeCount/${addLikeObj.id}`, addLikeObj);
-      console.log('response in add like count user',response?.data?.userObj)
+      // console.log('response in add like count user',response?.data?.userObj)
       socket.emit('addLikeCountUser', response?.data?.userObj)
 
   } catch (error) {
-      console.error('Error like count', error);
+      // console.error('Error like count', error);
   }
         }
 return (
@@ -274,7 +276,7 @@ return (
                 showsHorizontalScrollIndicator={false}
                 onTouchEnd={()=>openImageHandler(matchObj?.images)}
               >
-                {matchObj?.images.map((image, index) => {
+                {matchObj?.images?.map((image, index) => {
                   return (
                     <Image
                       key={index}
@@ -285,7 +287,7 @@ return (
                 })}
               </ScrollView>
               <View style={styles.pagination}>
-                  {matchObj.images.map((_, k) => (
+                  {matchObj?.images?.map((_, k) => (
                     <Text key={k} style={k === active ? styles.activeDot : styles.dot}>•</Text>
                   ))}
                 </View>

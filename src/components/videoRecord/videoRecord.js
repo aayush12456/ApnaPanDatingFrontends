@@ -20,7 +20,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
           allowsEditing: true,
           quality: 1,
         });
-       console.log('video recording result is',result)
+      //  console.log('video recording result is',result)
         // Check if the user has recorded a video
         if (!result.canceled) {
           // Set the video URI for preview
@@ -29,7 +29,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
         }
       }
     } catch (error) {
-      console.log('Error during video recording', error);
+      // console.log('Error during video recording', error);
     }
   };
   const downloadVideo = async () => {
@@ -37,18 +37,18 @@ const VideoRecord = ({navigation,videoRecord}) => {
       // Request permission to access the media library
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== 'granted') {
-        console.error('Permission not granted to access media library');
+        // console.error('Permission not granted to access media library');
         return;
       }
   
       // Save the video to the media library
       const asset = await MediaLibrary.createAssetAsync(videoUri);
-      console.log('Video saved successfully to media library:', asset.uri);
+      // console.log('Video saved successfully to media library:', asset.uri);
   
       // Optionally navigate or perform other actions
       navigation.navigate('VideoUploadPage', { formData: videoRecord });
     } catch (error) {
-      console.error('Error saving video to media library:', error);
+      // console.error('Error saving video to media library:', error);
     }
   };
   const restartVideo = () => {

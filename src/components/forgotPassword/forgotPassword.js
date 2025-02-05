@@ -7,7 +7,7 @@ import { loginWithOtpAsync } from "../../Redux/Slice/loginWithOtpSlice/loginWith
 import { useDispatch,useSelector } from "react-redux";
 import ForgotPasswordData from "../forgotPasswordData/forgotPasswordData";
 const ForgotPassword=({number,allPhoneNumberArray})=>{
-    console.log('number is',number)
+    // console.log('number is',number)
     const navigation = useNavigation();
     const dispatch=useDispatch()
     const loginOtpMessage=useSelector((state)=>state.loginOtpData.loginWithOtpData.mssg)

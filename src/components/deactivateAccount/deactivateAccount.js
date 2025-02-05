@@ -8,9 +8,11 @@ import { useNavigation } from "@react-navigation/native";
 import io from "socket.io-client";
 import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
-const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("http://192.168.29.169:4000")
+const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
-  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "http://192.168.29.169:4000";
+  const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const navigation = useNavigation();
     const [deactivateReason,setDeactivateReason]=useState('')
     const dropdownOptions = deactivateAccount.map(item => ({
@@ -25,21 +27,21 @@ const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
       }
 
       const deactivateAccountHandler=async()=>{
-        console.log('deactivate account reason',deactivateReason)
+        // console.log('deactivate account reason',deactivateReason)
         const deactivateAccountObj={
           id:loginId,
           deactivate:'deactivate'
         }
-        console.log('deactivate obj',deactivateAccountObj)
+        // console.log('deactivate obj',deactivateAccountObj)
         try {
           const response = await axios.post(`${BASE_URL}/user/addDeactivateUser/${deactivateAccountObj.id}`,  deactivateAccountObj);
-          console.log('response in deactivate obj is',response?.data)
+          // console.log('response in deactivate obj is',response?.data)
           socket.emit('addDeactivateUser', response?.data)
           await SecureStore.deleteItemAsync('loginObj')
           await SecureStore.deleteItemAsync('loginToken')
           navigation.navigate('FrontPage',{formData:response.data.msg})
       } catch (error) {
-          console.error('Error sending deactivate', error);
+          // console.error('Error sending deactivate', error);
       }
       }
 
@@ -50,10 +52,10 @@ const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
        }
        try {
         const response = await axios.post(`${BASE_URL}/user/getActivateUser/${activateAccountObj.id}`,activateAccountObj);
-        console.log('response in deactivate obj is',response?.data)
+        // console.log('response in deactivate obj is',response?.data)
         socket.emit('addActivateUser', response?.data)
     } catch (error) {
-        console.error('Error sending activate', error);
+        // console.error('Error sending activate', error);
     }
       }
 return (

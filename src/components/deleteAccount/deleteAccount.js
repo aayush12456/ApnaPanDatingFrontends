@@ -10,7 +10,7 @@ const DeleteAccount=({loginId,completeObj})=>{
   const dispatch=useDispatch()
   const navigation = useNavigation();
   const deleteProfileResponse=useSelector((state)=>state.deleteProfileData.deleteProfileUserObj.msg)
-  console.log('delete profile user',deleteProfileResponse)
+  // console.log('delete profile user',deleteProfileResponse)
   const deleteAccountHandler=async()=>{
 dispatch(deleteProfileUserAsync(loginId))
 await SecureStore.deleteItemAsync('loginObj')

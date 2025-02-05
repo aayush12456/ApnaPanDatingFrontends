@@ -9,7 +9,7 @@ export const updatePersonalDataAsync = createAsyncThunk(
       const response = await axios.post(`/updateUser/${updatePersonalDataObj.id}`, updatePersonalDataObj);
       // console.log('update user is',response.data.updateData)
       const updateUser=response.data.updateData
-      console.log('update personal data in interest',updateUser?.interest)
+      // console.log('update personal data in interest',updateUser?.interest)
       return response.data; // Assuming the response contains updated data
     } catch (error) {
       return rejectWithValue(error.response.data);

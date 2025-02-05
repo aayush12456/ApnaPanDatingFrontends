@@ -15,7 +15,7 @@ export const PasswordUpdateAsync = createAsyncThunk(
       }
      
       const Responedata = response.data;
-      console.log('password update data is',Responedata)
+      // console.log('password update data is',Responedata)
       return Responedata;
       
     } catch (error) {

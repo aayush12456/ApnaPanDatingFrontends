@@ -22,7 +22,7 @@ const VisitorPage=()=>{
 return (
     <>
     <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-<Visitors/>
+<Visitors completeObj={completeObj}/>
     </View>
     </>
 )
