@@ -12,13 +12,22 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "apnapan",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/holdingHands.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.aayush_2001.datingapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -26,7 +35,14 @@
     "plugins": [
       "expo-video",
       "expo-secure-store",
-      "expo-audio"
-    ]
+      "expo-audio",
+      "expo-build-properties"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b964e078-9fe5-49c1-81f9-b8a99036e7f5"
+      }
+    },
+    "owner": "aayush_2001"
   }
 }
