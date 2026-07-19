@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 const EditProfession = ({ navigation,completeObj }) => {
     const [updateProfession, setUpdateProfession] = useState({});
     const dispatch = useDispatch();
-    const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+   
+    const completeLoginObjData=completeObj
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectProfessionHandler = (profession) => {
@@ -20,7 +19,7 @@ const EditProfession = ({ navigation,completeObj }) => {
             profession: profession
         };
         dispatch(updatePersonalDataAsync(updateProfessionObj));
-        navigation.navigate('EditProfilePage');
+        navigation.navigate('EditProfilePage',{formData:completeObj});
     };
 
     useEffect(() => {
@@ -43,7 +42,7 @@ const EditProfession = ({ navigation,completeObj }) => {
                                         paddingTop: 22,
                                         paddingLeft: 8,
                                         fontSize: 15,
-                                        color: `${updateProfession?.profession === profession?.profession ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
+                                        color: `${updateProfession?.profession === profession?.profession ? 'rgba(0, 150, 255, 1)' : `white`}`
                                     }}>
                                         {profession.profession}
                                     </Text>

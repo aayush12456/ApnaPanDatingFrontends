@@ -1,4 +1,4 @@
-import { Image, View, TouchableOpacity, Text,Pressable } from "react-native";
+import { Image, View, TouchableOpacity, Text,Pressable,ScrollView,KeyboardAvoidingView, Platform,StatusBar } from "react-native";
 import { Button } from "react-native-paper";
 import back from '../../../assets/signUpFormIcon/back.png';
 import { TextInput } from 'react-native-paper';
@@ -7,8 +7,6 @@ import React, { useState } from "react";
 import { Formik } from 'formik';
 import { signUpSchema } from "../../schemas";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import closeEye from '../../../assets/AllIcons/closedeye.png'
-import openEye from '../../../assets/AllIcons/openeye.png'
 const OPTIONS = [
   { label: 'Male', value: 'Male' },
   { label: 'Female', value: 'Female' },
@@ -16,7 +14,7 @@ const OPTIONS = [
 
 const SignUpForm = ({ navigation,allUserObj }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+
   const [emailError,setEmailError]=useState('')
   const [phoneError,setPhoneError]=useState('')
   const showDatePicker = () => {
@@ -26,9 +24,7 @@ const SignUpForm = ({ navigation,allUserObj }) => {
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+ 
   return (
     <Formik
       initialValues={{
@@ -36,7 +32,6 @@ const SignUpForm = ({ navigation,allUserObj }) => {
         gender: '',
         city: '',
         firstName: '',
-        password: '',
         phone: '',
         date: ''
       }}
@@ -59,21 +54,36 @@ const SignUpForm = ({ navigation,allUserObj }) => {
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
         <>
+           <StatusBar
+      translucent={false}
+      backgroundColor="#343434"
+      barStyle="light-content"
+    />
+          <View style={{ flex: 1, backgroundColor: "black" }}>
           <View style={{ flexDirection: 'row', justifyContent: 'start' }}>
             <TouchableOpacity onPress={() => navigation.navigate('FrontPage')}>
               <Image
                 source={back}
-                style={{ width: 15, height: 15, marginTop: 60, marginLeft: 15 }}
+                style={{ width: 15, height: 15, marginTop: 60, marginLeft: 15,tintColor:"white" }}
               />
             </TouchableOpacity>
           </View>
 
           <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 25, paddingLeft: 16, paddingTop: 20 }}>SignUp</Text>
-            <Text style={{ paddingTop: 5, paddingLeft: 15 }}>Sign up now. Meet singles!</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 25, paddingLeft: 16, paddingTop: 20,color:'white' }}>SignUp</Text>
+            <Text style={{ paddingTop: 5, paddingLeft: 15,color:'white' }}>Sign up now. Meet singles!</Text>
           </View>
-
-          <View>
+          <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    
+    >
+      <ScrollView
+contentContainerStyle={{ flexGrow: 1, paddingBottom: 30 }}
+keyboardShouldPersistTaps="handled"
+>
+<View>
+<View>
             <TextInput
               label="Email"
               style={{ marginLeft: 12, marginRight: 20, marginTop: 30 }}
@@ -152,25 +162,7 @@ const SignUpForm = ({ navigation,allUserObj }) => {
                 {touched.firstName && errors.firstName && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.firstName}</Text>}
               </View>
  <View>
-            <View style={{flexDirection:'row'}}>
-            <TextInput
-                  label="Password"
-                  style={{ marginLeft: 12, marginRight: 20, marginTop: 9 ,width:'91%'}}
-                  mode="outlined"
-                  secureTextEntry={!showPassword}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                  type='text'
-                />
-               { !showPassword &&<Pressable onPress={togglePasswordVisibility}>
-                <Image source={closeEye} style={{width:25,height:25,marginLeft:-65,marginTop:30}}/>
-                </Pressable>}
-               {showPassword&& <Pressable onPress={togglePasswordVisibility}>
-                <Image source={openEye} style={{width:25,height:25,marginLeft:-65,marginTop:30}}/>
-                </Pressable>}
-            </View>
-                {touched.password && errors.password && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.password}</Text>}
+           
               </View>
               <View>
                 <TextInput
@@ -207,16 +199,21 @@ const SignUpForm = ({ navigation,allUserObj }) => {
            SUBMIT
                     </Button>
           </View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+</View>
+<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <View>
-              <Text style={{ paddingTop: 20 }}>By choosing to continue you agree to our </Text>
-              <Text style={{ paddingLeft: 27 }}>
+              <Text style={{ paddingTop: 20,color:"white" }}>By choosing to continue you agree to our </Text>
+              <Text style={{ paddingLeft: 27,color:'white' }}>
                 <Text style={{ textDecorationLine: 'underline' }}>terms of use</Text> and{' '}
                 <Text style={{ textDecorationLine: 'underline' }}>privacy policy</Text>
               </Text>
             </View>
           </View>
+</ScrollView>
+    </KeyboardAvoidingView>
+
+    </View>
+
         </>
       )}
     </Formik>

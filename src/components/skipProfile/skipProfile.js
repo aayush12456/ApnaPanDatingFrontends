@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import axios from 'axios'
 import { passSkipProfileSliceActions } from "../../Redux/Slice/passSkipProfileSlice/passSkipProfileSlice";
 const SkipProfile=({skipProfileUser,loginId,completeObj})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const dispatch=useDispatch()
     // console.log('skip profile user',skipProfileUser)
     const getProfile = () => skipProfileUser;
@@ -35,7 +35,7 @@ return (
                 marginLeft: 8,
                 marginRight: 8,
                 marginTop: 20,
-                backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`,
+                backgroundColor: `#343434`,
               }}
             >
               <Card.Content>
@@ -53,14 +53,14 @@ return (
                   </View>
                   <View style={{marginTop:7,marginLeft:10}}>
                   <View style={{ paddingTop: 1,flexDirection:'row',gap:7}}>
-                    <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, fontWeight: "500" }}>
+                    <Text style={{ color:`white`, fontWeight: "500" }}>
                       {skipProfileUser?.firstName},
                     </Text>
-                    <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}} >{age}</Text>
+                    <Text style={{ color:`white`}} >{age}</Text>
                     </View>
                     <View style={{ paddingTop: 1,flexDirection:'row',gap:7,marginTop:3 }}>
-                     <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{skipProfileUser?.city}</Text>
-                     <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{skipProfileUser?.education}</Text>
+                     <Text style={{ color:`white`}}>{skipProfileUser?.city}</Text>
+                     <Text style={{ color:`white`}}>{skipProfileUser?.education}</Text>
                     </View>
                   </View>
                   <View >

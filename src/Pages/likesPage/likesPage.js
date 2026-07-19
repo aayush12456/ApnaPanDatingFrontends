@@ -1,28 +1,15 @@
 import Likes from "../../components/likes/likes"
 import {View} from 'react-native'
-import { useEffect,useState } from "react";
-import { useSelector } from "react-redux";
-const LikesPage=()=>{
-    const [completeObj,setCompleteObj]=useState({})
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObj = useSelector(
-      (state) => state.loginData.loginData.completeLoginData
-    );
-    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
-    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+const LikesPage=({loginId,finalCompleteObj})=>{
 
-    useEffect(()=>{
-      if(appearModeSelector){
-      setCompleteObj(appearModeSelector)
-      }
-      else{
-          setCompleteObj(completeLoginObjData)
-      }
-      },[appearModeSelector,completeLoginObjData])
+   
+    const completeLoginObjData=finalCompleteObj|| {}
+    console.log('login id like',loginId)
+
 return (
     <>
-    <View  style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <Likes completeObj={completeObj}/>
+    <View  style={{backgroundColor:`black`,height:"100%"}}>
+    <Likes completeObj={completeLoginObjData} loginId={loginId}/>
     </View>
     </>
 )

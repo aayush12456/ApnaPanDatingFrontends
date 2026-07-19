@@ -8,11 +8,12 @@ import { useNavigation } from "@react-navigation/native";
 import io from "socket.io-client";
 import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  console.log('login id in deact',loginId)
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const navigation = useNavigation();
     const [deactivateReason,setDeactivateReason]=useState('')
     const dropdownOptions = deactivateAccount.map(item => ({
@@ -23,16 +24,16 @@ const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
       setDeactivateReason(reason)
       }
       const matchesHandler=()=>{
-        navigation.navigate('Matches')
+        navigation.navigate('HeaderPage')
       }
 
       const deactivateAccountHandler=async()=>{
         // console.log('deactivate account reason',deactivateReason)
         const deactivateAccountObj={
-          id:loginId,
+          id:completeObj?.userId,
           deactivate:'deactivate'
         }
-        // console.log('deactivate obj',deactivateAccountObj)
+    
         try {
           const response = await axios.post(`${BASE_URL}/user/addDeactivateUser/${deactivateAccountObj.id}`,  deactivateAccountObj);
           // console.log('response in deactivate obj is',response?.data)
@@ -64,7 +65,7 @@ return (
     <View  style={{flexDirection:"row",justifyContent:"center",marginTop:20}}>
         <Image source={deactivate} style={{width:100,height:100}}/>
     </View>
-    <Text style={{textAlign:'center',paddingLeft:9,paddingRight:9,paddingTop:15,color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Deactivating account will cause your profile, messages, visits, likes to be hidden from others until you login back again.When you login again, your profile will be visible to others.Before you go, let us know why you are deactivating your account.</Text>
+    <Text style={{textAlign:'center',paddingLeft:9,paddingRight:9,paddingTop:15,color:`white`}}>Deactivating account will cause your profile, messages, visits, likes to be hidden from others until you login back again.When you login again, your profile will be visible to others.Before you go, let us know why you are deactivating your account.</Text>
     <View style={{flexDirection:"row",justifyContent:'center',marginTop:9}}>
     <View style={{  width: "90%" }}>
               <Dropdown

@@ -10,26 +10,16 @@ const EditSmokingPage=()=>{
         name:'Select Smoking Habit'
     }
     const [completeObj,setCompleteObj]=useState({})
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObj = useSelector(
-      (state) => state.loginData.loginData.completeLoginData
-    );
-    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
-    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+    const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
+    )
 
-    useEffect(()=>{
-      if(appearModeSelector){
-      setCompleteObj(appearModeSelector)
-      }
-      else{
-          setCompleteObj(completeLoginObjData)
-      }
-      },[appearModeSelector,completeLoginObjData])
+    const completeLoginObjData=getPersonalInfoSelector|| {}
+   
 return (
     <>
-    <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <AnotherHeader  editObj={smokingObj} navigation={navigation} completeObj={completeObj}/>
-    <EditSmoking navigation={navigation} completeObj={completeObj} />
+    <View style={{backgroundColor:`black`,height:"100%"}}>
+    <AnotherHeader  editObj={smokingObj} navigation={navigation} completeObj={completeLoginObjData}/>
+    <EditSmoking navigation={navigation} completeObj={completeLoginObjData} />
     </View>
     </>
 )

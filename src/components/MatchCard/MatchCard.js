@@ -3,7 +3,7 @@ import {View,ScrollView,Image,StyleSheet,Dimensions,Text, Pressable} from 'react
 import { useState,useEffect } from "react";
 import io from "socket.io-client";
 import { useNavigation } from '@react-navigation/native';
-import {useDispatch,useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import cross from '../../../assets/matchIcons/cross.png'
 import crossTik from '../../../assets/matchIcons/crossTik.png'
 import rightTik from '../../../assets/matchIcons/rightTiks.png'
@@ -16,19 +16,18 @@ import { passVideoDataSliceActions } from "../../Redux/Slice/passVideoSlice/pass
 import { playVideoModalActions } from "../../Redux/Slice/playVideoModalSlice/playVideoModalSlice";
 import { addCrossMatchAsync } from "../../Redux/Slice/addCrossMatchSlice/addCrossMatchSlice";
 import { passDataSliceActions } from "../../Redux/Slice/passDataSlice/passDataSlice";
-import * as SecureStore from 'expo-secure-store';
+
 
 import axios from 'axios'
 import Notification from "../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MatchCard=({matchObj,completeObj})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
-  const [loginId,setLoginId]=useState('')
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const MatchCard=({matchObj,completeObj,loginId,onlineUserArray})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
+  console.log('logins id',loginId)
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
-  const [loginIdUserArray, setLoginIdUserArray] = useState([])
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
   const [openDialog,setOpenDialog]=useState(false)
@@ -36,60 +35,20 @@ const MatchCard=({matchObj,completeObj})=>{
   const [liked, setLiked] = useState(false);
     const navigation = useNavigation();
     const dispatch=useDispatch()
-    const loginResponse=useSelector((state)=>state?.loginData?.loginData?.token)// ye loginToken
-    const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // ye loginOtpToken
-   
+ 
 
-    useEffect(()=>{
-      if(loginResponse || loginOtpResponse){
-        const getLoginId = async () => {
-          const loginIdData = await SecureStore.getItemAsync('loginId');
-          setLoginId(loginIdData) 
-        };
-        getLoginId()
-      }
-  },[loginResponse,loginOtpResponse])
+ 
 
-  // console.log('login id in match card',loginId)
+  
 
-  useEffect(()=>{
-    const fetchAllLoginIdUser = async () => {
-      try {
-        if (loginId) {
-          const response = await axios.get(
-            `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
-          );
-          // console.log('get all login id user is', response?.data?.loginIdUserArray)
-          setLoginIdUserArray(response?.data?.loginIdUserArray)
-        }
-      } catch (error) {
-        // console.error("Error fetching in login id obj:", error);
-      }
-    };
-    fetchAllLoginIdUser();
-
-    socket.on("getLoginUser", (newUser) => {
-
-      setLoginIdUserArray(newUser)
-    });
-    socket.on("deleteLoginIdUser", (newUser) => {
-      setLoginIdUserArray(newUser)
-    });
-    return () => {
-      socket.off("getLoginUser");
-      socket.off("deleteLoginIdUser");
-    };
-  },[loginId])
-
-  // console.log('login id user array is',loginIdUserArray)
   useEffect(() => {
     if (loginId) {
-      const getActiveLoginId = loginIdUserArray?.some(
+      const getActiveLoginId = onlineUserArray?.some(
         (item) => item === matchObj?._id
       );
       setActiveLoginIdResponse(getActiveLoginId)
     }
-  }, [loginId, loginIdUserArray, matchObj]);
+  }, [loginId, onlineUserArray, matchObj]);
 
 
     const [active, setActive] = useState(0); 
@@ -138,14 +97,24 @@ const MatchCard=({matchObj,completeObj})=>{
     //  console.log('get deactivate user obj',deactivateUserObj)
       const upArrowClickHandler=()=>{
         // console.log('another match data ardcae')
-        navigation.navigate('AnotherMatchCardPage',{formData:matchObj})
+        navigation.navigate("AnotherMatchCardPage", {
+          formData: {
+            ...matchObj,
+            loginId: loginId,
+            ...completeObj
+          },
+        });
       }
       const openImageHandler=(image)=>{
         const imageObj={
           name:matchObj?.firstName,
           images:image
         }
-        navigation.navigate('MyPhotoPage',{formData:imageObj})
+        navigation.navigate('MyPhotoPage',{formData: {
+            ...imageObj,
+            loginId: loginId,
+  
+          },})
         dispatch(passMatchDataSliceActions.passMatchDatas(matchObj))
        }
        const playVideoHandler=()=>{
@@ -255,7 +224,7 @@ return (
     </View>
   )}
       <Card style={{ marginLeft: 8, marginRight: 8,marginTop:20,marginBottom:10,
-        backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`}}>
+        backgroundColor: `#343434`}}>
     <Card.Content>
       <View style={{flexDirection:"row",justifyContent:'space-between'}}>
       <View style={{flexDirection:'row' ,gap:6,position:'absolute',top:15,zIndex:10,left:16}} >

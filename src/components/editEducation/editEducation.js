@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 const EditEducation = ({ navigation,completeObj }) => {
     const [updateEducation, setUpdateEducation] = useState({});
     const dispatch = useDispatch();
-    const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+   
+    const completeLoginObjData=completeObj
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectEducationHandler = (education) => {
@@ -20,7 +19,7 @@ const EditEducation = ({ navigation,completeObj }) => {
             education: education
         };
         dispatch(updatePersonalDataAsync(updateEducationObj));
-        navigation.navigate('EditProfilePage');
+        navigation.navigate('EditProfilePage',{formData:completeObj});
     };
 
     useEffect(() => {
@@ -41,7 +40,7 @@ const EditEducation = ({ navigation,completeObj }) => {
                                 paddingTop: 22,
                                 paddingLeft: 8,
                                 fontSize: 15,
-                                color: `${updateEducation?.education === education?.education ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
+                                color: `${updateEducation?.education === education?.education ? 'rgba(0, 150, 255, 1)' : `white`}`
                             }}>
                                 {education.education}
                             </Text>

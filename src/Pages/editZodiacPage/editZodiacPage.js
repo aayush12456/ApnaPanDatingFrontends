@@ -10,26 +10,15 @@ const EditZodiacPage=()=>{
         name:'Select Zodiac Sign'
     }
     const [completeObj,setCompleteObj]=useState({})
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObj = useSelector(
-      (state) => state.loginData.loginData.completeLoginData
-    );
-    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
-    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
-
-    useEffect(()=>{
-      if(appearModeSelector){
-      setCompleteObj(appearModeSelector)
-      }
-      else{
-          setCompleteObj(completeLoginObjData)
-      }
-      },[appearModeSelector,completeLoginObjData])
+    const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
+    )
+    const completeLoginObjData=getPersonalInfoSelector|| {}
+   
 return (
     <>
-    <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <AnotherHeader editObj={zodiacObj} navigation={navigation} completeObj={completeObj}/>
-    <EditZodiac  navigation={navigation} completeObj={completeObj}/>
+    <View style={{backgroundColor:`black`,height:"100%"}}>
+    <AnotherHeader editObj={zodiacObj} navigation={navigation} completeObj={completeLoginObjData}/>
+    <EditZodiac  navigation={navigation} completeObj={completeLoginObjData}/>
     </View>
     </>
 )

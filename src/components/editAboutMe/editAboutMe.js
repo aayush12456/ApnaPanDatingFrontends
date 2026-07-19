@@ -3,11 +3,10 @@ import { TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { updatePersonalDataAsync } from '../../Redux/Slice/updatePersonalDataSlice/updatePersonalDataSlice';
-const EditAboutMe = ({navigation}) => {
+const EditAboutMe = ({navigation,completeObj}) => {
     const dispatch = useDispatch();
-    const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+  
+    const completeLoginObjData=completeObj
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
     const [aboutUser, setAboutUser] = useState(completeLoginObjData.aboutUser || '');
     useEffect(() => {
@@ -29,7 +28,7 @@ else{
         aboutUser:aboutUser
       }
       dispatch(updatePersonalDataAsync(updatePersonalBioObj))
-      navigation.navigate('EditProfilePage')
+      navigation.navigate('EditProfilePage',{formDats:completeObj})
     }
     return (
       <>

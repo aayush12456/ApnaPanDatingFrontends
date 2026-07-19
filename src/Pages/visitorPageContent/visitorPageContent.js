@@ -5,11 +5,11 @@ import { useState,useEffect } from "react";
 import { View } from "react-native";
 import io from "socket.io-client";
 import axios from 'axios'
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const VisitorPageContent=({route})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData } = route?.params;
     const [loginId,setLoginId]=useState('')
     const [deactivateUserObj,setDeactivateUserObj]=useState({})

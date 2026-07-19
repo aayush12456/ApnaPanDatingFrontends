@@ -9,17 +9,17 @@ import pause from '../../../assets/myProfileIcons/pause.png'
 import rightTik from '../../../assets/myProfileIcons/rightTik.png';
 import { useNavigation } from '@react-navigation/native';
 import io from "socket.io-client";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 import axios from 'axios'
 const EditSongs=({completeObj})=>{
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+    const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
+    )
+    const completeLoginObjData=getPersonalInfoSelector
     const getAllSongsSelector=useSelector((state)=>state.getBollyWoodSong.getBollywoodSongUserObj.uploadSongsData)
     // console.log('get all songs',getAllSongsSelector)
     const [sound, setSound] = useState(null);
@@ -81,7 +81,7 @@ try {
     // console.log('response in song obj user is',response?.data?.loginUser)
     socket.emit('addSongObj', response?.data?.loginUser)
     if(response?.data?.loginUser){
-        navigation.navigate('EditProfilePage');
+        navigation.navigate('EditProfilePage',{formData:completeObj});
     }
 } catch (error) {
     // console.error('Error sending message:', error);
@@ -152,7 +152,7 @@ return(
                     <Pressable onPress={()=>songUploadHandler(getSong)}>
                     <Image source={{uri:getSong?.songImage}} style={{width:65,height:65,borderRadius:34}}/>
                     </Pressable>
-                   <Text style={{paddingTop:15,fontSize: 15, color: `${updateSong?.songId === getSong?._id && updateSong?.songId!=='none' ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`}}>
+                   <Text style={{paddingTop:15,fontSize: 15, color: `${updateSong?.songId === getSong?._id && updateSong?.songId!=='none' ? 'rgba(0, 150, 255, 1)' : `white`}`}}>
                     {getSong.songName}</Text>
                   {updateSong?.songId === getSong?._id && updateSong?.songId!=='none' ?null: <Pressable onPress={() => playSongHandler(getSong.songUrl)}>
                         <Image

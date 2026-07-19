@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from '../../axios/axios'
-import * as SecureStore from 'expo-secure-store';
-export const userLoginAsync = createAsyncThunk(
-  'userLogin/userLoginAsync',
+export const verifyOtpAsync = createAsyncThunk(
+  'verifyOtp/verifyOtpAsync',
   async (loginObj, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/sendOtp', loginObj, {
+      const response = await axios.post('/verifyOtp', loginObj, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -15,7 +14,7 @@ export const userLoginAsync = createAsyncThunk(
     
 
       const Responedata = response.data;
-      // console.log( 'login response data in loginSlice',Responedata)
+      console.log( 'login response data in loginSlice',Responedata)
      
       
       return Responedata;
@@ -27,33 +26,33 @@ export const userLoginAsync = createAsyncThunk(
   }
 );
 
-const userLoginSlice = createSlice({
-  name: 'userLogin',
+const verifyOtpSlice = createSlice({
+  name: 'verifyOtp',
   initialState: {
     loginObj: {}, // Initialize responseData in the state
     error:null
 
   },
   reducers: {
-    clearLoginResponse: (state) => {
+    clearOtpResponse: (state) => {
       state.loginObj = {};
       state.error = null;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(userLoginAsync.fulfilled, (state, action) => {
+    builder.addCase(verifyOtpAsync.fulfilled, (state, action) => {
       state.loginObj = action.payload; // Update responseData in the state after successful login
       // console.log(state.registerData)
       state.error = null;
     });
     // Additional extra reducers if needed
-    builder.addCase(userLoginAsync.rejected, (state, action) => {
+    builder.addCase(verifyOtpAsync.rejected, (state, action) => {
       state.error = action.payload?.mssg || 'Login failed.'; // Set error message
-        state.loginData = {};   
+        state.loginObj = {};   
     });
   },
 });
 
-export default userLoginSlice.reducer;
-export const userLoginSliceAction = userLoginSlice.actions;
-export const { clearLoginResponse } = userLoginSlice.actions;
+export default verifyOtpSlice.reducer;
+export const verifyOtpSliceAction = verifyOtpSlice.actions;
+export const { clearOtpResponse } = verifyOtpSlice.actions;

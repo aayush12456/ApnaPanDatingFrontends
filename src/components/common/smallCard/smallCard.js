@@ -5,14 +5,14 @@ import { useSelector } from 'react-redux';
 import * as SecureStore from 'expo-secure-store';
 import { useState,useEffect } from 'react';
 import io from "socket.io-client";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const SmallCard = ({ likesData,visitorData }) => {
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const SmallCard = ({ likesData,visitorData,completeObj }) => {
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   // console.log('visitor data',visitorData)
     const navigation = useNavigation();
-    const [loginId,setLoginId]=useState('')
+  
     const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
     const [likeSkip,setLikeSkip]=useState(true)
     const [visitorSkip,setVisitorSkip]=useState(true)
@@ -21,9 +21,7 @@ const SmallCard = ({ likesData,visitorData }) => {
     const [likeMatchUser,setLikeMatchUser]=useState({})
     const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
     const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
-    const loginResponse=useSelector((state)=>state?.loginData?.loginData?.token)
-    // console.log('likes image obj', likesData?.images?.[0]); // Safer logging
-    const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // otp login token
+   
 
     const getProfile = () => likesData || visitorData?.visitor || {}; // Fallback to an empty object
     const dob = getProfile()?.DOB || ""; // Fallback to an empty string
@@ -31,11 +29,13 @@ const SmallCard = ({ likesData,visitorData }) => {
     const year = dobBreak?.[2];
     const currentYear = new Date().getFullYear();
     const age = year ? currentYear - parseInt(year) : ""; // Ensure safe calculation
+
+    const loginId=completeObj?.userId
     const imagePressHandler = async (likeData, visitorData) => {
       // console.log('image is pressed');
   
       if (likeData) {
-          navigation.navigate('LikePageContent', { formData: likeData });
+          navigation.navigate('LikePageContent', { formData: likeData,completeObj });
       } else if (visitorData) {
           const deleteVisitorNotifyObj = {
               id: loginId,
@@ -66,15 +66,7 @@ const SmallCard = ({ likesData,visitorData }) => {
   };
   
     
-    useEffect(()=>{
-        if(loginResponse || loginOtpResponse){
-          const getLoginId = async () => {
-            const loginIdData = await SecureStore.getItemAsync('loginId');
-            setLoginId(loginIdData)
-          };
-          getLoginId()
-        }
-    },[loginResponse,loginOtpResponse])
+ 
 
 
     useEffect(() => {

@@ -2,16 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { View, ScrollView,Text,RefreshControl  } from "react-native";
 import io from "socket.io-client";
-import * as SecureStore from "expo-secure-store";
 import SmallCard from "../common/smallCard/smallCard";
 import axios from "axios";
 
-// const socket = io.connect("http://192.168.29.169:4000");
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const Likes = ({completeObj}) => {
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
-  const [loginId, setLoginId] = useState("");
+const socket = io.connect("http://192.168.29.169:4000");
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const Likes = ({completeObj,loginId}) => {
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
+console.log('complete obj likes',completeObj)
   const [likesArray, setLikesArray] = useState([]);
   const [likeMatchUser, setLikeMatchUser] = useState({});
   const [onlineLikeUserObj, setOnlineLikeUserObj] = useState({});
@@ -20,27 +19,10 @@ const Likes = ({completeObj}) => {
   const [refreshing, setRefreshing] = useState(false); 
   const dispatch = useDispatch();
 
-  const completeLoginObj = useSelector(
-    (state) => state?.loginData?.loginData?.completeLoginData
-  );
-  const completeLoginObjForOtp=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.completeLoginData)
-  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+  
+  const completeLoginObjData=completeObj
 
-  const loginResponse = useSelector(
-    (state) => state.loginData.loginData.token
-  ); // loginToken
-  const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // otp login token
-
-  useEffect(() => {
-    if (loginResponse || loginOtpResponse) {
-      const getLoginId = async () => {
-        const loginIdData = await SecureStore.getItemAsync("loginId");
-        setLoginId(loginIdData);
-      };
-      getLoginId();
-    }
-  }, [loginResponse,loginOtpResponse]);
-
+  
   // console.log("login id in likes", loginId);
 
   // Fetch and update likesArray
@@ -237,9 +219,9 @@ const Likes = ({completeObj}) => {
         )
       : [];
 
-  // console.log("final like array", finalLikesArray);
-  // console.log("another match like array", anotherMatchLikesArray);
-  // console.log("online like array", onlineLikeUserArray);
+  console.log("final like array", finalLikesArray);
+  console.log("another match like array", anotherMatchLikesArray);
+  console.log("online like array", onlineLikeUserArray);
   
   const blockUserIds = [
     ...(blockUserObj?.blockUserArray || []),
@@ -282,9 +264,9 @@ const handleRefresh=async()=>{
             axios.get(`${BASE_URL}/user/getDeactivateUser/${loginId}`)
         ]);
 
-        // console.log("New Like Match Data:", likeMatchResponse?.data);
-        // console.log("New Block User Data:", blockUserResponse?.data);
-        // console.log("New Deactivate User Data:", deactivateUserResponse?.data);
+        console.log("New Like Match Data:", likeMatchResponse?.data);
+        console.log("New Block User Data:", blockUserResponse?.data);
+        console.log("New Deactivate User Data:", deactivateUserResponse?.data);
 
         // Updating the states with new fetched data
         setLikesArray(getMatchUserResponse?.data?.likesArray || []);
@@ -320,7 +302,7 @@ setRefreshing(false); // Stop loading
                   marginHorizontal: 5,
                 }}
               >
-                <SmallCard key={item._id} likesData={item} />
+                <SmallCard key={item._id} likesData={item} completeObj={completeObj} />
               </View>
             ))}
           </View>

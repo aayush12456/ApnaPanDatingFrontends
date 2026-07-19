@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 const EditEating = ({ navigation,completeObj }) => {
     const [updateEating, setUpdateEating] = useState({});
     const dispatch = useDispatch();
-    const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+    
+    const completeLoginObjData=completeObj
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectEatingHandler = (eating) => {
@@ -20,7 +19,7 @@ const EditEating = ({ navigation,completeObj }) => {
             eating: eating
         };
         dispatch(updatePersonalDataAsync(updateEatingObj));
-        navigation.navigate('EditProfilePage');
+        navigation.navigate('EditProfilePage',{formData:completeObj});
     };
 
     useEffect(() => {
@@ -42,7 +41,7 @@ const EditEating = ({ navigation,completeObj }) => {
                                     paddingTop: 22,
                                     paddingLeft: 8,
                                     fontSize: 15,
-                                    color: `${updateEating?.eating === eating?.eating ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
+                                    color: `${updateEating?.eating === eating?.eating ? 'rgba(0, 150, 255, 1)' : `white`}`
                                 }}>
                                     {eating.eating}
                                 </Text>

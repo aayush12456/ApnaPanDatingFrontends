@@ -21,15 +21,14 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import pause from '../../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
 
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj,completeObj }) => {
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
-  const [loginId,setLoginId]=useState('')
   const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
   const [commonVisitorLikeSkip,setCommonVisitorLikeSkip]=useState(true)
   const [likeMatch,setLikeMatch]=useState(true)
@@ -46,14 +45,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   const [songObj,setSongObj]=useState(null)
   const [animate,setAnimate]=useState(false)
   const [animateObj,setAnimateObj]=useState({})
-  const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
-  const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)//ye otp loginToken
-  const completeLoginObj = useSelector(
-    (state) => state.loginData.loginData.completeLoginData
-  );
-  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+ 
+ 
   
-  const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+  const completeLoginObjData=completeObj || {}
   const getAllSongsSelector=useSelector((state)=>state?.getBollyWoodSong?.getBollywoodSongUserObj?.uploadSongsData)
   const width = Dimensions.get('window').width - 50;
   const height = width * 1.2;
@@ -104,10 +99,10 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   }
   const backHandler=()=>{
     if(newAndOnlineContent){
-      navigation.navigate('New And Online')
+      navigation.goBack()
     }
     else if(likeContent){
-      navigation.navigate('Likes')
+      navigation.goBack()
     }
     else if(visitorContent){
       navigation.navigate('Visitors')
@@ -133,18 +128,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
    }
 
 
-   useEffect(()=>{
-    if(loginResponse || loginOtpResponse){
-      const getLoginId = async () => {
-        const loginIdData = await SecureStore.getItemAsync('loginId');
-        setLoginId(loginIdData)
-      };
-      getLoginId()
-    }
-},[loginResponse,loginOtpResponse])
-
+ const loginId=completeObj.userId
+const repeatCompleteObj=completeObj
 
    const skipUserHandler=async(likeContent,newOnline,visitorContent)=>{
+    console.log('new online',newOnline)
     // console.log('user is skipped',likeContent)
     if(likeContent){
       const likeSkipUserObj={
@@ -169,13 +157,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
     // console.log('like skip user is',likeSkipUserObj)
     }
-    else if(newOnline){
+  if(newOnline){
       const onlineSkipUserObj={
         id:loginId,
         onlinePersonSkipUserId:newAndOnlineContent?._id
       }
+      console.log('new online skip obj',onlineSkipUserObj)
       dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
-      navigation.navigate('New And Online',{formData:onlineSkipUserObj})
+      navigation.navigate('HeaderPage',{formData:onlineSkipUserObj})
     }
     else if(visitorContent){
       const visitorSkipUserObj={
@@ -620,11 +609,11 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       
      </View>}
      <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, 
-      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}` }}>
+      backgroundColor: `#343434` }}>
         <Card.Content style={{height:'100%'}}>
         <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
           <Button onPress={backHandler}><Image source={back}   style={{ width:15, height:15,
-            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/></Button>
+            tintColor:`white` }}/></Button>
               </View>
           <ScrollView style={{ flexGrow: 1 }}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}}>
@@ -666,30 +655,30 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName}</Text>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{age}</Text>
-        <Text style={{fontSize:16,fontWeight:'semibold',color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{newAndOnlineContent?.city || likeContent?.city || visitorContent?.city}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`white`}}>{newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`white`}}>{age}</Text>
+        <Text style={{fontSize:16,fontWeight:'semibold',color:`white`}}>{newAndOnlineContent?.city || likeContent?.city || visitorContent?.city}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text style={{color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Working as {newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession} </Text>
-<Text style={{paddingTop:2,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Studied {newAndOnlineContent?.education || likeContent?.education || visitorContent?.profession} </Text>
+<Text style={{color:`white`}}>Working as {newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession} </Text>
+<Text style={{paddingTop:2,color:`white`}}>Studied {newAndOnlineContent?.education || likeContent?.education || visitorContent?.profession} </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{mainNumber}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{mainNumber}</Text>
       </View>
 
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.relationship || likeContent?.relationship || visitorContent?.relationship}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.relationship || likeContent?.relationship || visitorContent?.relationship}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.looking || likeContent?.looking || visitorContent?.looking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.looking || likeContent?.looking || visitorContent?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -702,7 +691,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         row.map((rowItem, itemIndex) => (
           <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: rowItem === "Charitable activities" ? 60 : 40 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
-           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
+           color:`white` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -717,7 +706,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         likeRow.map((rowItem, itemIndex) => (
           <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130,height: rowItem === "Charitable activities" ? 60 : 40 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
-           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
+           color:`white` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -732,7 +721,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         likeRow.map((rowItem, itemIndex) => (
           <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: rowItem === "Charitable activities" ? 60 : 40 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
-           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
+           color:`white` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -746,36 +735,36 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.education || likeContent?.education || visitorContent?.education}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.education || likeContent?.education || visitorContent?.education}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.drinking || likeContent?.drinking || visitorContent?.drinking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.drinking || likeContent?.drinking || visitorContent?.drinking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.smoking || likeContent?.smoking || visitorContent?.smoking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.smoking || likeContent?.smoking || visitorContent?.smoking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
       </View>
       { finalContent?.songId ==='none'|| !finalContent.songId?null:<View style={{paddingLeft:10,paddingTop:18}}>
       <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
         <View style={{flexDirection:'row',marginTop:8,gap:8}}>
           <Image source={{uri:songObj &&songObj.songImage}} style={{width:50,height:50,borderRadius:25}}/>
-          <Text style={{fontSize:16 ,fontWeight:'semibold', color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,paddingTop:6}}>{songObj && songObj.songName}</Text>
+          <Text style={{fontSize:16 ,fontWeight:'semibold', color:`white`,paddingTop:6}}>{songObj && songObj.songName}</Text>
           <Pressable  onPress={() => playSongHandler(songObj.songUrl)}> 
           <Image  source={isPlaying && currentSongUrl === songObj.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20,
             tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/>
@@ -783,19 +772,19 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
         </View>
       </View>}
           </ScrollView>
-          {commonVisitorLikeSkip===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`
+          {commonVisitorLikeSkip===false  &&<Text style={{ color:`white`
           ,fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You skipped this profile</Text>}
 
-            {likeMatch===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`,
+            {likeMatch===false  &&<Text style={{ color:`white`,
             fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You've both paired</Text>}
 
-            {selfLikeMatch===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`,
+            {selfLikeMatch===false  &&<Text style={{ color:`white`,
             fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You Like this profile</Text>}
            
-            {selfVisitorLikeMatch===false  &&<Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'rgba(117, 117, 117, 0.5)'}`
+            {selfVisitorLikeMatch===false  &&<Text style={{ color:`white`
             ,fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You Like this profile</Text>}
 
@@ -806,7 +795,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
                 <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'grey'}}>
           <Image source={dislike} style={{ width: 20, height:30,marginLeft:14,marginTop:6,tintColor:'white' }} />
                 </View>
-          <Text style={{fontSize:15,paddingTop:10,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'grey'}`}}>SKIP</Text>
+          <Text style={{fontSize:15,paddingTop:10,color:`white`}}>SKIP</Text>
             </View>
             </Pressable>
             <Pressable onPress={()=>likeUserHandler(likeContent, newAndOnlineContent,visitorContent)}>
@@ -814,7 +803,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
             <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'rgba(37, 99, 235, 1)'}}>
             <Image source={like} style={{ width:20, height: 30,marginLeft:14,marginTop:6 }} />
             </View>
-          <Text style={{fontSize:15,paddingTop:10,color: 'rgba(2, 113, 254, 0.8)'}}>LIKE</Text>
+          <Text style={{fontSize:15,paddingTop:10,color: 'white'}}>LIKE</Text>
             </View>
             </Pressable>
         </View>}

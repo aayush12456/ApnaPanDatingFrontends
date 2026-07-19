@@ -1,32 +1,19 @@
 
 import {  ScrollView,Text,RefreshControl } from "react-native";
 import { useEffect,useState } from "react";
-import { useSelector } from "react-redux";
-import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import axios from "axios";
 import MessageCard from "../messageCard/messageCard";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const Message=({completeObj})=>{
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
-    const [loginId,setLoginId]=useState('')
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const Message=({completeObj,loginId,onlineUserArray})=>{
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
     const [blockUserObj,setBlockUserObj]=useState({})
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const [refreshing, setRefreshing] = useState(false); 
-    const loginResponse=useSelector((state)=>state.loginData.loginData.token)
-    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
-  useEffect(()=>{
-    if(loginResponse || loginOtpResponse){
-      const getLoginId = async () => {
-        const loginIdData = await SecureStore.getItemAsync('loginId');
-        setLoginId(loginIdData)
-      };
-      getLoginId()
-    }
-},[loginResponse,loginOtpResponse])
+    console.log('online users message',onlineUserArray)
 
     useEffect(() => {
         const fetchLikeMatchUsers = async () => {
@@ -176,10 +163,10 @@ return (
     {finalMessageArray && finalMessageArray.length>0? finalMessageArray?.map((finalMessageUser) => {
         return (
          
-         <MessageCard key={finalMessageUser?._id} finalMessageUser={finalMessageUser} completeObj={completeObj} />
+         <MessageCard key={finalMessageUser?._id} finalMessageUser={finalMessageUser} completeObj={completeObj} loginId={loginId} onlineUsers={onlineUserArray} />
         );
       }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200,
-      color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No Message Profile is there</Text>}
+      color:'white'}}>No Message Profile is there</Text>}
     </ScrollView>
     </>
 )

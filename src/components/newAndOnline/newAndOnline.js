@@ -8,28 +8,22 @@ import AddChat from "../common/addChat/addChat";
 import NewAndOnlineCard from "../newAndOnlineCard/newAndOnlineCard";
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const NewAndOnline = ({route,completeObj}) => {
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const { formData = {} } = route.params || {}; // Fallback to an empty object
-  // console.log('form data in new ', formData);
+  console.log('form data in new ', formData);
 
   const dispatch = useDispatch();
-  const completeLoginObj = useSelector(
-    (state) => state.loginData.loginData.completeLoginData
-  );
-  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+
+  const completeLoginObjData=completeObj
   const getAllUserArray = useSelector(
     (state) => state.getAllUserData.getAllUserArray.users
   );
   // console.log("get all user array in new ", getAllUserArray);
-  const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken'
-  // console.log('login response in new and pnline',loginResponse)
-  const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token)// ye login otp token
-  // console.log('login otp response token in new and online',loginOtpResponse)
+
 
   const [allUser,setAllUser]=useState(getAllUserArray)
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
@@ -46,15 +40,7 @@ const NewAndOnline = ({route,completeObj}) => {
   }, [dispatch,completeLoginObjData?._id]);
 
 
-  useEffect(()=>{
-    if(loginResponse || loginOtpResponse){
-      const getLoginId = async () => {
-        const loginIdData = await SecureStore.getItemAsync('loginId');
-        setLoginId(loginIdData)
-      };
-      getLoginId()
-    }
-},[loginResponse,loginOtpResponse])
+  
 // console.log('login id in new and online',loginId)
   useEffect(()=>{
     if(formData?.onlinePersonSkipUserId){
@@ -66,7 +52,7 @@ const NewAndOnline = ({route,completeObj}) => {
     }
     
     },[formData?.onlinePersonSkipUserId,getAllUserArray])
-// console.log('all user array',allUser)
+console.log('all user array',allUser)
     useEffect(() => {
       const fetchOnlineLikeUsers = async () => {
         try {
@@ -137,32 +123,32 @@ const NewAndOnline = ({route,completeObj}) => {
       };
     }, [loginId]);
 
-    useEffect(() => {
-      const fetchVisitorUsers = async () => {
-        try {
-          if (loginId) {
-            const response = await axios.get(
-              `${BASE_URL}/user/getVisitorUser/${loginId}`
-            );
-            // console.log('visitor user in new and online response',response?.data)
-            setVisitorArray(response?.data?.visitors || []);
-          }
-        } catch (error) {
-          // console.error("Error fetching visitors:", error);
-        }
-      };
+    // useEffect(() => {
+    //   const fetchVisitorUsers = async () => {
+    //     try {
+    //       if (loginId) {
+    //         const response = await axios.get(
+    //           `${BASE_URL}/user/getVisitorUser/${loginId}`
+    //         );
+    //         // console.log('visitor user in new and online response',response?.data)
+    //         setVisitorArray(response?.data?.visitors || []);
+    //       }
+    //     } catch (error) {
+    //       // console.error("Error fetching visitors:", error);
+    //     }
+    //   };
     
-      fetchVisitorUsers();
+    //   fetchVisitorUsers();
     
-      socket.on("getVisitorUser", (newUser) => {
+    //   socket.on("getVisitorUser", (newUser) => {
     
-        setVisitorArray(newUser)
-      });
+    //     setVisitorArray(newUser)
+    //   });
     
-      return () => {
-        socket.off("getVisitorUser");
-      };
-    }, [loginId]);
+    //   return () => {
+    //     socket.off("getVisitorUser");
+    //   };
+    // }, [loginId]);
 
 // console.log('visitor user in new and online',visitorArray)
   //   useEffect(() => {
@@ -179,48 +165,48 @@ const NewAndOnline = ({route,completeObj}) => {
   //     }
   //   }, [visitorArray, getAllUserArray]);
   // console.log('final visitor array',visitorArray)
-    useEffect(() => {
-      const fetchVisitorLikeUsers = async () => {
-        try {
-          if (loginId) {
-            const response = await axios.get(
-              `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
-            );
-            // setLikesArray(response?.data?.anotherMatchUser || []);
-            // console.log('get visitor like user is',response?.data)
-            setVisitorLikeUserObj(response?.data);
-          }
-        } catch (error) {
-          // console.error("Error fetching visitor like user:", error);
-        }
-      };
+    // useEffect(() => {
+    //   const fetchVisitorLikeUsers = async () => {
+    //     try {
+    //       if (loginId) {
+    //         const response = await axios.get(
+    //           `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
+    //         );
+    //         // setLikesArray(response?.data?.anotherMatchUser || []);
+    //         // console.log('get visitor like user is',response?.data)
+    //         setVisitorLikeUserObj(response?.data);
+    //       }
+    //     } catch (error) {
+    //       // console.error("Error fetching visitor like user:", error);
+    //     }
+    //   };
     
-      fetchVisitorLikeUsers();
+    //   fetchVisitorLikeUsers();
     
-      socket.on("getVisitorLikeUser", (newUser) => {
+    //   socket.on("getVisitorLikeUser", (newUser) => {
     
-        setVisitorLikeUserObj(newUser)
-      });
+    //     setVisitorLikeUserObj(newUser)
+    //   });
     
-      return () => {
-        socket.off("getVisitorLikeUser");
-      };
-    }, [loginId]);
+    //   return () => {
+    //     socket.off("getVisitorLikeUser");
+    //   };
+    // }, [loginId]);
     // console.log('visitor like user obj',visitorLikeUserObj)
 
-    useEffect(() => {
-      if (visitorLikeUserObj?.likes?.length > 0 && allUser?.length > 0) {
-        const updatedArray = allUser.filter(
-          (user) =>
-            !visitorLikeUserObj?.likes.some(
-              (filterUser) => filterUser._id === user._id
-            )
-        );
-        setAllUser(updatedArray);
-      } else {
-        setAllUser(getAllUserArray);
-      }
-    }, [visitorArray, getAllUserArray]);
+    // useEffect(() => {
+    //   if (visitorLikeUserObj?.likes?.length > 0 && allUser?.length > 0) {
+    //     const updatedArray = allUser.filter(
+    //       (user) =>
+    //         !visitorLikeUserObj?.likes.some(
+    //           (filterUser) => filterUser._id === user._id
+    //         )
+    //     );
+    //     setAllUser(updatedArray);
+    //   } else {
+    //     setAllUser(getAllUserArray);
+    //   }
+    // }, [visitorArray, getAllUserArray]);
 
     useEffect(() => {
       const fetchDeactivateUser = async () => {
@@ -268,7 +254,7 @@ const NewAndOnline = ({route,completeObj}) => {
       };
     }, [loginId, getAllUserArray]); // Re-run effect whenever loginId or getAllUserArray changes
     
-    // console.log('get deactivate user obj in likes',deactivateUserObj)
+    console.log('get deactivate user obj in likes',deactivateUserObj)
     
     const handleRefresh = () => {
       setRefreshing(true); // Show loading spinner
@@ -290,10 +276,10 @@ const NewAndOnline = ({route,completeObj}) => {
             <NewAndOnlineCard allUser={allUser} key={allUser?._id}  onlineLikeUserObj={onlineLikeUserObj} loginId={loginId} completeObj={completeObj}/>
           );
         }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
-        color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No New Profile is there</Text>}
+        color:`white`}}>No New Profile is there</Text>}
       </ScrollView>
     </>
   );
 };
 
-export default NewAndOnline;
+export default NewAndOnline

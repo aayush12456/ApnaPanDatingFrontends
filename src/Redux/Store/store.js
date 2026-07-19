@@ -31,10 +31,14 @@ import forgotUpdatePasswordUserSlice from "../Slice/forgotUpdatePasswordUserSlic
 import getBollywoodSongSlice from "../Slice/getBollyWoodSongSlice/getBollywoodSongSlice"
 import changePasswordToastSlice from "../Slice/changePasswordToastSlice/changePasswordToastSlice"
 import appearModeSlice from "../Slice/appearModeSlice/appearModeSlice"
+import verifyOtpSlice from "../Slice/verifyOtpSlice/verifyOtpSlice"
+import getPersonalProfileSlice from "../Slice/getPersonalProfileSlice/getPersonalProfileSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
         loginData:loginSlice,
+        verifyOtp:verifyOtpSlice,
+        getPersonalData:getPersonalProfileSlice,
         updatePersonalData:updatePersonalDataSlice,
         getAllUserData:getAllUserSlice,
         addChatModalData:addChatModalSlice,

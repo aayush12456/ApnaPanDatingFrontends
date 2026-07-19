@@ -2,23 +2,20 @@ import { Text, View } from "react-native";
 import { Image } from 'expo-image';
 import { Card } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
-import {useSelector} from 'react-redux'
 import {useState,useEffect} from 'react'
-import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import axios from "axios";
 import FilteredChatMessage from "../filteredChatMessage/filteredChatMessage";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MessageCard=({finalMessageUser,completeObj})=>{
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
-    const [loginObj,setLoginObj]=useState({})
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const MessageCard=({finalMessageUser,completeObj,loginId,onlineUsers})=>{
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
+console.log('complete obj message',completeObj)
     const [chatIdArray, setChatIdArray] = useState([])
     const [filteredMessages, setFilteredMessages] = useState([])
     const [fetchMessages,setFetchMessages]=useState([])
-    const [loginIdUserArray, setLoginIdUserArray] = useState([])
     const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
     const [recordMessage, setRecordMessage] = useState([])
     const [checkMessages, setCheckMessages] = useState(false)
@@ -26,8 +23,7 @@ const MessageCard=({finalMessageUser,completeObj})=>{
     const [showTypingResponse,setShowTypingResponse]=useState(false)
     const [recordMessageId,setRecordMessageId]=useState(false)
     // console.log('final message user in message card',finalMessageUser)
-    const loginResponse=useSelector((state)=>state.loginData.loginData.token)
-    const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token
+    
     const navigation = useNavigation();
     const getProfile = () => finalMessageUser;
     const dob = getProfile()?.DOB;
@@ -36,75 +32,23 @@ const MessageCard=({finalMessageUser,completeObj})=>{
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
-useEffect(() => {
-  if (loginResponse || loginOtpResponse) {
-    const getLoginObj = async () => {
-      try {
-        const loginObjData = await SecureStore.getItemAsync('loginObj');
-        if (loginObjData) {
-          const parsedLoginObj = JSON.parse(loginObjData); // Parse the JSON string
-          setLoginObj(parsedLoginObj); // Set the parsed object in state
-        } else {
-          // console.error('No loginObj found in SecureStore');
-        }
-      } catch (error) {
-        // console.error('Error fetching loginObj from SecureStore:', error);
-      }
-    };
-    getLoginObj();
-  }
-}, [loginResponse,loginOtpResponse]);
 
-  // console.log('login obj',loginObj)
-
-  useEffect(()=>{
-    const fetchAllLoginIdUser = async () => {
-      try {
-        if (loginObj?._id) {
-          const response = await axios.get(
-            `${BASE_URL}/user/getAllLoginIdUser/${loginObj?._id}`,
-          );
-          // console.log('get all login id user is', response?.data?.loginIdUserArray)
-          setLoginIdUserArray(response?.data?.loginIdUserArray)
-        }
-      } catch (error) {
-        // console.error("Error fetching in chat id obj:", error);
-      }
-    };
-    fetchAllLoginIdUser();
-
-    socket.on("getLoginUser", (newUser) => {
-      //  console.log('on get login user array',newUser)
-      setLoginIdUserArray(newUser)
-    });
-
-    socket.on("deleteLoginIdUser", (newUser) => {
-     setLoginIdUserArray(newUser)
-   });
-
-    return () => {
-      socket.off("getLoginUser");
-      socket.off("deleteLoginIdUser");
-    };
-  },[loginObj?._id])
-
-  // console.log('login id user array is',loginIdUserArray)
   useEffect(() => {
-    if (loginObj?._id) {
-      const getActiveLoginId = loginIdUserArray?.some(
+    if (loginId) {
+      const getActiveLoginId = onlineUsers?.some(
         (item) => item === finalMessageUser?._id
       );
       setActiveLoginIdResponse(getActiveLoginId)
     }
-  }, [loginObj?._id, loginIdUserArray, finalMessageUser]);
+  }, [loginId, onlineUsers, finalMessageUser]);
 
   
 useEffect(() => {
 
   const getMessageTyping = async () => {
     try {
-      if (loginObj?._id) {
-        const response = await axios.get(`${BASE_URL}/chat/getTyping/${loginObj?._id}`);
+      if (loginId) {
+        const response = await axios.get(`${BASE_URL}/chat/getTyping/${loginId}`);
    setFetchTypingIdObj(response.data)
 
       }
@@ -124,35 +68,35 @@ useEffect(() => {
     socket.off('getTyping')
     socket.off('typingChatDeleted');
   }
-}, [loginObj?._id])
+}, [loginId])
 // console.log('fetch typing id obj',fetchTypingIdObj)
 
 useEffect(() => {
-  if (loginObj?._id) {
+  if (loginId) {
     const getTypingIdResponse = fetchTypingIdObj?.data?.some(
       (item) => item === finalMessageUser?._id
     );
     setShowTypingResponse(getTypingIdResponse)
     // console.log('get typing id response:', getTypingIdResponse);
   }
-}, [loginObj?._id, fetchTypingIdObj, finalMessageUser]);
+}, [loginId, fetchTypingIdObj, finalMessageUser]);
 
 
     const messageCardClickHandler=async(finalMessageUser)=>{
-    // console.log('final message user',finalMessageUser)
+    console.log('final message user',finalMessageUser)
     if(finalMessageUser){
       const addChatIdObj={
-     id:loginObj?._id,
+     id:loginId,
      anotherId:finalMessageUser?._id,
-     loginName:loginObj.name,
+     loginName:completeObj.name,
      anotherName:finalMessageUser.firstName
       }
       const deleteRecordMessageIdObj={
-        id:loginObj?._id,
+        id:loginId,
         recieverId:finalMessageUser?._id
       }
       const anotherRecordMessageIdObj={
-        id:loginObj?._id,
+        id:loginId,
         recieverId:finalMessageUser?._id
       }
       try {
@@ -170,9 +114,11 @@ useEffect(() => {
   }
       try {
         const response = await axios.post(`${BASE_URL}/chat/addChatId`, addChatIdObj);
-        // console.log('response in add chat id user is',response?.data?.chatIdUser)
+        console.log('response in add chat id user is',response?.data?.chatIdUser)
         navigation.navigate('MessageDetailsPageContent', {
           formData: finalMessageUser,
+          completeObj,
+          onlineUsers
         });
     } catch (error) {
         // console.error('Error sending message in add chat id:', error);
@@ -197,8 +143,8 @@ useEffect(() => {
 
     const fetchMessage = async () => {
         try {
-          if(loginObj?._id){
-            const response = await axios.get(`${BASE_URL}/chat/getMessage/${loginObj?._id}`);
+          if(loginId){
+            const response = await axios.get(`${BASE_URL}/chat/getMessage/${loginId}`);
             setFetchMessages(response.data.chatUserArray);
   
           }
@@ -220,7 +166,7 @@ useEffect(() => {
         socket.off('recieveMessage')
         socket.off('messageDeleted');
     }
-  }, [loginObj?._id])
+  }, [loginId])
   
   
 
@@ -263,22 +209,22 @@ useEffect(() => {
 
 useEffect(() => {
   const checkMessage = filteredMessages.some(
-      filterItem => filterItem.senderId === finalMessageUser?._id && filterItem.recieverId === loginObj?._id
+      filterItem => filterItem.senderId === finalMessageUser?._id && filterItem.recieverId === loginId
   );
   const anotherCheckMessage = filteredMessages.some(
-      filterItem => filterItem.senderId === loginObj?._id && filterItem.recieverId === finalMessageUser?._id
+      filterItem => filterItem.senderId === loginId && filterItem.recieverId === finalMessageUser?._id
   );
   if (checkMessage || anotherCheckMessage) {
       setCheckMessages(true);
   }
-}, [filteredMessages, finalMessageUser?._id, loginObj?._id]);
+}, [filteredMessages, finalMessageUser?._id, loginId]);
 
 useEffect(() => {
 
   const fetchRecordMessage = async () => {
       try {
-        if(loginObj?._id){
-          const response = await axios.get(`${BASE_URL}/chat/getRecordMessage/${loginObj?._id}`);
+        if(loginId){
+          const response = await axios.get(`${BASE_URL}/chat/getRecordMessage/${loginId}`);
           setRecordMessage(response.data);
 
         }
@@ -293,7 +239,7 @@ useEffect(() => {
   return () => {
       socket.off('recieveRecordMessageId')
   }
-}, [loginObj?._id])
+}, [loginId])
 
 // console.log('record message array',recordMessage)
 
@@ -311,7 +257,7 @@ return (
                 marginLeft: 8,
                 marginRight: 8,
                 marginTop: 20,
-                backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`
+                backgroundColor:`#343434`
               }}
               onPress={()=>messageCardClickHandler(finalMessageUser)}
             >
@@ -343,10 +289,10 @@ return (
                   </View>
                     <View>
                     <View style={{ flexDirection:'row',gap:10,paddingTop:7 }}>
-                    <Text style={{ color: "black", fontWeight: "500",color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>
+                    <Text style={{ color: "black", fontWeight: "500",color:`white` }}>
                       {finalMessageUser?.firstName},
                     </Text>
-                    <Text style={{ color: "black", fontWeight: "500",color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>
+                    <Text style={{ color: "black", fontWeight: "500",color:`white` }}>
                       {age}
                     </Text>
                   </View>
@@ -356,13 +302,13 @@ return (
                     
                         return (
                
-                          <FilteredChatMessage key={filterMessage?._id} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={loginObj}
+                          <FilteredChatMessage key={filterMessage?._id} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={completeObj}
                            recordMessageId={recordMessageId} completeObj={completeObj} />
                     
                         )
                       })
                     }
-                 {checkMessages===false && <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,
+                 {checkMessages===false && <Text style={{ color:`white`,
                   fontWeight: "500",paddingTop:2 }}>
            You have both paired
                     </Text>}

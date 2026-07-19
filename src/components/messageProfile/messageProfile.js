@@ -44,7 +44,7 @@ const MessageProfile=({messageProfile,completeObj})=>{
 
   }
   const backHandler=()=>{
-    navigation.navigate('MessageDetailsPageContent',{formData:messageProfile})
+   navigation.goBack()
   }
 
   const openImageHandler=(image)=>{
@@ -60,11 +60,11 @@ const MessageProfile=({messageProfile,completeObj})=>{
 return (
     <>
        <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, 
-        backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`, }}>
+        backgroundColor: `#343434`, }}>
         <Card.Content style={{height:'100%'}}>
         <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
         <Button onPress={backHandler}><Image source={back}   style={{ width:15, height:15,
-          tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/></Button>
+          tintColor:`white` }}/></Button>
         </View>
         <ScrollView style={{ flexGrow: 1 }}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}}>
@@ -108,35 +108,35 @@ return (
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{messageProfile?.firstName }</Text>
+        color:`white`}}>{messageProfile?.firstName }</Text>
         <Text style={{fontSize:16 ,fontWeight:'semibold', 
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{age}</Text>
+        color:`white`}}>{age}</Text>
         <Text style={{fontSize:16,fontWeight:'semibold', 
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{messageProfile?.city }</Text>
+        color:`white`}}>{messageProfile?.city }</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text style={{color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Working as {messageProfile?.profession } </Text>
-<Text style={{paddingTop:2,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Studied {messageProfile?.education } </Text>
+<Text style={{color:`white`}}>Working as {messageProfile?.profession } </Text>
+<Text style={{paddingTop:2,color:`white`}}>Studied {messageProfile?.education } </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{mainNumber}</Text>
+        color:`white` }}>{mainNumber}</Text>
       </View>
 
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.relationship }</Text>
+        color:`white` }}>{messageProfile?.relationship }</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-           color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{messageProfile?.looking }</Text>
+           color:`white`}}>{messageProfile?.looking }</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -149,7 +149,7 @@ return (
         row.map((rowItem, itemIndex) => (
           <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: rowItem === "Charitable activities" ? 60 : 40 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,
-            color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
+            color:`white` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -166,34 +166,34 @@ return (
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
         <Text style={{fontSize:16 ,paddingTop:2, 
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.education }</Text>
+        color:`white` }}>{messageProfile?.education }</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
         <Text style={{fontSize:16 ,paddingTop:2, 
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.profession }</Text>
+        color:`white` }}>{messageProfile?.profession }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.drinking }</Text>
+         color:`white` }}>{messageProfile?.drinking }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.smoking }</Text>
+         color:`white` }}>{messageProfile?.smoking }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{messageProfile?.eating }</Text>
+         color:`white` }}>{messageProfile?.eating }</Text>
       </View>
 
           </ScrollView>

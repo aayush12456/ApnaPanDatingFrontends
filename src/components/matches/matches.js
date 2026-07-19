@@ -6,51 +6,30 @@ import { getMatchesData } from '../../Redux/Slice/getMatchesSlice/getMatchesSlic
 import io from "socket.io-client";
 import MatchCard from '../MatchCard/MatchCard';
 import axios from 'axios'
-import * as SecureStore from 'expo-secure-store';
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const Matches=({completeObj})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const Matches=({completeObj,loginId,onlineUsers})=>{
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [filterMatchArray,setFilterMatchArray]=useState([])
-  const [loginId,setLoginId]=useState('')
   const [refreshing, setRefreshing] = useState(false);
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const dispatch=useDispatch()
   const getFilterUser=useSelector((state)=>state.getMatchesData.getMatchesArray.interestUsers)
 // console.log('get match filter user',getFilterUser)
 const [matchArray,setMatchArray]=useState(getFilterUser)
-const completeLoginObj = useSelector(
-  (state) => state.loginData.loginData.completeLoginData
-);
-const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
 
-const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
-// console.log('complete login obj data',completeLoginObjData)
+
+const completeLoginObjData=completeObj
+console.log('complete login obj data matches',completeLoginObjData)
 
 const getCrossId=useSelector((state)=>state?.passFilterData?.passData)
 // console.log('cross id is',getCrossId)
-const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
-const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // ye loginOtpToken
-// console.log('login otp response token',loginOtpResponse)
-useEffect(()=>{
-  if(loginResponse  ){
-    const getLoginId = async () => {
-      const loginIdData = await SecureStore.getItemAsync('loginId');
-      setLoginId(loginIdData)
-    };
-    getLoginId()
-  }
-  
-},[loginResponse])
+
 
 
 // console.log('login id in likes',loginId)
-// useEffect(()=>{
-// if(getFilterUser){
-// setMatchArray(getFilterUser)
-// }
-// },[getFilterUser,matchArray])
+
 useEffect(() => {
   const fetchMatchUsers = async () => {
     try {
@@ -164,7 +143,7 @@ useEffect(() => {
 // console.log('match card',matchArray)
 const handleRefresh = () => {
   setRefreshing(true);
-  dispatch(getMatchesData(completeLoginObj?._id)).finally(() =>
+  dispatch(getMatchesData(completeObj?._id)).finally(() =>
     setRefreshing(false)
   );
 
@@ -177,9 +156,9 @@ return (
       }
     >
       {matchArray && matchArray.length > 0 ? (
-        <MatchCard matchObj={matchArray[0]} completeObj={completeObj} />
+        <MatchCard matchObj={matchArray[0]} completeObj={completeObj} loginId={loginId} onlineUserArray={onlineUsers} />
       ):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
-      color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No Match Profile is there</Text> }
+      color:`white`}}>No Match Profile is there</Text> }
     </ScrollView>
     </>
 )

@@ -3,11 +3,11 @@ import axios from "axios";
 import { Text, View, Image } from "react-native";
 import { Card, Button } from "react-native-paper";
 import io from "socket.io-client";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const BlockProfile=({blockProfileUser,loginId,completeObj})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const getProfile = () => blockProfileUser;
     const dob = getProfile()?.DOB;
     const dobBreak = dob?.split("/");
@@ -34,7 +34,7 @@ return (
                marginLeft: 8,
                marginRight: 8,
                marginTop: 20,
-               backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`,
+               backgroundColor: `#343434`,
              }}
            >
              <Card.Content>
@@ -52,14 +52,14 @@ return (
                  </View>
                  <View style={{marginTop:7,marginLeft:10}}>
                  <View style={{ paddingTop: 1,flexDirection:'row',gap:7}}>
-                   <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, fontWeight: "500" }}>
+                   <Text style={{ color:`white`, fontWeight: "500" }}>
                      {blockProfileUser?.firstName},
                    </Text>
-                   <Text  style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{age}</Text>
+                   <Text  style={{ color:`white`}}>{age}</Text>
                    </View>
                    <View style={{ paddingTop: 1,flexDirection:'row',gap:7,marginTop:3 }}>
-                    <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{blockProfileUser?.city}</Text>
-                    <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}} >{blockProfileUser?.education}</Text>
+                    <Text style={{ color:`white`}}>{blockProfileUser?.city}</Text>
+                    <Text style={{ color:`white`}} >{blockProfileUser?.education}</Text>
                    </View>
                  </View>
                  <View >

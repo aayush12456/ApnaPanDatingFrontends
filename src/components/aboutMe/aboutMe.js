@@ -1,4 +1,4 @@
-import { Text,View } from "react-native"
+import { Text,View,StatusBar } from "react-native"
 import { Button } from "react-native-paper";
 import { Formik } from 'formik';
 import { TextInput } from 'react-native-paper';
@@ -24,8 +24,14 @@ return (
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
 
         <>
+    <StatusBar
+      translucent={false}
+      backgroundColor="#343434"
+      barStyle="light-content"
+    />
+          <View style={{backgroundColor:'black',flex:1}}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 25 }}>Describe Yourself</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 25,color:'white' }}>Describe Yourself</Text>
           </View>
           <View style={{marginTop:6}}>
           <View >
@@ -62,6 +68,8 @@ return (
            SUBMIT
                     </Button>
           </View>
+          </View>
+   
 
         </>
       )}

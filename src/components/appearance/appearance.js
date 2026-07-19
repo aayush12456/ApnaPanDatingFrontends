@@ -3,15 +3,12 @@ import rightTik from '../../../assets/myProfileIcons/rightTik.png'
 import {useDispatch,useSelector} from 'react-redux'
 import { appearModeAsync } from "../../Redux/Slice/appearModeSlice/appearModeSlice"
 import {useEffect,useState} from 'react'
-const Appearance=()=>{
+const Appearance=({completeLoginObj})=>{
     const [completeObj,setCompleteObj]=useState({})
     const dispatch=useDispatch()
-    const completeLoginObj = useSelector(
-        (state) => state.loginData.loginData.completeLoginData
-      );
-      const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+   
       
-      const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+      const completeLoginObjData=completeLoginObj|| {}
       const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
     //   console.log('appear mode data is',appearModeSelector?.appearanceMode)
     const appearArray=[

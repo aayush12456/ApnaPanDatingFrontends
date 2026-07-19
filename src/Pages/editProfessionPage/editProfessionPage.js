@@ -10,26 +10,18 @@ const EditProfessionPage=()=>{
         name:'Select Profession'
     }
     const [completeObj,setCompleteObj]=useState({})
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObj = useSelector(
-      (state) => state.loginData.loginData.completeLoginData
-    );
-    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
-    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+    const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
+    )
+ 
+    const completeLoginObjData=getPersonalInfoSelector|| {}
 
-    useEffect(()=>{
-      if(appearModeSelector){
-      setCompleteObj(appearModeSelector)
-      }
-      else{
-          setCompleteObj(completeLoginObjData)
-      }
-      },[appearModeSelector,completeLoginObjData])
+
+  
 return (
     <>
-    <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <AnotherHeader  editObj={professionObj} navigation={navigation} completeObj={completeObj}/>
-    <EditProfession  navigation={navigation} completeObj={completeObj}/>
+    <View style={{backgroundColor:`black`,height:"100%"}}>
+    <AnotherHeader  editObj={professionObj} navigation={navigation} completeObj={ completeLoginObjData}/>
+    <EditProfession  navigation={navigation} completeObj={ completeLoginObjData}/>
     </View>
     </>
 )

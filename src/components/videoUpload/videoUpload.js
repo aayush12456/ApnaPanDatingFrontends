@@ -1,4 +1,4 @@
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity,StatusBar } from "react-native";
 import { Button } from "react-native-paper";
 import uploadImage from '../../../assets/signUpFormIcon/uploadImg.png';
 import videoPlayer from '../../../assets/signUpFormIcon/videoPlayer.png';
@@ -6,7 +6,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { ResizeMode } from 'expo-av';
 import VideoPlayer from 'expo-video-player';
 import { useState } from "react";
-
 const VideoUpload = ({ VideoUpload,navigation }) => {
   const [file, setFile] = useState(null);
   const [fileType,setFileType]=useState(null)
@@ -60,8 +59,14 @@ const videoSubmitHandler=()=>{
 }
   return (
     <>
+   <StatusBar
+      translucent={false}
+      backgroundColor="#343434"
+      barStyle="light-content"
+    />
+      <View style={{backgroundColor:'black',flex:1}}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 25 }}>Upload Your Video</Text>
+        <Text style={{ fontWeight: 'bold', fontSize: 25 ,color:"white"}}>Upload Your Video</Text>
       </View>
       <View style={{ marginTop: 6 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -115,6 +120,8 @@ const videoSubmitHandler=()=>{
                     </Button>
         </View>
       </View>
+      </View>
+
       
     </>
   );

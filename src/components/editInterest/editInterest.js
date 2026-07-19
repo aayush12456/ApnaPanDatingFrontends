@@ -9,9 +9,8 @@ const EditInterest = ({ navigation,completeObj }) => {
   const [updateInterest, setUpdateInterest] = useState({});
   const dispatch = useDispatch();
   const [selectedInterests, setSelectedInterests] = useState([]);
-  const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+ 
+  const completeLoginObjData=completeObj
   const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
   const rows = [];
@@ -36,7 +35,7 @@ const EditInterest = ({ navigation,completeObj }) => {
       interest: selectedInterests,
     };
     dispatch(updatePersonalDataAsync(interestObj));
-    navigation.navigate('EditProfilePage');
+    navigation.navigate('EditProfilePage',{formData:completeObj});
   };
 
   useEffect(() => {

@@ -13,45 +13,74 @@ import io from "socket.io-client";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState} from 'react'
 import { useSelector, useDispatch } from "react-redux";
-import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
 import { moreChatActions } from "../../Redux/Slice/moreChatSlice/moreChatSlice";
 import { dotsOpenModalToggleActions } from "../../Redux/Slice/dotsOpenModalSlice/dotsOpenModalSlice";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) => {
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray }) => {
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
   const [messageText, setMessageText] = useState('')
-  const [loginId, setLoginId] = useState('')
-  const [loginObj, setLoginObj] = useState({})
+
+ 
   const [fetchMessages, setFetchMessages] = useState([])
   const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
   const [finalMessageArray, setFinalMessageArray] = useState([])
-  const [loginIdUserArray, setLoginIdUserArray] = useState([])
   const [showTypingResponse,setShowTypingResponse]=useState(false)
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
   const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
+ 
+
   const windowHeight = Dimensions.get('window').height;
   // console.log('window heigth', windowHeight)
   const navigation = useNavigation();
   const dispatch = useDispatch()
   // console.log("message details is", messageDetails);
-  const loginResponse = useSelector((state) => state.loginData.loginData.token)
-  const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token || '') // otp login token
+ const loginId=completeObj?.userId
   // console.log('login otp reposne in message detail card',loginOtpResponse)
   const deleteChatSelector = useSelector((state) => state.moreChatData.moreChatToggle)
   const dotOpenHandler=useSelector((state)=>state.dotsOpenData.dotsOpenToggle)
   // console.log("dot open selector", dotOpenHandler);
   // console.log("delete chat selector", deleteChatSelector);
+
+//   useEffect(()=>{
+
+//     if(loginId){
+
+//         socket.emit("registerUser",loginId);
+
+//     }
+
+// },[loginId]);
+
+// useEffect(()=>{
+
+//   socket.on("onlineUsers",(users)=>{
+
+//       setOnlineUsers(users);
+
+//   });
+
+//   return ()=>{
+
+//       socket.off("onlineUsers");
+
+//   }
+
+// },[]);
+
+// console.log('online user array',onlineUsers)
+
+
   const backHandler = async() => {
     const deleteAnotherRecordMessageIdObj={
-      id:loginObj?._id,
+      id:loginId,
       recieverId:messageDetails?._id
     }
     try {
@@ -60,75 +89,25 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj }) =>
   } catch (error) {
       // console.error('Error sending in delete another response in another response id:', error);
   }
-    navigation.navigate("Messages");
+    navigation.goBack();
   };
-  useEffect(() => {
-    if (loginResponse || loginOtpResponse) {
-      const getLoginId = async () => {
-        const loginIdData = await SecureStore.getItemAsync('loginId');
-        setLoginId(loginIdData)
-      };
-      getLoginId()
-    }
-  }, [loginResponse,loginOtpResponse])
 
-  useEffect(() => {
-    if (loginResponse || loginOtpResponse) {
-      const getLoginObj = async () => {
-        try {
-          const loginObjData = await SecureStore.getItemAsync('loginObj');
-          if (loginObjData) {
-            const parsedLoginObj = JSON.parse(loginObjData); // Parse the JSON string
-            setLoginObj(parsedLoginObj); // Set the parsed object in state
-          } else {
-            // console.error('No loginObj found in SecureStore');
-          }
-        } catch (error) {
-          // console.error('Error fetching loginObj from SecureStore:', error);
-        }
-      };
-      getLoginObj();
-    }
-  }, [loginResponse,loginOtpResponse]);
 
-  useEffect(()=>{
-    const fetchAllLoginIdUser = async () => {
-      try {
-        if (loginId) {
-          const response = await axios.get(
-            `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
-          );
-          // console.log('get all login id user is', response?.data?.loginIdUserArray)
-          setLoginIdUserArray(response?.data?.loginIdUserArray)
-        }
-      } catch (error) {
-        // console.error("Error fetching in chat id obj:", error);
-      }
-    };
-    fetchAllLoginIdUser();
-    socket.on("getLoginUser", (newUser) => {
-  
-      setLoginIdUserArray(newUser)
-    });
-    socket.on("deleteLoginIdUser", (newUser) => {
-      setLoginIdUserArray(newUser)
-    });
-    return () => {
-      socket.off("getLoginUser");
-      socket.off("deleteLoginIdUser");
-    };
-   
-  },[loginId])
+ 
 
-  // console.log('login id user array is',loginIdUserArray)
+
+
+ 
+
   useEffect(() => {
     if (loginId) {
-      const getActiveLoginId = loginIdUserArray?.some(
+      const getActiveLoginId = onlineUserArray?.some(
         (item) => item === messageDetails?._id
       );
       setActiveLoginIdResponse(getActiveLoginId)
     }
-  }, [loginId, loginIdUserArray, messageDetails]);
+  }, [loginId, onlineUserArray, messageDetails]);
+console.log('login response',activeLoginIdResponse)
 
   useEffect(() => {
     const fetchChatId = async () => {
@@ -239,8 +218,8 @@ useEffect(() => {
         senderId: loginId,
         recieverId: messageDetails?._id,
         message: messageText,
-        senderName: loginObj?.firstName,
-        images: loginObj?.image,
+        senderName: completeObj?.firstName,
+        images: completeObj?.image,
       };
       const deleteTypingObj = {
         loginId: loginId,
@@ -353,7 +332,7 @@ useEffect(() => {
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
   const viewProfileHandler=(messageDetailProfile)=>{
-    navigation.navigate('MessageProfilePage', { formData: messageDetailProfile });
+    navigation.navigate('MessageProfilePage', { formData: messageDetailProfile,completeObj });
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
   const viewProfileBlockHandler=async(messageDetailProfile)=>{
@@ -379,14 +358,14 @@ useEffect(() => {
       // console.error('Error sending user in block', error);
   }
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
-    navigation.navigate("Messages");
+    navigation.goBack();
   
   }
-  const viewExpertChatHandler=async(messageDetailProfile)=>{
-   dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
-   navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:loginObj.name} });
+  // const viewExpertChatHandler=async(messageDetailProfile)=>{
+  //  dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
+  //  navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:completeObj.name} });
   
-  }
+  // }
   return (
     <>
     <AlertNotificationRoot>
@@ -396,13 +375,13 @@ useEffect(() => {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`,
+            backgroundColor: `#343434`,
             marginTop: 40,
           }}
         >
           <View style={{ marginTop: 10 }}>
             <Button onPress={backHandler}>
-              <Image source={back} style={{ width: 15, height: 15,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }} />
+              <Image source={back} style={{ width: 15, height: 15,tintColor:`white` }} />
             </Button>
           </View>
           <Pressable onPress={() => messageDetailsProfileHandler(messageDetails)}>
@@ -426,7 +405,7 @@ useEffect(() => {
               <View>
               <Text
                 style={{
-                  color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,
+                  color:`white`,
                   fontWeight: "500",
                   paddingTop: `${showTypingResponse===true || activeLoginIdResponse===true ?8:14}`,
                 }}
@@ -435,7 +414,7 @@ useEffect(() => {
               </Text>
              {showTypingResponse===true? <View style={{flexDirection:'row',gap:3}}>
               <Image source={typingIcon} style={{width:15}}/>
-              <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'#32cd32':'black'}`}}>typing</Text>
+              <Text style={{ color:`#32cd32`}}>typing</Text>
               </View>:null}
               {activeLoginIdResponse===true && !showTypingResponse===true?<Text style={{color:'#32cd32'}}>Online</Text>:null}
               </View>
@@ -449,7 +428,7 @@ useEffect(() => {
                 height: 20,
                 marginRight: 20,
                 marginTop: 15,
-                tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`
+                tintColor:`white`
               }}
             />
           </Pressable>
@@ -469,12 +448,12 @@ useEffect(() => {
               <Text style={{paddingTop:4}}>Block</Text>
             </View>
               </Pressable>
-              <Pressable onPress={()=>viewExpertChatHandler(messageDetails)}>
+              {/* <Pressable onPress={()=>viewExpertChatHandler(messageDetails)}>
               <View style={{flexDirection:"row", gap:8,marginTop:9}}>
               <Image source={guru} style={{width:30,height:30}}/>
               <Text style={{paddingTop:4}}>Expert Chat</Text>
             </View>
-              </Pressable>
+              </Pressable> */}
             </Card.Content>
           </Card>
         </View>}

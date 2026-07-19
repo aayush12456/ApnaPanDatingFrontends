@@ -6,11 +6,11 @@ import io from "socket.io-client";
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios'
 import SmallCard from "../common/smallCard/smallCard";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Visitors=({completeObj})=>{
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const [loginId,setLoginId]=useState('')
     const loginResponse=useSelector((state)=>state.loginData.loginData.token)// ye loginToken
     const loginOtpResponse=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.token) // otp login token

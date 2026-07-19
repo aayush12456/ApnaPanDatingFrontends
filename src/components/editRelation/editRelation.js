@@ -8,9 +8,8 @@ import { useEffect,useState } from "react";
 const EditRelation = ({navigation,completeObj}) => {
     const [updateRelation,setUpdateRelation]=useState({})
     const dispatch=useDispatch()
-    const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+   
+    const completeLoginObjData=completeObj
 
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
     // console.log('update personal relation obj',updatePersonalInfoSelector)
@@ -21,7 +20,7 @@ const EditRelation = ({navigation,completeObj}) => {
         }
   // console.log('select relation',relation)
   dispatch(updatePersonalDataAsync(updateRelationObj))
-  navigation.navigate('EditProfilePage')
+  navigation.navigate('EditProfilePage',{formData:completeLoginObjData})
     }
 
     useEffect(()=>{
@@ -44,7 +43,7 @@ const EditRelation = ({navigation,completeObj}) => {
               paddingTop: 22,
               paddingLeft: 8,
               fontSize: 15,
-              color: `${updateRelation?.relationship === relation.relation ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`}}>
+              color: `${updateRelation?.relationship === relation.relation ? 'rgba(0, 150, 255, 1)' : `white`}`}}>
               {relation.relation}
             </Text>
           </TouchableOpacity>

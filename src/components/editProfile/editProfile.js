@@ -11,11 +11,12 @@ import { Audio } from 'expo-av';
 import { getBollywoodSongAsync } from '../../Redux/Slice/getBollyWoodSongSlice/getBollywoodSongSlice';
 import axios from 'axios'
 import io from "socket.io-client";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+import { getPersonalProfileAsync } from '../../Redux/Slice/getPersonalProfileSlice/getPersonalProfileSlice';
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const EditProfile=({navigation,completeObj})=>{
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const dispatch=useDispatch()
   const [active,setActive]=useState(0)
   const [loginObj,setLoginObj]=useState({})
@@ -37,14 +38,19 @@ const [songLoginObj,setSongLoginObj]=useState({})
     setActive(slide)
    }
     }
-    const completeLoginObj=useSelector((state)=>state.loginData.loginData.completeLoginData)
-    // console.log('complete  login response data in login',completeLoginObj)
    
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
 
+    useEffect(()=>{
+    if(completeObj?.userId){
+    dispatch(getPersonalProfileAsync(completeObj.userId))
+    }
+    },[completeObj])
+    const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
+    )
+    // console.log('get personl',getPersonalInfoSelector)
 
-     const completeLoginObjData=completeLoginObj  || completeLoginObjForOtp
-    //  console.log('complete logn obj data',completeLoginObjData.songId)
+    const completeLoginObjData=getPersonalInfoSelector
+
     const updatePersonalInfoSelector=useSelector((state)=>state?.updatePersonalData?.updatePersonalData?.updateData)
 
     
@@ -273,7 +279,7 @@ const handleSlidingComplete = async (value) => {
 return (
     <>
     <Card style={{marginLeft:8,marginRight:8,marginTop:20,
-      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}` }}>
+      backgroundColor: `#343434` }}>
     <Card.Content>
       <ScrollView>
       <View style={{ overflow: 'scroll' }}>
@@ -306,15 +312,15 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
       <View style={{flexDirection:'row',justifyContent:'space-between'}}>
       <View style={{flexDirection:'row',gap:12, paddingLeft:12,paddingTop:16}}>
         <Text style={{fontSize:17 ,fontWeight:'semibold',
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{completeLoginObjData?.firstName}</Text>
+        color:`white`}}>{completeLoginObjData?.firstName}</Text>
         <Text style={{fontSize:17 ,fontWeight:'semibold',
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{age}</Text>
+        color:`white`}}>{age}</Text>
         <Text style={{fontSize:17,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.city}</Text>
+       color:`white`}}>{loginObj?.city}</Text>
       </View>
       <View>
       <TouchableOpacity onPress={editInfoHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:16,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:16,tintColor:`white`}}/>
         </TouchableOpacity>
       </View>
       </View>
@@ -322,11 +328,11 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Relationship Status</Text>
         <TouchableOpacity onPress={editRelationHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.relationship }</Text>
+       color:`white`}}>{loginObj?.relationship }</Text>
       </View>
 
 
@@ -334,11 +340,11 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
         <TouchableOpacity onPress={editLookingForHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}} />
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}} />
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.looking}</Text>
+       color:`white`}}>{loginObj?.looking}</Text>
       </View>
 
 
@@ -346,7 +352,7 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Interest</Text>
         <TouchableOpacity onPress={editInterestHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
        <View>
@@ -364,7 +370,7 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
           >
             <Text 
               style={{ fontSize: 17, textAlign: 'center', paddingTop: 6,
-              color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}
+              color:`white` }}
             >
               {rowItem}
             </Text>
@@ -382,22 +388,22 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>About Me </Text>
         <TouchableOpacity onPress={editAboutMeHandler}   >
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.aboutUser}</Text>
+       color:`white`}}>{loginObj?.aboutUser}</Text>
       </View>
  
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
         <TouchableOpacity onPress={editEducationHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.education}</Text>
+       color:`white`}}>{loginObj?.education}</Text>
       </View>
 
 
@@ -405,11 +411,11 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
         <TouchableOpacity onPress={editProfessionHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.profession}</Text>
+       color:`white`}}>{loginObj?.profession}</Text>
       </View>
 
 
@@ -417,11 +423,11 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
         <TouchableOpacity onPress={editDrinkingHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.drinking}</Text>
+       color:`white`}}>{loginObj?.drinking}</Text>
       </View>
 
 
@@ -429,58 +435,58 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
         <TouchableOpacity onPress={editSmokingHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.smoking}</Text>
+       color:`white`}}>{loginObj?.smoking}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
         <TouchableOpacity onPress={editEatingHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.eating}</Text>
+       color:`white`}}>{loginObj?.eating}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Zodiac Sign</Text>
         <TouchableOpacity onPress={editZodiacHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.zodiac}</Text>
+       color:`white`}}>{loginObj?.zodiac}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>languages I know</Text>
         <TouchableOpacity onPress={editLanguageHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <Text style={{paddingLeft:12,paddingTop:7,fontSize:17 ,fontWeight:'semibold',
-       color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{loginObj?.language}</Text>
+       color:`white`}}>{loginObj?.language}</Text>
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Connect with Songs</Text>
         <TouchableOpacity onPress={editSongsHandler}>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         {finalSongObj?.songId!=='none'?<View style={{flexDirection:'row',gap:8,marginTop:10}}>
           <Image source={{uri:songObj.songImage}} style={{width:60,height:60,borderRadius:27}}/>
           <View>
           <Text style={{fontSize:17 ,fontWeight:'semibold', 
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`,paddingTop:6}}>{songObj.songName}</Text>
+          color:`white`,paddingTop:6}}>{songObj.songName}</Text>
          { !finalSongObj?.songId?null :<Slider
             style={{ width:100, height: 40,marginLeft:-13 }}
             minimumValue={0}
@@ -501,29 +507,29 @@ onTouchEnd={()=>openImageHandler(completeLoginObjData?.images)}
                                     : play
                             }
                             style={{ width: 27, height: 27, marginTop:5, marginRight: 20,
-                              tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}
+                              tintColor:`white` }}
                         />
                     </Pressable>}
 
         </View>:
         <Text style={{fontSize:17 ,fontWeight:'semibold', 
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,paddingTop:6,paddingLeft:12}}>None</Text>
+        color:`white`,paddingTop:6,paddingLeft:12}}>None</Text>
         }
         { !completeLoginObjData?.songId && !songLoginObj?.songId? <Text style={{fontSize:17 ,fontWeight:'semibold', 
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,marginTop:-60,marginLeft:14}}>None</Text>:null}
+        color:`white`,marginTop:-60,marginLeft:14}}>None</Text>:null}
       </View>
 
       <View>
         <View  style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingLeft:12,paddingTop:18,fontSize:17 ,fontWeight:'semibold',color:'grey'}}>Connect with Songs</Text>
         <TouchableOpacity>
-          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+          <Image source={edit} style={{marginRight:7,marginTop:18,tintColor:`white`}}/>
         </TouchableOpacity>
         </View>
         <View style={{flexDirection:'row'}}>
           <Image source={{uri:songObj.songImage}} style={{width:40,height:40,borderRadius:12}}/>
           <Text style={{fontSize:17 ,fontWeight:'semibold',
-         color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{songObj.songName}</Text>
+         color:`white`}}>{songObj.songName}</Text>
           <Image source={play}  style={{ width: 27, height: 27, marginTop: 12, marginRight: 20 }}/>
         </View>
       </View>

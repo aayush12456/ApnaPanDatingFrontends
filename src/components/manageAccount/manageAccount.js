@@ -45,58 +45,58 @@ const ManageAccount = ({completeObj}) => {
     };
 
     const deactivateAccountHandler = () => {
-        navigation.navigate('DeactivateAccountPage', { formData: { headerName: 'Deactivate Account' } });
+        navigation.navigate('DeactivateAccountPage', { formData: { headerName: 'Deactivate Account',loginDetails:completeObj } });
     };
 
     const deleteAccountHandler = () => {
-        navigation.navigate('DeleteAccountPage', { formData: { headerName: 'Delete Account' } });
+        navigation.navigate('DeleteAccountPage', { formData: { headerName: 'Delete Account',loginDetails:completeObj } });
     };
 
     return (
         <>
             <View style={{ marginTop: 30 }}>
-                <Text style={{ paddingLeft: 20,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Manage</Text>
+                <Text style={{ paddingLeft: 20,color:`white`}}>Manage</Text>
                 <Pressable onPress={changeMobileEmail}>
-                    <View style={{ backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`
+                    <View style={{ backgroundColor:`#343434`
                     , width: '90%', marginLeft: 20, marginTop: 7 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={{ paddingTop: 10, paddingBottom: 12, paddingLeft: 10,
-                             color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}>Change Mobile or Email</Text>
+                             color:`white` }}>Change Mobile or Email</Text>
                             <Image source={rightArrow} style={{ width: 15, height: 12, marginTop: 14, marginRight: 10,
-                            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }} />
+                            tintColor:`white` }} />
                         </View>
                     </View>
                 </Pressable>
                 <Pressable onPress={changeName}>
-                    <View style={{ backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`
+                    <View style={{ backgroundColor:`#343434`
                     , width: '90%', marginLeft: 20 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={{ paddingTop: 10, paddingBottom: 12, paddingLeft: 10,
-                             color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}>Change Name</Text>
+                             color:`white` }}>Change Name</Text>
                             <Image source={rightArrow} style={{ width: 15, height: 12, marginTop: 14, marginRight: 10,
-                            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }} />
+                            tintColor:`white` }} />
                         </View>
                     </View>
                 </Pressable>
                 <Pressable onPress={deactivateAccountHandler}>
-                    <View style={{backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`,
+                    <View style={{backgroundColor:`#343434`,
                      width: '90%', marginLeft: 20 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={{ paddingTop: 10, paddingBottom: 12, paddingLeft: 10,
-                             color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}>Deactivate Account</Text>
+                             color:`white` }}>Deactivate Account</Text>
                             <Image source={rightArrow} style={{ width: 15, height: 12, marginTop: 14, marginRight: 10,
-                            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }} />
+                            tintColor:`white` }} />
                         </View>
                     </View>
                 </Pressable>
                 <Pressable onPress={deleteAccountHandler}>
-                    <View style={{ backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`
+                    <View style={{ backgroundColor:`#343434`
                     , width: '90%', marginLeft: 20 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={{ paddingTop: 10, paddingBottom: 12, paddingLeft: 10,
-                             color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}>Delete Account</Text>
+                             color:`white` }}>Delete Account</Text>
                             <Image source={rightArrow} style={{ width: 15, height: 12, marginTop: 14, marginRight: 10,
-                            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }} />
+                            tintColor:`white` }} />
                         </View>
                     </View>
                 </Pressable>

@@ -8,9 +8,8 @@ const EditLanguage = ({ navigation,completeObj }) => {
   const [updateLanguage,setUpdateLanguage]=useState({})
   const dispatch = useDispatch();
   const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-  const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+  
+  const completeLoginObjData=completeObj
   const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
   // console.log('update personal language obj', updatePersonalInfoSelector);
@@ -34,7 +33,7 @@ const EditLanguage = ({ navigation,completeObj }) => {
 
     // console.log('language obj in submit', updateLanguageObj);
     dispatch(updatePersonalDataAsync(updateLanguageObj));
-    navigation.navigate('EditProfilePage');
+    navigation.navigate('EditProfilePage',{formData:completeObj});
   };
   useEffect(()=>{
     if(updatePersonalInfoSelector){
@@ -51,7 +50,7 @@ const EditLanguage = ({ navigation,completeObj }) => {
           {Language.map((languageItem, index) => (
             <View key={index}>
               <TouchableOpacity onPress={() => selectLanguageHandler(languageItem.language)}>
-                <Text style={{ paddingTop: 22, paddingLeft: 8, fontSize: 15,   color: `${updateLanguage?.language?.split(', ').includes(languageItem.language) ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`}}>
+                <Text style={{ paddingTop: 22, paddingLeft: 8, fontSize: 15,   color: `${updateLanguage?.language?.split(', ').includes(languageItem.language) ? 'rgba(0, 150, 255, 1)' : `white`}`}}>
                   {languageItem.language}
                 </Text>
               </TouchableOpacity>

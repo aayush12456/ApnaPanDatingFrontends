@@ -6,12 +6,9 @@ import {View} from 'react-native'
 const AppearancePage=({route})=>{
     const { formData } = route?.params;
     const [completeObj,setCompleteObj]=useState({})
-    const completeLoginObj = useSelector(
-      (state) => state.loginData.loginData.completeLoginData
-    );
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
+   
     
-    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+    const completeLoginObjData=formData?.loginDetails  || {}
     const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
     useEffect(()=>{
         if(appearModeSelector){
@@ -24,8 +21,8 @@ const AppearancePage=({route})=>{
 return (
     <>
     <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <CommonHeader  commonHeaderName={formData.headerName}/>
-    <Appearance/>
+    <CommonHeader  commonHeaderName={formData.headerName} completeLoginObj={completeObj}/>
+    <Appearance completeLoginObj={completeObj}/>
     </View>
     </>
 )

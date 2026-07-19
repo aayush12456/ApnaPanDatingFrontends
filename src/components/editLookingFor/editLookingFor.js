@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 const EditLookingFor = ({ navigation,completeObj }) => {
     const [updateLooking, setUpdateLooking] = useState({});
     const dispatch = useDispatch();
-    const completeLoginObj = useSelector((state) => state.loginData.loginData.completeLoginData);
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObjData=completeLoginObj?completeLoginObj:completeLoginObjForOtp
+    
+    const completeLoginObjData=completeObj
     const updatePersonalInfoSelector = useSelector((state) => state?.updatePersonalData?.updatePersonalData?.updateData);
 
     const selectLookingForHandler = (looking) => {
@@ -21,7 +20,7 @@ const EditLookingFor = ({ navigation,completeObj }) => {
         };
         // console.log('select looking', looking);
         dispatch(updatePersonalDataAsync(updateLookingForObj));
-        navigation.navigate('EditProfilePage');
+        navigation.navigate('EditProfilePage',{formData:completeObj});
     };
 
     useEffect(() => {
@@ -42,7 +41,7 @@ const EditLookingFor = ({ navigation,completeObj }) => {
                                 paddingTop: 22,
                                 paddingLeft: 8,
                                 fontSize: 15,
-                                color: `${updateLooking?.looking === looking.looking ? 'rgba(0, 150, 255, 1)' : `${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}`
+                                color: `${updateLooking?.looking === looking.looking ? 'rgba(0, 150, 255, 1)' : `white`}`
                             }}>
                                 {looking.looking}
                             </Text>

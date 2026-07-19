@@ -4,14 +4,12 @@ export const signUpSchema = Yup.object().shape({
     gender: Yup.string().required('Gender is required'),
     city: Yup.string().min(4).matches(/^[A-Z]/, 'The first letter of the city must be capitalized').required('City is required'),
     firstName: Yup.string().min(2).max(25).required('First name is required'),
-    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     phone: Yup.string().max(10).required('Phone number is required'),
     date: Yup.string().required('Date Of Birth is required'),
 
   });
   export const loginSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Email is required'),
-    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    phone: Yup.string().max(10).required('Phone number is required'),
 
   });
   export const additonalInformationSchema=Yup.object({
@@ -21,6 +19,10 @@ export const signUpSchema = Yup.object().shape({
     smoking:Yup.string().min(6).required("Please enter smoking"),
     eating:Yup.string().min(6).required("Please enter eating"),
     relation:Yup.string().min(2).required("Please enter relationhip status"),
+    interest: Yup.array().min(1, "Please select at least one interest").required("Please select interest"),
+    looking:Yup.string().min(2).required("Please enter looking for"),
+    zodiac:Yup.string().min(2).required("Please enter zodiac sign"),
+    language: Yup.array().min(1, "Please select at least one language").required("Please select language"),
 })
 export const additonalInformationFormSchema=Yup.object({
  

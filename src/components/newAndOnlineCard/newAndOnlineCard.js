@@ -9,11 +9,11 @@ import io from "socket.io-client";
 import axios from "axios";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
-    // const BASE_URL = "http://192.168.29.169:4000";
-    const BASE_URL = "https://apnapandatingbackend.onrender.com";
+    const BASE_URL = "http://192.168.29.169:4000";
+    // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     // console.log('online like user obj in new and online card',onlineLikeUserObj)
     // console.log('login id',loginId)
     // console.log('all user',allUser)
@@ -109,7 +109,7 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
         setNotifyDeactivateObj(obj)
         return
       }
-      navigation.navigate('NewAndOnlinePageContent', { formData: allUser });
+      navigation.navigate('NewAndOnlinePageContent', { formData: allUser,  completeObj, });
       if (allUser) {
         const addVisitorObj = {
           id: loginId,
@@ -119,27 +119,27 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
           id: loginId,
           visitorOnlineId: allUser?._id,
         };
-        try {
-          // Execute both API calls in parallel
-          const [visitorResponse, countResponse] = await Promise.all([
-            axios.post(
-              `${BASE_URL}/user/addVisitorUser/${addVisitorObj.id}`,
-              addVisitorObj
-            ),
-            axios.post(
-              `${BASE_URL}/user/addVisitorCount/${visitorCountObj.id}`,
-              visitorCountObj
-            ),
-          ]);
+        // try {
+        //   // Execute both API calls in parallel
+        //   const [visitorResponse, countResponse] = await Promise.all([
+        //     axios.post(
+        //       `${BASE_URL}/user/addVisitorUser/${addVisitorObj.id}`,
+        //       addVisitorObj
+        //     ),
+        //     axios.post(
+        //       `${BASE_URL}/user/addVisitorCount/${visitorCountObj.id}`,
+        //       visitorCountObj
+        //     ),
+        //   ]);
     
-          // console.log("Visitor added:", visitorResponse.data);
-          // console.log("Visitor count updated:", countResponse.data);
-          // Emit socket events after both API calls succeed
-          socket.emit("addVisitorUser", visitorResponse?.data?.visitors);
-          socket.emit("addVisitorCountUser", countResponse?.data?.userObj);
-        } catch (error) {
-          console.error("Error in cardClickHandler:", error.response?.data || error.message);
-        }
+        //   // console.log("Visitor added:", visitorResponse.data);
+        //   // console.log("Visitor count updated:", countResponse.data);
+        //   // Emit socket events after both API calls succeed
+        //   socket.emit("addVisitorUser", visitorResponse?.data?.visitors);
+        //   socket.emit("addVisitorCountUser", countResponse?.data?.userObj);
+        // } catch (error) {
+        //   console.error("Error in cardClickHandler:", error.response?.data || error.message);
+        // }
       }
     };
     
@@ -175,7 +175,7 @@ return (
                 marginLeft: 8,
                 marginRight: 8,
                 marginTop: 20,
-                backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}`
+                backgroundColor: `#343434`
               }}
               onPress={() => cardClickHandler(allUser)}
             >
@@ -206,14 +206,14 @@ return (
     />:null}
                   </View>
                   <View style={{ paddingTop: 1 }}>
-                    <Text style={{  color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`, fontWeight: "500" }}>
+                    <Text style={{  color:`white`, fontWeight: "500" }}>
                       {allUser?.firstName}
                     </Text>
                     <View style={{ flexDirection: "row", gap: 6, paddingTop: 3 }}>
-                      <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{age},</Text>
-                      <Text style={{ color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}>{allUser?.city}</Text>
+                      <Text style={{ color:`white`}}>{age},</Text>
+                      <Text style={{ color:`white`}}>{allUser?.city}</Text>
                     </View>
-                    <Text style={{ paddingTop: 2,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}>{allUser?.relationship}</Text>
+                    <Text style={{ paddingTop: 2,color:`white` }}>{allUser?.relationship}</Text>
                   </View>
                   {/* {selfLikeMatch==true?null:<View>
                     <Text style={{color:'black',paddingTop:8,fontWeight:"600"}}>Liked!</Text>
@@ -221,7 +221,7 @@ return (
                       {selfLikeMatch && (
                         <View>
                             <Text style={{ color: 'black', paddingTop: 8, fontWeight: "600",
-                           color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`
+                           color:`white`
                           }}>
                                 Liked!
                             </Text>

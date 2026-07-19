@@ -1,4 +1,4 @@
-import { Text, Image, View,Modal} from "react-native";
+import { Text, Image, View,Modal,StatusBar} from "react-native";
 import holdingHands from '../../../assets/frontImages/holdingHands.png';
 import love from '../../../assets/frontImages/love.png';
 import { FrontImages } from "../../utils/frontImages";
@@ -8,6 +8,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
 import { hideToast } from "../../Redux/Slice/toastSlice/toastSlice";
 import { hideToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
+
 const FrontPage = ({navigation,route}) => {
   const formData=route?.params?.formData
   // console.log('form data',formData)
@@ -80,9 +81,15 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
       },[formData])
   return (
     <>
+       <StatusBar
+      translucent={false}
+      backgroundColor="#343434"
+      barStyle="light-content"
+    />
 <AlertNotificationRoot colors={[lightColors]} >
+<View style={{backgroundColor:'black',flex:1}}>
 <View style={{ flexDirection: 'row', alignItems: 'center',marginTop:80 ,justifyContent:'center'}}>
-        <Text style={{ fontWeight: 'bold', fontSize: 40 }}>Apna
+        <Text style={{ fontWeight: 'bold', fontSize: 40,color:"white" }}>Apna
           <View style={{ marginTop: 20 }}>
             <Image
               source={holdingHands} // Local image
@@ -106,7 +113,7 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
         ))}
       </View>
       <View style={{ flexDirection: 'row',justifyContent:'center'}}>
-      <Text style={{ fontSize: 16, paddingTop: 12 }}>
+      <Text style={{ fontSize: 16, paddingTop: 12,color:'white' }}>
         Meet Millions of Awesome Singles Near You
       </Text>
       </View>
@@ -176,7 +183,7 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
           </View>
         </View>
       </Modal>
-      
+      </View>
 </AlertNotificationRoot>
    
     </>

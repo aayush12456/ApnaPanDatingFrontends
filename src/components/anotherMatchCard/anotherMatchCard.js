@@ -40,7 +40,7 @@ const AnotherMatchCard=({anotherMatch,songs,completeObj})=>{
   };
 
   const downArrowHandler=()=>{
-navigation.navigate('Matches')
+navigation.goBack()
   }
   const playSongHandler = async (songUrl) => {
     try {
@@ -77,14 +77,14 @@ navigation.navigate('Matches')
 return (
     <>
     <Card style={{ marginLeft: 8, marginRight: 8,marginTop:45,marginBottom:10, 
-      backgroundColor: `${completeObj?.appearanceMode==='Dark Mode'?'#343434':'white'}` }}>
+      backgroundColor: `#343434` }}>
     <Card.Content  style={{height:'100%'}}>
     <View style={{flexDirection:"row",justifyContent:'space-between'}}>
         <View style={{flexDirection:"row",gap:12}}>
                     <Text style={{fontSize:19,fontWeight:'700',
-                    color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{anotherMatch?.firstName}</Text>
+                    color:`white`}}>{anotherMatch?.firstName}</Text>
                     <Text  style={{fontSize:19,fontWeight:'500', 
-                    color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>{age}</Text>
+                    color:`white`}}>{age}</Text>
         </View>
         <View style={{width:30,height:30,borderRadius:16,backgroundColor:'black'}}>
             <Pressable onPress={downArrowHandler}>

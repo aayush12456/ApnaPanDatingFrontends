@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity} from 'react-native';
+import { Text, View, TouchableOpacity,StatusBar} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ResizeMode } from 'expo-av';
 import VideoPlayer from 'expo-video-player';
-import * as MediaLibrary from 'expo-media-library';
-
+import * as Sharing from 'expo-sharing';
 const VideoRecord = ({navigation,videoRecord}) => {
   const [videoUri, setVideoUri] = useState(null);
 
@@ -32,23 +31,33 @@ const VideoRecord = ({navigation,videoRecord}) => {
       // console.log('Error during video recording', error);
     }
   };
+  
   const downloadVideo = async () => {
     try {
-      // Request permission to access the media library
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== 'granted') {
-        // console.error('Permission not granted to access media library');
+      if (!videoUri) {
+        alert("No video found");
         return;
       }
   
-      // Save the video to the media library
-      const asset = await MediaLibrary.createAssetAsync(videoUri);
-      // console.log('Video saved successfully to media library:', asset.uri);
+      const isAvailable = await Sharing.isAvailableAsync();
   
-      // Optionally navigate or perform other actions
-      navigation.navigate('VideoUploadPage', { formData: videoRecord });
+      if (!isAvailable) {
+        alert("Sharing is not available on this device");
+        return;
+      }
+  
+      await Sharing.shareAsync(videoUri, {
+        mimeType: "video/mp4",
+        dialogTitle: "Share or Save Video",
+      });
+  
+      navigation.navigate("VideoUploadPage", {
+        formData: videoRecord,
+      });
+  
     } catch (error) {
-      // console.error('Error saving video to media library:', error);
+      console.log(error);
+      alert(error.message);
     }
   };
   const restartVideo = () => {
@@ -58,8 +67,14 @@ const VideoRecord = ({navigation,videoRecord}) => {
  
   return (
     <>
+       <StatusBar
+      translucent={false}
+      backgroundColor="#343434"
+      barStyle="light-content"
+    />
+      <View style={{backgroundColor:'black',flex:1}}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 80, justifyContent: 'center' }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 25 }}>Video Recording</Text>
+        <Text style={{ fontWeight: 'bold', fontSize: 25,color:'white' }}>Video Recording</Text>
       </View>
 
      {videoUri?null: <TouchableOpacity onPress={recordVideo}  style={{
@@ -119,6 +134,8 @@ const VideoRecord = ({navigation,videoRecord}) => {
           >
             <Text style={{ fontSize: 18, color: 'white' }}>RESTART VIDEO</Text>
           </TouchableOpacity>:null}
+      </View>
+
     </>
   );
 };

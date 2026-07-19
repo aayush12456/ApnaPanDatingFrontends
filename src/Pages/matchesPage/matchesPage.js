@@ -1,28 +1,17 @@
 import Matches from "../../components/matches/matches"
 import {View} from 'react-native'
-import { useEffect,useState } from "react";
-import { useSelector } from "react-redux";
-const MatchesPage=()=>{
-    const [completeObj,setCompleteObj]=useState({})
-    const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-    const completeLoginObj = useSelector(
-      (state) => state.loginData.loginData.completeLoginData
-    );
-    const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
-    const appearModeSelector=useSelector((state)=>state?.appearMode?.appearModeData?.loginUpdateUser)
+import { useState } from "react";
 
-    useEffect(()=>{
-      if(appearModeSelector){
-      setCompleteObj(appearModeSelector)
-      }
-      else{
-          setCompleteObj(completeLoginObjData)
-      }
-      },[appearModeSelector,completeLoginObjData])
+const MatchesPage=({loginId,finalCompleteObj,onlineUserArray})=>{
+
+    console.log('logins is id',loginId)
+   
+    const completeLoginObjData=finalCompleteObj || {}
+   
 return (
     <>
-    <View style={{backgroundColor:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'black':''}`,height:"100%"}}>
-    <Matches completeObj={completeObj}/>
+    <View style={{backgroundColor:`black`,height:"100%"}}>
+    <Matches completeObj={completeLoginObjData} loginId={loginId} onlineUsers={onlineUserArray}/>
     </View>
     </>
 )

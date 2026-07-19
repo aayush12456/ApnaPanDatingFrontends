@@ -8,70 +8,74 @@ const Settings=({completeObj})=>{
     
     const skippedProfileHandler=()=>{
         const skipProfileObj={
-            headerName:'Skipped Profiles'
+            headerName:'Skipped Profiles',
+            loginDetails:completeObj
         }
         // console.log('skip profile')
         navigation.navigate('SkipProfilePage', {formData:skipProfileObj});
     }
     const blockProfileHandler=()=>{
         const blockProfileObj={
-            headerName:'Blocked Users'
+            headerName:'Blocked Users',
+            loginDetails:completeObj
         }
         navigation.navigate('BlockProfilePage', {formData:blockProfileObj});
     }
     const accounSettingsHandler=()=>{
         const accountSettingsObj={
-            headerName:'Account Settings'
+            headerName:'Account Settings',
+            loginDetails:completeObj
         }
         navigation.navigate('AccountSettingsPage', {formData:accountSettingsObj});
     }
-    const appearanceHandler=()=>{
-        const appearanceObj={
-            headerName:'Dark Mode'
-        }
-        navigation.navigate('AppearancePage', {formData:appearanceObj});
-    }
+    // const appearanceHandler=()=>{
+    //     const appearanceObj={
+    //         headerName:'Dark Mode',
+    //         loginDetails:completeObj
+    //     }
+    //     navigation.navigate('AppearancePage', {formData:appearanceObj});
+    // }
 return (
     <>
     <View style={{marginTop:30}}>
-    <Text style={{paddingLeft:20,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Skipped / Blocked profiles</Text>
+    <Text style={{paddingLeft:20,color:`white`}}>Skipped / Blocked profiles</Text>
     <Pressable onPress={skippedProfileHandler}>
-    <View style={{backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`,
+    <View style={{backgroundColor:`#343434`,
     width:'90%',marginLeft:20,marginTop:7}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Skipped Profiles</Text>
+        color:`white`}}>Skipped Profiles</Text>
         <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
-        tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}/>
+        tintColor:`white` }}/>
      </View>
     </View>
     </Pressable>
     <Pressable onPress={blockProfileHandler}>
-    <View style={{backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`,width:'90%',marginLeft:20}}>
+    <View style={{backgroundColor:`#343434`,width:'90%',marginLeft:20}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Blocked Users</Text>
+        color:`white`}}>Blocked Users</Text>
         <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
-         tintColor:`${completeObj && completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}/>
+         tintColor:`white` }}/>
      </View>
     </View>
     </Pressable>
     <View style={{marginTop:20}}>
-    <Text style={{paddingLeft:20,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Account</Text>
+    <Text style={{paddingLeft:20,color:`white`}}>Account</Text>
     <Pressable onPress={accounSettingsHandler}>
-    <View style={{backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`
+    <View style={{backgroundColor:`#343434`
     ,width:'90%',marginLeft:20,marginTop:7}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Account Settings</Text>
+        color:`white`}}>Account Settings</Text>
         <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
-         tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`}}/>
+         tintColor:`white`}}/>
      </View>
     </View>
     </Pressable>
     </View>
     
-    <View style={{marginTop:20}}>
+    {/* <View style={{marginTop:20}}>
     <Text style={{paddingLeft:20,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Appearance</Text>
     <Pressable onPress={appearanceHandler}>
     <View style={{backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`
@@ -84,7 +88,7 @@ return (
      </View>
     </View>
     </Pressable>
-    </View>
+    </View> */}
     </View>
     </>
 )

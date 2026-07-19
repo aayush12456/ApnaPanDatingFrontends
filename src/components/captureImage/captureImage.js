@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Image,Alert } from 'react-native';
+import { Text, View, TouchableOpacity, Image,Alert,StatusBar } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import * as ImageManipulator from 'expo-image-manipulator'; 
@@ -70,8 +70,15 @@ const downloadImageHandler = async () => {
   }
 };
   return (
+   <>
+      <StatusBar
+      translucent={false}
+      backgroundColor="#343434"
+      barStyle="light-content"
+    />
+     <View style={{backgroundColor:'black',flex:1}}>
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginTop:`${!imageUri?-400:0}`}}>
-      <Text style={{ fontWeight: 'bold', fontSize: 25, marginBottom: 20 }}>Capture Image</Text>
+      <Text style={{ fontWeight: 'bold', fontSize: 25, marginBottom: 20,color:'white' }}>Capture Image</Text>
       
       {/* Capture Button */}
       {!imageUri && (
@@ -154,6 +161,9 @@ const downloadImageHandler = async () => {
         
       )}
     </View>
+    </View>
+   </>
+   
   );
 };
 

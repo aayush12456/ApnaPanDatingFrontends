@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector } from 'react-redux';
 import { useRef, useEffect,useState } from 'react';
 import {Toast, AlertNotificationRoot } from 'react-native-alert-notification';
+import * as SecureStore from 'expo-secure-store';
 import {Image} from 'react-native'
 import {Text} from 'react-native-paper'
 import io from 'socket.io-client';
@@ -61,22 +62,29 @@ import right from './assets/signUpFormIcon/right.png';
 import EditBasicInfoPage from './src/Pages/editBasicInfoPage/editBasicInfoPage';
 import CompareFacePage from './src/Pages/compareFacePage/compareFacePage';
 import AppearancePage from './src/Pages/appearancePage/appearancePage';
+import SettingsPage from './src/Pages/settingsPage/settingsPage';
+import VerifyOtpPage from './src/Pages/verifyOtpPage/verifyOtpPage';
+import NewAndOnlinePage from './src/Pages/newAndOnlinePage/newAndOnlinePage';
+import MatchesPage from './src/Pages/matchesPage/matchesPage';
 
 
 const Stack = createNativeStackNavigator();
-// const socket = io.connect("http://192.168.29.169:4000")
-const socket = io.connect("https://apnapandatingbackend.onrender.com")
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://apnapandatingbackend.onrender.com")
 function AppContent() {
-  // const BASE_URL = "http://192.168.29.169:4000";
-  const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  const BASE_URL = "http://192.168.29.169:4000";
+  // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const socketRef = useRef(null);
   const [recordMessage, setRecordMessage] = useState([])
   const [visitorNotifyObj, setVisitorNotifyObj] = useState([])
-  const completeLoginObj = useSelector(
-    (state) => state?.loginData?.loginData?.completeLoginData
-  );
-  const completeLoginObjForOtp=useSelector((state)=>state.finalLoginWithOtpData.finalLoginWithOtpData.completeLoginData)
-  const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+  const [loading, setLoading] = useState(true);
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+const [loginDetails,setLoginDetails]=useState({})
+
+
+
+
+
   
   
   const darkColors = {
@@ -88,13 +96,70 @@ function AppContent() {
     warning: '#ffc107',
   };
   
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await SecureStore.getItemAsync("loginObj");
   
+        console.log("Login Token:", token);
+        setLoginDetails(JSON.parse(token))
+        if (token) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    checkToken();
+  }, []);
 
+  const finalCompleteObj=loginDetails?.loginData
+  const completeLoginObjData=finalCompleteObj || {}
 
+  useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io('http://192.168.29.169:4000', {
+        transports: ['websocket'], // Only use WebSocket transport
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+        pingTimeout: 60000,
+        pingInterval: 25000,
+      });
+
+      socketRef.current.emit('setup', completeLoginObjData?._id);
+
+      socketRef.current.on('connect', () => {
+        console.log('Connected to server');
+        console.log('Socket ID:', socketRef.current.id);
+      });
+
+      socketRef.current.on('disconnect', () => {
+        console.log('Disconnected from server');
+      });
+
+      socketRef.current.on('connected', () => {
+        console.log('Socket is connected');
+      });
+    }
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, [completeLoginObjData?._id]);
 
   // useEffect(() => {
   //   if (!socketRef.current) {
-  //     socketRef.current = io('http://192.168.29.169:4000', {
+  //     socketRef.current = io('https://apnapandatingbackend.onrender.com', {
   //       transports: ['websocket'], // Only use WebSocket transport
   //       reconnection: true,
   //       reconnectionAttempts: 10,
@@ -128,41 +193,6 @@ function AppContent() {
   //   };
   // }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
 
-  useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io('https://apnapandatingbackend.onrender.com', {
-        transports: ['websocket'], // Only use WebSocket transport
-        reconnection: true,
-        reconnectionAttempts: 10,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
-        timeout: 20000,
-        pingTimeout: 60000,
-        pingInterval: 25000,
-      });
-
-      socketRef.current.emit('setup', completeLoginObj?._id);
-
-      socketRef.current.on('connect', () => {
-        console.log('Connected to server');
-        console.log('Socket ID:', socketRef.current.id);
-      });
-
-      socketRef.current.on('disconnect', () => {
-        console.log('Disconnected from server');
-      });
-
-      socketRef.current.on('connected', () => {
-        console.log('Socket is connected');
-      });
-    }
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-    };
-  }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
 
   useEffect(() => {
 
@@ -292,10 +322,12 @@ useEffect(() => {
     });
   }
 }, [visitorNotifyObj,completeLoginObjData,visitorNotifyObj?.visitorNotify?.length>0]);
+console.log('is log in',isLoggedIn)
   return (
     <AlertNotificationRoot colors={[darkColors]}  >
     <NavigationContainer>
-      <Stack.Navigator>
+      {loading?(null):(
+      <Stack.Navigator  initialRouteName={isLoggedIn===true ? "HeaderPage" : "LoginPage"}>
         <Stack.Screen
           name="FrontPage"
           component={FrontPage}
@@ -452,6 +484,16 @@ useEffect(() => {
           component={EditSongsPage}
           options={{ headerShown: false }}
         />
+         <Stack.Screen
+          name="MatchesPage"
+          component={MatchesPage}
+          options={{ headerShown: false }}
+        />
+            <Stack.Screen
+          name="NewAndOnlinePage"
+          component={NewAndOnlinePage}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="NewAndOnlinePageContent"
           component={NewAndOnlinePageContent}
@@ -527,7 +569,19 @@ useEffect(() => {
           component={AppearancePage}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="SettingsPage"
+          component={SettingsPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="verifyOtpPage"
+          component={VerifyOtpPage}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
+      )
+}
       <StatusBar style="auto" />
     </NavigationContainer>
     </AlertNotificationRoot>
