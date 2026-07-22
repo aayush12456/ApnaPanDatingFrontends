@@ -20,13 +20,13 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray }) => {
+const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser }) => {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
   const [messageText, setMessageText] = useState('')
-
- 
+console.log('complete obj',completeObj)
+ console.log('notify users data',notifyUser)
   const [fetchMessages, setFetchMessages] = useState([])
   const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
   const [finalMessageArray, setFinalMessageArray] = useState([])
@@ -211,6 +211,69 @@ useEffect(() => {
 }, [loginId, fetchTypingIdObj, messageDetails]);
 
 
+const sendNotification = async () => {
+  if (!notifyUser?.notifyToken) return;
+
+  try {
+    // const messages = [
+    //   {
+    //     to: notifyUser.notifyToken,
+    //     sound: "default",
+    //     title: "ApnaPan",
+    //     body: messageText,
+    //     data: {
+    //       senderId: loginId,
+    //       receiverId: messageDetails?._id,
+    //       type: "CHAT_MESSAGE",
+    //     },
+    //   },
+    // ];
+    const messages = [
+      {
+        to: notifyUser.notifyToken,
+        sound: "default",
+        // title: "ApnaPan",
+        body: `${completeObj?.name} messaged you`,
+        data: {
+          senderId: loginId,
+          receiverId: messageDetails?._id,
+          type: "CHAT_MESSAGE",
+        },
+      },
+    ];
+    const response = await axios.post(
+      "https://exp.host/--/api/v2/push/send",
+      messages,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Push Response", response.data);
+
+    const ticketIds = response.data.data
+      .filter(item => item.status === "ok")
+      .map(item => item.id);
+
+    if (ticketIds.length > 0) {
+      const receiptRes = await axios.post(
+        "https://exp.host/--/api/v2/push/getReceipts",
+        { ids: ticketIds }
+      );
+
+      console.log("Receipt", receiptRes.data);
+    }
+  } catch (error) {
+    console.log(
+      error.response?.data || error.message
+    );
+  }
+};
+
+
   const submitHandler = async () => {
     if (messageText.trim()) {
       const messageSubmitData = {
@@ -242,6 +305,7 @@ useEffect(() => {
         // console.log('Send message data:', response.data);
         socket.emit('sendMessage', response.data.chatUser);
         setMessageText('');
+        await sendNotification();
   
         // Call deleteTyping API
         const responseData = await axios.post(

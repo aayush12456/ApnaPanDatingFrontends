@@ -21,6 +21,7 @@ import LikesPage from '../../../Pages/likesPage/likesPage.js';
 import NewAndOnlinePage from '../../../Pages/newAndOnlinePage/newAndOnlinePage.js';
 import MatchesPage from '../../../Pages/matchesPage/matchesPage.js';
 import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
+import { registerForPushNotificationsAsync } from '../../notificationToken/notificationToken';
 
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -35,6 +36,7 @@ const Header=()=>{
     const [visitorCountObj,setVisitorCountObj]=useState('')
     const [recordMessage, setRecordMessage] = useState([])
     const [onlineUsers,setOnlineUsers]=useState([]);
+   
    
     // const completeLoginObjForOtp=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.completeLoginData)
     // const completeLoginObj = useSelector(
@@ -149,24 +151,7 @@ useEffect(() => {
   };
 }, [loginId]);
 // console.log('visitor count obj',visitorCountObj)
-const deleteVisitorFunction = async () => {
-  // console.log('delete visitor func invoked');
-  try {
-      if (!loginId) {
-          // console.error('loginId is not set');
-          return;
-      }
 
-      const response = await axios.post(
-          `${BASE_URL}/user/deleteVisitorCount`,
-           {loginId} 
-      );
-      // console.log('Response in delete visitor count user', response?.data?.userObj);
-      setVisitorCountObj(response?.data?.userObj);
-  } catch (error) {
-      // console.error('Error deleting visitor count:', error?.response?.data || error.message);
-  }
-};
 
 useEffect(() => {
 
@@ -221,7 +206,31 @@ return ()=>{
 },[]);
 
 console.log('online user array',onlineUsers)
+useEffect(() => {
+  if (!loginId) return;
 
+  const init = async () => {
+    const token = await registerForPushNotificationsAsync();
+  
+    if (token) {
+      console.log("tokens expo", token);
+  
+      await axios.post(
+        `${BASE_URL}/user/notifyUser/${loginId}`,
+        {
+          notifyToken: token,
+        }
+      );
+  
+      socket.emit("addNotifyId", {
+        loginId,
+        notifyToken: token,
+      });
+    }
+  };
+
+  init();
+}, [loginId]);
 
 
 return (
@@ -692,6 +701,7 @@ return (
       loginId={loginId}
       finalCompleteObj={finalCompleteObj}
       onlineUserArray={onlineUsers}
+   
     />
   )}
 </Drawer.Screen>
