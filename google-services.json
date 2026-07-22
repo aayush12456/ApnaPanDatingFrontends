@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "849010231993",
+    "project_id": "apnapan-8b25c",
+    "storage_bucket": "apnapan-8b25c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849010231993:android:aa228407194b9d775b2968",
+        "android_client_info": {
+          "package_name": "com.aayush_2001.datingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb5Zbqp8XIaAwVz5ss8hrrTOGqCvJu6Bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

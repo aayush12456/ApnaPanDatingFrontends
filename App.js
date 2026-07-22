@@ -66,7 +66,7 @@ import SettingsPage from './src/Pages/settingsPage/settingsPage';
 import VerifyOtpPage from './src/Pages/verifyOtpPage/verifyOtpPage';
 import NewAndOnlinePage from './src/Pages/newAndOnlinePage/newAndOnlinePage';
 import MatchesPage from './src/Pages/matchesPage/matchesPage';
-
+import { registerForPushNotificationsAsync } from './src/components/notificationToken/notificationToken';
 
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
@@ -323,6 +323,25 @@ useEffect(() => {
   }
 }, [visitorNotifyObj,completeLoginObjData,visitorNotifyObj?.visitorNotify?.length>0]);
 console.log('is log in',isLoggedIn)
+
+
+useEffect(() => {
+  async function getToken() {
+    const token = await registerForPushNotificationsAsync();
+
+    if (token) {
+      console.log("TOKEN =", token);
+
+      // Backend me save kar do
+      // await axios.post("/user/savePushToken", {
+      //   token,
+      // });
+    }
+  }
+
+  getToken();
+}, []);
+
   return (
     <AlertNotificationRoot colors={[darkColors]}  >
     <NavigationContainer>

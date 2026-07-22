@@ -19,6 +19,7 @@
       }
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/holdingHands.png",
         "backgroundColor": "#ffffff"
@@ -27,15 +28,19 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "com.aayush_2001.datingapp",
-      "apkFileName": "ApnaPan",
-      "minSdkVersion": 21,
-      "targetSdkVersion": 34
+      "package": "com.aayush_2001.datingapp"
+    
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification.png"
+        }
+      ],
       "expo-video",
       "expo-secure-store",
       "expo-audio",
