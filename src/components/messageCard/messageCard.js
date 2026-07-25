@@ -85,6 +85,14 @@ useEffect(() => {
     const messageCardClickHandler=async(finalMessageUser)=>{
     console.log('final message user',finalMessageUser)
     if(finalMessageUser){
+      
+      const chatUserObj = {
+        loginId: loginId,
+        anotherId: finalMessageUser?._id
+      };
+      socket.emit('addChatUsers', chatUserObj);
+      console.log('emitted addChatUsers', chatUserObj);
+
       const addChatIdObj={
      id:loginId,
      anotherId:finalMessageUser?._id,

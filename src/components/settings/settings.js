@@ -3,9 +3,9 @@ import {View,Image, Pressable} from 'react-native'
 import rightArrow from '../../../assets/settingIcons/rightArrow.png'
 import { useNavigation } from "@react-navigation/native"
 
-const Settings=({completeObj})=>{
+const Settings=({completeObj,notifyToken})=>{
     const navigation = useNavigation();
-    
+    console.log('setting commplete',completeObj)
     const skippedProfileHandler=()=>{
         const skipProfileObj={
             headerName:'Skipped Profiles',
@@ -24,7 +24,8 @@ const Settings=({completeObj})=>{
     const accounSettingsHandler=()=>{
         const accountSettingsObj={
             headerName:'Account Settings',
-            loginDetails:completeObj
+            loginDetails:completeObj,
+            token:notifyToken
         }
         navigation.navigate('AccountSettingsPage', {formData:accountSettingsObj});
     }

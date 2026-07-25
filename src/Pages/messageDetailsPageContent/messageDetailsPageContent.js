@@ -10,14 +10,16 @@ const MessageDetailsPageContent=({route})=>{
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData,completeObj,onlineUsers } = route?.params;
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
-    const [notifyObj, setNotifyObj] = useState(null);
-    const [filterNotify,setFilterNotify]=useState({})
+    const [notifyObj, setNotifyObj] = useState([]);
+    const [filterNotify,setFilterNotify]=useState([])
+    const [chatUsersArray, setChatUsersArray] = useState([])
+    const [notifyChecks,setNotifyChecks]=useState(null)
     console.log('online users in details',onlineUsers)
 
     
     const completeLoginObjData=completeObj ||  {}
     const loginId=completeLoginObjData?.userId
-  
+  console.log('login id message',loginId)
     useEffect(()=>{
       const fetchDeactivateUser = async () => {
         try {
@@ -72,20 +74,48 @@ const MessageDetailsPageContent=({route})=>{
   console.log('forms datas',formData)
   
   useEffect(() => {
-    if (notifyObj && formData?._id) {
-      const user = notifyObj?.find(
-        (item) => item.loginId === formData._id
+    if (notifyObj?.length > 0 && formData?._id) {
+      const user = notifyObj.filter(
+        (item) => item?.loginId === formData?._id
       );
   
       setFilterNotify(user);
+    } else {
+      setFilterNotify([]);
     }
-  }, [notifyObj, formData]);
+  }, [notifyObj, formData?._id]);
   console.log('arrays',filterNotify)
+
+  useEffect(() => {
+    // Mount hone par current array maang lo
+    socket.emit('requestChatUsers');
+
+    socket.on("getChatUsers", (data) => {
+      console.log("getChatUsers socket data (array of obj):", data);
+      setChatUsersArray(data || []);
+    });
+
+    return () => {
+      socket.off("getChatUsers");
+    };
+  }, []);
+  console.log('chatUsersArray from socket:', chatUsersArray)
+
+  console.log('forms data in messafe contrn',formData)
+  
+  useEffect(() => {
+    const checks = chatUsersArray.filter(
+      (item) => item?.anotherId === loginId && item?.loginId === formData?._id
+    );
+    setNotifyChecks(checks);
+  }, [chatUsersArray, loginId, formData?._id]);
+
+  console.log('checks data',notifyChecks)
 return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
     <MessageDetailsCard messageDetails={formData} deactivateUserObj={deactivateUserObj}
-     completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify}/>
+     completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify[0]} notifyChecks={notifyChecks}/>
     </View>
     </>
 )

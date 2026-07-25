@@ -22,6 +22,7 @@ import NewAndOnlinePage from '../../../Pages/newAndOnlinePage/newAndOnlinePage.j
 import MatchesPage from '../../../Pages/matchesPage/matchesPage.js';
 import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
 import { registerForPushNotificationsAsync } from '../../notificationToken/notificationToken';
+import * as Notifications from "expo-notifications";
 
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -36,6 +37,7 @@ const Header=()=>{
     const [visitorCountObj,setVisitorCountObj]=useState('')
     const [recordMessage, setRecordMessage] = useState([])
     const [onlineUsers,setOnlineUsers]=useState([]);
+    const [notifyToken,setNotifyToken]=useState('')
    
    
     // const completeLoginObjForOtp=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.completeLoginData)
@@ -214,6 +216,7 @@ useEffect(() => {
   
     if (token) {
       console.log("tokens expo", token);
+      setNotifyToken(token)
   
       await axios.post(
         `${BASE_URL}/user/notifyUser/${loginId}`,
@@ -232,6 +235,28 @@ useEffect(() => {
   init();
 }, [loginId]);
 
+useEffect(() => {
+  const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+    const data = response.notification.request.content.data;
+    
+    console.log("Notification Data Received:", data);
+
+    if (!data?.type) return;
+
+    switch (data.type) {
+      case "Messages":
+        navigation.navigate("HeaderPage", {
+          screen: "Messages",
+        });
+        break;
+
+      default:
+        navigation.navigate("HeaderPage"); // default
+    }
+  });
+
+  return () => subscription.remove();
+}, [navigation]);
 
 return (
     <>
@@ -812,6 +837,7 @@ return (
     <SettingsPage
       {...props}
       finalCompleteObj={finalCompleteObj}
+      notify={notifyToken}
     />
   )}
 </Drawer.Screen>

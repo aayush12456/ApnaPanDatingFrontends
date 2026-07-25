@@ -20,7 +20,7 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser }) => {
+const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser,notifyChecks }) => {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
@@ -79,6 +79,12 @@ console.log('complete obj',completeObj)
 
 
   const backHandler = async() => {
+    const deleteChatUserObj = {
+      loginId: loginId,
+      anotherId: messageDetails?._id
+    };
+    socket.emit('deleteChatUsers', deleteChatUserObj);
+    console.log('emitted deleteChatUsers', deleteChatUserObj);
     const deleteAnotherRecordMessageIdObj={
       id:loginId,
       recieverId:messageDetails?._id
@@ -237,7 +243,7 @@ const sendNotification = async () => {
         data: {
           senderId: loginId,
           receiverId: messageDetails?._id,
-          type: "CHAT_MESSAGE",
+          type: "Messages",
         },
       },
     ];
@@ -305,8 +311,10 @@ const sendNotification = async () => {
         // console.log('Send message data:', response.data);
         socket.emit('sendMessage', response.data.chatUser);
         setMessageText('');
-        await sendNotification();
-  
+     
+if (notifyChecks.length===0) {
+  await sendNotification();
+}
         // Call deleteTyping API
         const responseData = await axios.post(
           `${BASE_URL}/chat/deleteTyping`,

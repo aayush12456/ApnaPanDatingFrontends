@@ -66,6 +66,7 @@ import SettingsPage from './src/Pages/settingsPage/settingsPage';
 import VerifyOtpPage from './src/Pages/verifyOtpPage/verifyOtpPage';
 import NewAndOnlinePage from './src/Pages/newAndOnlinePage/newAndOnlinePage';
 import MatchesPage from './src/Pages/matchesPage/matchesPage';
+import MessagePage from './src/Pages/messagePage/messagePage';
 
 
 const Stack = createNativeStackNavigator();
@@ -75,7 +76,6 @@ function AppContent() {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const socketRef = useRef(null);
-  const [recordMessage, setRecordMessage] = useState([])
   const [visitorNotifyObj, setVisitorNotifyObj] = useState([])
   const [loading, setLoading] = useState(true);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -194,71 +194,10 @@ const [loginDetails,setLoginDetails]=useState({})
   // }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
 
 
-  useEffect(() => {
-
-    const fetchRecordMessage = async () => {
-        try {
-          if(completeLoginObjData?._id){
-            const response = await axios.get(`${BASE_URL}/chat/getRecordMessage/${completeLoginObjData?._id}`);
-       
-            setRecordMessage(response.data);
   
-          }
-        } catch (error) {
-            // console.error("Error fetching messages:", error);
-        }
-    };
-    fetchRecordMessage()
-    socket.on('recieveRecordMessageId', (newMessage) => {
-      setRecordMessage(newMessage);
-    })
-   
-    return () => {
-        socket.off('recieveRecordMessageId')
-    
-    }
-  }, [completeLoginObjData?._id])
-  // console.log('record message array in app.js',recordMessage)
 
 
-useEffect(() => {
-  if (recordMessage?.messageNotify?.length > 0 && completeLoginObjData?._id===recordMessage?.id) {
-    recordMessage.messageNotify.map((notify, index) => {
-      Toast.show({
-        textBody: (
-          <View
-            key={index}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 10,
-              textAlign: 'left',
-            }}
-          >
-            <Image
-              source={{ uri: notify.images }}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25, // Circular image
-                marginRight: 10,
-              }}
-            />
-            <View>
-          <Text style={{color:'black'}}>{notify.recieverName} message you</Text>
-          
-          <Text style={{color:'black'}} >please checkout your message</Text>
-            </View>
-            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'black',marginLeft:40,marginTop:-10}}>
-            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3,tintColor:'white'}}/>
-            </View>
-          </View>
-        ),
-        autoClose: 13000, // Optional: automatically hide after 3 second
-      });
-    });
-  }
-}, [recordMessage,completeLoginObjData,recordMessage?.messageNotify?.length > 0]);
+
 
 useEffect(() => {
 
@@ -516,6 +455,11 @@ console.log('is log in',isLoggedIn)
          <Stack.Screen
           name="VisitorPageContent"
           component={VisitorPageContent}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="MessagePage"
+          component={MessagePage}
           options={{ headerShown: false }}
         />
           <Stack.Screen

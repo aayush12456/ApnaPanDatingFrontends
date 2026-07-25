@@ -1,18 +1,18 @@
 import Settings from "../../components/settings/settings"
 import {View} from 'react-native'
 
-const SettingsPage=({route,finalCompleteObj})=>{
-  const {formData}=route.params||      finalCompleteObj
+const SettingsPage=({finalCompleteObj,notify})=>{
+
 
    
-    const completeLoginObjData=formData|| {}
-  
+    const completeLoginObjData=finalCompleteObj|| {}
+  console.log('complet login data',completeLoginObjData)
 
     
 return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
-    <Settings completeObj={completeLoginObjData}/>
+    <Settings completeObj={completeLoginObjData} notifyToken={notify}/>
     </View>
     </>
 )

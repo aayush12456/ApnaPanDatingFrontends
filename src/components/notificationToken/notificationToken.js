@@ -6,6 +6,14 @@ export async function registerForPushNotificationsAsync() {
   if (!Device.isDevice) {
     return null;
   }
+  
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
 
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {

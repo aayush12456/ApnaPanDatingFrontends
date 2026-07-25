@@ -4,7 +4,7 @@ import rightArrow from '../../../assets/settingIcons/rightArrow.png'
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from "@react-navigation/native"
 import axios from 'axios'
-const AccountSettings=({completeObj})=>{
+const AccountSettings=({completeObj,notifyToken})=>{
   console.log('complete obj account',completeObj)
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
@@ -16,19 +16,32 @@ const AccountSettings=({completeObj})=>{
 const loginId=completeLoginObjData.userId
 console.log('login id setting',loginId)
    
-      const logoutHandler=async()=>{
-        console.log('log out')
-        await SecureStore.deleteItemAsync('loginObj')
+const removeLoginData = async () => {
+  try {
+    await SecureStore.deleteItemAsync("loginObj");
+  } catch (error) {
+    console.error("Error removing login obj:", error);
+  }
+};
 
-        // console.log('User logged out and login data removed from AsyncStorage');
-        navigation.navigate('FrontPage');
+const logoutHandler = async () => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/user/deleteNotifyUser/${loginId}`,
+      {
+        token: notifyToken,
       }
-      // const changePasswordHandler=()=>{
-      //   const changePasswordObj={
-      //       headerName:'Change Password'
-      //   }
-      //   navigation.navigate('ChangePasswordPage', { formData:changePasswordObj });
-      // }
+    );
+
+    socket.emit("deleteNotifyId", response.data);
+  } catch (error) {
+    console.log("Error deleting notify token:", error);
+  }
+
+  await removeLoginData();
+  navigation.navigate("FrontPage");
+};
+
 
       const manageAccountHandler=()=>{
         const manageAccountObj={
@@ -46,7 +59,7 @@ return (
             <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
             color: `white`}}>Email:</Text>
             <Text  style={{paddingTop:10,paddingBottom:12,
-               color: `white`}}>{completeLoginObjData?.email}</Text>
+               color: `white`}}>{completeObj?.email}</Text>
         </View>
         </View>
         <View style={{backgroundColor:  `#343434`,width:'90%',marginLeft:20}}>
