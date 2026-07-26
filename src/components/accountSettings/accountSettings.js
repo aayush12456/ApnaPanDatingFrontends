@@ -4,6 +4,8 @@ import rightArrow from '../../../assets/settingIcons/rightArrow.png'
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from "@react-navigation/native"
 import axios from 'axios'
+import io from "socket.io-client";
+const socket = io.connect("http://192.168.29.169:4000")
 const AccountSettings=({completeObj,notifyToken})=>{
   console.log('complete obj account',completeObj)
   const BASE_URL = "http://192.168.29.169:4000";
@@ -33,7 +35,7 @@ const logoutHandler = async () => {
       }
     );
 
-    socket.emit("deleteNotifyId", response.data);
+
   } catch (error) {
     console.log("Error deleting notify token:", error);
   }

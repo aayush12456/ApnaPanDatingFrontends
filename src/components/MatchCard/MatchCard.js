@@ -23,13 +23,15 @@ import Notification from "../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MatchCard=({matchObj,completeObj,loginId,onlineUserArray})=>{
+const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   console.log('logins id',loginId)
+  console.log('notifys',notifyArray)
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
+  const [filterNotify,setFilterNotify]=useState([])
   const [openDialog,setOpenDialog]=useState(false)
   const [crosses, setCrosses] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -69,6 +71,50 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray})=>{
       let currentDate = new Date();
       let currentYear = currentDate.getFullYear();
       const age = year ? currentYear - parseInt(year) : "";
+
+      const sendNotification = async () => {
+        const notifyUser = filterNotify?.[0];
+      
+        if (!notifyUser?.notifyToken) {
+          console.log("Notification token not found");
+          return;
+        }
+      
+        try {
+          const messages = [
+            {
+              to: notifyUser.notifyToken,
+              sound: "default",
+              title: "ApnaPan",
+              body: `${completeObj?.name} liked your profile`,
+              data: {
+                senderId: loginId,
+                receiverId: matchObj?._id,
+                type: "LIKE",
+              },
+            },
+          ];
+      
+          const response = await axios.post(
+            "https://exp.host/--/api/v2/push/send",
+            messages,
+            {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
+      
+          console.log("Like Push Response:", response.data);
+      
+        } catch (error) {
+          console.log(
+            "Like notification error:",
+            error.response?.data || error.message
+          );
+        }
+      };
 
       useEffect(()=>{
         const fetchDeactivateUser = async () => {
@@ -167,6 +213,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray})=>{
         const response = await axios.post(`${BASE_URL}/user/addMatchUser/${addLikeObj.id}`, addLikeObj);
         // console.log('response in match card is',response?.data?.likesArray)
         socket.emit('addMatchUser', response?.data?.likesArray)
+        await sendNotification();
     } catch (error) {
         // console.error('Error match response', error);
     }
@@ -180,6 +227,23 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray})=>{
       // console.error('Error like count', error);
   }
         }
+
+         
+  useEffect(() => {
+    if (notifyArray?.length > 0 && matchObj?._id) {
+      const user = notifyArray.filter(
+        (item) => item?.loginId === matchObj?._id
+      );
+  
+      setFilterNotify(user);
+    } else {
+      setFilterNotify([]);
+    }
+  }, [notifyArray, matchObj?._id]);
+  console.log('arrays notify',filterNotify)
+
+
+
 return (
     <>
     <AlertNotificationRoot>

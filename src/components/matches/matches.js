@@ -8,7 +8,7 @@ import MatchCard from '../MatchCard/MatchCard';
 import axios from 'axios'
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const Matches=({completeObj,loginId,onlineUsers})=>{
+const Matches=({completeObj,loginId,onlineUsers,notifyArray})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [filterMatchArray,setFilterMatchArray]=useState([])
@@ -156,7 +156,7 @@ return (
       }
     >
       {matchArray && matchArray.length > 0 ? (
-        <MatchCard matchObj={matchArray[0]} completeObj={completeObj} loginId={loginId} onlineUserArray={onlineUsers} />
+        <MatchCard matchObj={matchArray[0]} completeObj={completeObj} loginId={loginId} onlineUserArray={onlineUsers} notifyArray={notifyArray} />
       ):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
       color:`white`}}>No Match Profile is there</Text> }
     </ScrollView>

@@ -32,6 +32,7 @@ const Header=()=>{
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation();
     const [loginDetails, setLoginDetails] = useState(null);
+    const [notifyObjData, setNotifyObjData] = useState([]);
     // const [loginId,setLoginId]=useState('')
     const [likeCountObj,setLikeCountObj]=useState('')
     const [visitorCountObj,setVisitorCountObj]=useState('')
@@ -235,6 +236,34 @@ useEffect(() => {
   init();
 }, [loginId]);
 
+
+useEffect(() => {
+  const getNotify = async () => {
+    if (!loginId) return;
+
+    const response = await axios.get(
+      `${BASE_URL}/user/notifyUser/${loginId}`
+    );
+
+    setNotifyObjData(response.data.notifyUser);
+  };
+
+  getNotify();
+}, [loginId]);
+
+useEffect(() => {
+  socket.on("getNotifyId", (data) => {
+    console.log("notify socket", data);
+    setNotifyObjData(data);
+  });
+
+  return () => {
+    socket.off("getNotifyId");
+  };
+}, []);
+// console.log('notify onj matches',notifyObj)
+
+
 useEffect(() => {
   const subscription = Notifications.addNotificationResponseReceivedListener(response => {
     const data = response.notification.request.content.data;
@@ -257,6 +286,9 @@ useEffect(() => {
 
   return () => subscription.remove();
 }, [navigation]);
+
+
+
 
 return (
     <>
@@ -416,6 +448,7 @@ return (
       loginId={loginId}
       finalCompleteObj={finalCompleteObj}
       onlineUserArray={onlineUsers}
+      notifyArray={notifyObjData}
     />
   )}
 </Drawer.Screen>
