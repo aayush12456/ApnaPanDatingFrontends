@@ -32,6 +32,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
   const [active, setActive] = useState(0); // Move useState outside of change function
   const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
   const [filterNotify,setFilterNotify]=useState([])
+  const [filterNotifyOnline,setFilterNotifyOnline]=useState([])
   const [notifyArrayData, setNotifyArrayData] = useState([]);
   const [commonVisitorLikeSkip,setCommonVisitorLikeSkip]=useState(true)
   const [likeMatch,setLikeMatch]=useState(true)
@@ -159,7 +160,8 @@ const repeatCompleteObj=completeObj
       }
       console.log('new online skip obj',onlineSkipUserObj)
       dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
-      navigation.navigate('HeaderPage',{formData:onlineSkipUserObj})
+      // navigation.navigate('HeaderPage',{formData:onlineSkipUserObj})
+      navigation.goBack()
     }
     
    }
@@ -254,6 +256,9 @@ const repeatCompleteObj=completeObj
         const response = await axios.post(`${BASE_URL}/user/addOnlineLikeUser/${onlineLikeUserObj.id}`,onlineLikeUserObj);
         // console.log('response in online like user',response?.data)
         socket.emit('addOnlineLikeUser', response?.data)
+        if (response) {
+          await sendNotificationOnline();
+        }
     
     } catch (error) {
         // console.error('Error sending message:', error);
@@ -372,36 +377,7 @@ const repeatCompleteObj=completeObj
     }
      },[onlineLikeUserObj?.selfOnlineLikeUser,newAndOnlineContent])
 
-     useEffect(() => {
-      const fetchVisitorLikeUsers = async () => {
-        try {
-          if (loginId) {
-            const response = await axios.get(
-              `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
-            );
-            // console.log('get visitor user is',response?.data)
-            setVisitorLikeUserObj(response?.data);
-          }
-        } catch (error) {
-          // console.error("Error fetching visitor like user:", error);
-        }
-      };
-    
-      fetchVisitorLikeUsers();
-    
-      socket.on("getVisitorLikeUser", (newUser) => {
-    
-        setVisitorLikeUserObj(newUser)
-      });
-    
-      return () => {
-        socket.off("getVisitorLikeUser");
-      };
-    }, [loginId]);
-    // console.log('visitor like user obj',visitorLikeUserObj)
-
    
-
        useEffect(()=>{
         if(completeLoginObjData?._id){
             dispatch(getBollywoodSongAsync(completeLoginObjData?._id))
@@ -514,6 +490,20 @@ const repeatCompleteObj=completeObj
         console.log('arrays notify like',filterNotify)
 
 
+        
+        useEffect(() => {
+          if (notifyArrayData?.length > 0 && newAndOnlineContent?._id) {
+            const user = notifyArrayData.filter(
+              (item) => item?.loginId === newAndOnlineContent?._id
+            );
+        
+            setFilterNotifyOnline(user);
+          } else {
+            setFilterNotifyOnline([]);
+          }
+        }, [notifyArrayData, newAndOnlineContent?._id]);
+        console.log('arrays notify like',filterNotify)
+       console.log('array notify online',newAndOnlineContent)
 
         const sendNotification = async () => {
           const notifyUser = filterNotify?.[0];
@@ -559,6 +549,50 @@ const repeatCompleteObj=completeObj
           }
         };
   
+
+        const sendNotificationOnline = async () => {
+          const notifyUser = filterNotifyOnline?.[0];
+        
+          if (!notifyUser?.notifyToken) {
+            console.log("Notification token not found");
+            return;
+          }
+        
+          try {
+            const messages = [
+              {
+                to: notifyUser.notifyToken,
+                sound: "default",
+                title: "ApnaPan",
+                body: `${completeObj?.name} liked your profile`,
+                data: {
+                  senderId: loginId,
+                  receiverId: newAndOnlineContent?._id,
+                  type: "Likes",
+                },
+              },
+            ];
+        
+            const response = await axios.post(
+              "https://exp.host/--/api/v2/push/send",
+              messages,
+              {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+        
+            console.log("Like Push Response online:", response.data);
+        
+          } catch (error) {
+            console.log(
+              "Like notification error:",
+              error.response?.data || error.message
+            );
+          }
+        };
   return (
     <>
      <AlertNotificationRoot>
