@@ -90,7 +90,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
               data: {
                 senderId: loginId,
                 receiverId: matchObj?._id,
-                type: "LIKE",
+                type: "Likes",
               },
             },
           ];

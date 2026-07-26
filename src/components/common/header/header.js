@@ -279,6 +279,12 @@ useEffect(() => {
         });
         break;
 
+        case "Likes":
+          navigation.navigate("HeaderPage", {
+            screen: "Likes",
+          });
+          break;
+
       default:
         navigation.navigate("HeaderPage"); // default
     }

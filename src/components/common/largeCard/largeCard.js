@@ -23,13 +23,16 @@ import { Audio } from 'expo-av';
 
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUserObj,completeObj }) => {
+const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeObj }) => {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
+  console.log('like contenct card',likeContent)
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
   const [commonVisitorLikeSkipUser,setCommonVisitorLikeSkipUser]=useState([])
+  const [filterNotify,setFilterNotify]=useState([])
+  const [notifyArrayData, setNotifyArrayData] = useState([]);
   const [commonVisitorLikeSkip,setCommonVisitorLikeSkip]=useState(true)
   const [likeMatch,setLikeMatch]=useState(true)
   const [likeMatchUser,setLikeMatchUser]=useState({})
@@ -60,7 +63,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     }
   };
 
-  const getProfile = () =>newAndOnlineContent || likeContent || visitorContent
+  const getProfile = () =>newAndOnlineContent || likeContent
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");
   const year = dobBreak?.[2];
@@ -68,9 +71,9 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   let currentYear = currentDate.getFullYear();
   const age = year ? currentYear - parseInt(year) : "";
 
-  const number=newAndOnlineContent?.phone || likeContent?.phone || visitorContent?.phone
+  const number=newAndOnlineContent?.phone || likeContent?.phone 
   const mainNumber = number.substring(0, 4) + 'X'.repeat(number.length - 4);
-  const allImages = [...(newAndOnlineContent?.images || []), ...(likeContent?.images || []),...(visitorContent?.images || [])];
+  const allImages = [...(newAndOnlineContent?.images || []), ...(likeContent?.images || [])];
   const rows=[]
   const likeRows=[]
   const visitorRows=[]
@@ -80,9 +83,8 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
   for(let i=0;i<likeContent?.interest?.length;i+=2){
     likeRows.push(likeContent.interest.slice(i,i+2))
   }
-  for(let i=0;i<visitorContent?.interest?.length;i+=2){
-    visitorRows.push(visitorContent.interest.slice(i,i+2))
-  }
+
+
   const playVideoHandler=()=>{
     if(newAndOnlineContent){
       dispatch(passVideoDataSliceActions.passVideoDatas(newAndOnlineContent))
@@ -92,10 +94,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
       dispatch(passVideoDataSliceActions.passVideoDatas(likeContent))
       dispatch(playVideoModalActions.playVideoModalToggle())
     }
-    else if(visitorContent){
-      dispatch(passVideoDataSliceActions.passVideoDatas(visitorContent))
-      dispatch(playVideoModalActions.playVideoModalToggle())
-    }
+   
   }
   const backHandler=()=>{
     if(newAndOnlineContent){
@@ -104,14 +103,12 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     else if(likeContent){
       navigation.goBack()
     }
-    else if(visitorContent){
-      navigation.navigate('Visitors')
-    }
+   
   }
 
   const openImageHandler=(image)=>{
     const imageObj={
-      name:newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName,
+      name:newAndOnlineContent?.firstName || likeContent?.firstName ,
       images:image
     }
     navigation.navigate('MyPhotoPage',{formData:imageObj})
@@ -121,9 +118,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
     else if(likeContent){
       dispatch(anotherPassDataSliceActions.anotherPassDatas(likeContent))
     }
-    else if(visitorContent){
-      dispatch(anotherPassDataSliceActions.anotherPassDatas(visitorContent))
-    }
+   
     
    }
 
@@ -131,7 +126,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,visitorContent,deactivateUs
  const loginId=completeObj.userId
 const repeatCompleteObj=completeObj
 
-   const skipUserHandler=async(likeContent,newOnline,visitorContent)=>{
+   const skipUserHandler=async(likeContent,newOnline)=>{
     console.log('new online',newOnline)
     // console.log('user is skipped',likeContent)
     if(likeContent){
@@ -166,28 +161,7 @@ const repeatCompleteObj=completeObj
       dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
       navigation.navigate('HeaderPage',{formData:onlineSkipUserObj})
     }
-    else if(visitorContent){
-      const visitorSkipUserObj={
-        id:loginId,
-        likeSkipUserId:visitorContent?._id
-      }
-      if(visitorSkipUserObj.id===deactivateUserObj.selfDeactivate){
-        setOpenDialog(true)
-        const obj={
-          type:'WARNING',
-          textBody:`You can't skip ${visitorContent.firstName} profile untill you should activate yourself`
-        }
-        setNotifyDeactivateObj(obj)
-        return
-      }
-      try {
-        const response = await axios.post(`${BASE_URL}/user/addCommonVisitorLikeSkipUser/${visitorSkipUserObj.id}`, visitorSkipUserObj);
-        // console.log('response in like skip user is',response?.data?.likeSkip)
-        socket.emit('addCommonVisitorLikeSkipUser', response?.data?.likeSkip)
-    } catch (error) {
-        // console.error('Error sending message:', error);
-    }
-    }
+    
    }
 
 
@@ -227,14 +201,9 @@ const repeatCompleteObj=completeObj
     }
      },[commonVisitorLikeSkipUser,likeContent])
 
-     useEffect(()=>{
-      const visitorSkipData= commonVisitorLikeSkipUser?.some((likeSkip)=>likeSkip?.firstName===visitorContent?.firstName)
-      if(visitorSkipData){
-       setCommonVisitorLikeSkip(false)
-      }
-       },[commonVisitorLikeSkipUser,visitorContent])
+     
        
-   const likeUserHandler=async(likeUser,newOnline,visitorContent)=>{
+   const likeUserHandler=async(likeUser,newOnline)=>{
     // console.log('new user handler',newOnline)
     if(likeUser){
       const likeMatchUserObj={
@@ -257,6 +226,7 @@ const repeatCompleteObj=completeObj
         if(response){
           startAnimation()
           setAnimateObj(response?.data)
+          await sendNotification();
         }
     } catch (error) {
         // console.error('Error sending message:', error);
@@ -301,42 +271,7 @@ const repeatCompleteObj=completeObj
       // console.error('Error sending message:', error);
   }
     }
-    else if(visitorContent){
-     const visitorLikeUserObj={
-      id:loginId,
-      visitorPlusLikeUserId:visitorContent?._id
-     }
-     if(visitorLikeUserObj.id===deactivateUserObj.selfDeactivate){
-      setOpenDialog(true)
-      const obj={
-        type:'WARNING',
-        textBody:`You can't like ${visitorContent.firstName} profile untill you should activate yourself`
-      }
-      setNotifyDeactivateObj(obj)
-      return
-    }
-     const visitorLikeCountObj={
-      id:loginId,
-      matchLikeId:visitorContent?._id
-    }
-     try {
-      const response = await axios.post(`${BASE_URL}/user/addVisitorLikeUser/${visitorLikeUserObj.id}`,visitorLikeUserObj);
-      // console.log('response in visitor like  user',response?.data)
-      socket.emit('addVisitorLikeUser', response?.data)
-  
-  } catch (error) {
-      // console.error('Error sending message:', error);
-  }
-
-  try {
-    const response = await axios.post(`${BASE_URL}/user/addLikeCount/${visitorLikeCountObj.id}`,visitorLikeCountObj);
-    // console.log('response in add like count user',response?.data?.userObj)
-    socket.emit('addLikeCountUser', response?.data?.userObj)
-
-} catch (error) {
-    // console.error('Error sending message:', error);
-}
-    }
+   
    }
 
    useEffect(() => {
@@ -465,12 +400,7 @@ const repeatCompleteObj=completeObj
     }, [loginId]);
     // console.log('visitor like user obj',visitorLikeUserObj)
 
-    useEffect(()=>{
-      const selfVisitorLike= visitorLikeUserObj?.visitorLikes?.some((visitorLike)=>visitorLike?.firstName===visitorContent?.firstName)
-      if(selfVisitorLike){
-        setSelfVisitorLikeMatch(false)
-      }
-       },[visitorLikeUserObj?.visitorLikes,visitorContent])
+   
 
        useEffect(()=>{
         if(completeLoginObjData?._id){
@@ -478,7 +408,7 @@ const repeatCompleteObj=completeObj
         }
     
           },[dispatch,completeLoginObjData?._id])
-          const finalContent=newAndOnlineContent || likeContent || visitorContent
+          const finalContent=newAndOnlineContent || likeContent 
           // console.log('get all songs',getAllSongsSelector)
           // console.log('finalContent',finalContent.songId)
           useEffect(() => {
@@ -542,6 +472,93 @@ const repeatCompleteObj=completeObj
         const keepMatchHandler=()=>{
           setAnimate(false)
         }
+
+
+        useEffect(() => {
+          const getNotify = async () => {
+            if (!loginId) return;
+        
+            const response = await axios.get(
+              `${BASE_URL}/user/notifyUser/${loginId}`
+            );
+        
+            setNotifyArrayData(response.data.notifyUser);
+          };
+        
+          getNotify();
+        }, [loginId]);
+        
+        useEffect(() => {
+          socket.on("getNotifyId", (data) => {
+            console.log("notify socket", data);
+            setNotifyArrayData(data);
+          });
+        
+          return () => {
+            socket.off("getNotifyId");
+          };
+        }, []);
+        console.log('notify array data',notifyArrayData)
+
+        useEffect(() => {
+          if (notifyArrayData?.length > 0 && likeContent?._id) {
+            const user = notifyArrayData.filter(
+              (item) => item?.loginId === likeContent?._id
+            );
+        
+            setFilterNotify(user);
+          } else {
+            setFilterNotify([]);
+          }
+        }, [notifyArrayData, likeContent?._id]);
+        console.log('arrays notify like',filterNotify)
+
+
+
+        const sendNotification = async () => {
+          const notifyUser = filterNotify?.[0];
+        
+          if (!notifyUser?.notifyToken) {
+            console.log("Notification token not found");
+            return;
+          }
+        
+          try {
+            const messages = [
+              {
+                to: notifyUser.notifyToken,
+                sound: "default",
+                title: "ApnaPan",
+                body: `${completeObj?.name} also liked your profile`,
+                data: {
+                  senderId: loginId,
+                  receiverId: likeContent?._id,
+                  type: "Likes",
+                },
+              },
+            ];
+        
+            const response = await axios.post(
+              "https://exp.host/--/api/v2/push/send",
+              messages,
+              {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+        
+            console.log("Like Push Response:", response.data);
+        
+          } catch (error) {
+            console.log(
+              "Like notification error:",
+              error.response?.data || error.message
+            );
+          }
+        };
+  
   return (
     <>
      <AlertNotificationRoot>
@@ -623,7 +640,7 @@ const repeatCompleteObj=completeObj
                 horizontal
                 onScroll={change}
                 showsHorizontalScrollIndicator={false}
-                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images || likeContent?.images || visitorContent?.images)}
+                onTouchEnd={()=>openImageHandler(newAndOnlineContent?.images || likeContent?.images)}
               >
                 {allImages.map((image, index) => {
                   return (
@@ -655,14 +672,14 @@ const repeatCompleteObj=completeObj
             </View>
             </View>
             <View style={{flexDirection:'row',gap:12, paddingLeft:10,paddingTop:16}}>
-        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`white`}}>{newAndOnlineContent?.firstName || likeContent?.firstName || visitorContent?.firstName}</Text>
+        <Text style={{fontSize:16 ,fontWeight:'semibold',color:`white`}}>{newAndOnlineContent?.firstName || likeContent?.firstName}</Text>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:`white`}}>{age}</Text>
-        <Text style={{fontSize:16,fontWeight:'semibold',color:`white`}}>{newAndOnlineContent?.city || likeContent?.city || visitorContent?.city}</Text>
+        <Text style={{fontSize:16,fontWeight:'semibold',color:`white`}}>{newAndOnlineContent?.city || likeContent?.city }</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:3}}>
-<Text style={{color:`white`}}>Working as {newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession} </Text>
-<Text style={{paddingTop:2,color:`white`}}>Studied {newAndOnlineContent?.education || likeContent?.education || visitorContent?.profession} </Text>
+<Text style={{color:`white`}}>Working as {newAndOnlineContent?.profession || likeContent?.profession } </Text>
+<Text style={{paddingTop:2,color:`white`}}>Studied {newAndOnlineContent?.education || likeContent?.education } </Text>
       </View>
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
@@ -673,12 +690,12 @@ const repeatCompleteObj=completeObj
             
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.relationship || likeContent?.relationship || visitorContent?.relationship}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.relationship || likeContent?.relationship }</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.looking || likeContent?.looking || visitorContent?.looking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.looking || likeContent?.looking }</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -735,30 +752,30 @@ const repeatCompleteObj=completeObj
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.education || likeContent?.education || visitorContent?.education}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.education || likeContent?.education }</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.profession || likeContent?.profession || visitorContent?.profession}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.profession || likeContent?.profession }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.drinking || likeContent?.drinking || visitorContent?.drinking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.drinking || likeContent?.drinking }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.smoking || likeContent?.smoking || visitorContent?.smoking}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.smoking || likeContent?.smoking }</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
-        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.eating || likeContent?.eating || visitorContent?.eating}</Text>
+        <Text style={{fontSize:16 ,paddingTop:2, color:`white` }}>{newAndOnlineContent?.eating || likeContent?.eating }</Text>
       </View>
       { finalContent?.songId ==='none'|| !finalContent.songId?null:<View style={{paddingLeft:10,paddingTop:18}}>
       <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
@@ -790,7 +807,7 @@ const repeatCompleteObj=completeObj
 
        {commonVisitorLikeSkip===false || likeMatch===false ||
        selfLikeMatch===false || selfVisitorLikeMatch===false  ?null:<View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
-            <Pressable onPress={()=>skipUserHandler(likeContent,newAndOnlineContent,visitorContent)}>
+            <Pressable onPress={()=>skipUserHandler(likeContent,newAndOnlineContent)}>
             <View style={{flexDirection:"row",gap:12,marginLeft:25}} >
                 <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'grey'}}>
           <Image source={dislike} style={{ width: 20, height:30,marginLeft:14,marginTop:6,tintColor:'white' }} />
@@ -798,7 +815,7 @@ const repeatCompleteObj=completeObj
           <Text style={{fontSize:15,paddingTop:10,color:`white`}}>SKIP</Text>
             </View>
             </Pressable>
-            <Pressable onPress={()=>likeUserHandler(likeContent, newAndOnlineContent,visitorContent)}>
+            <Pressable onPress={()=>likeUserHandler(likeContent, newAndOnlineContent)}>
             <View style={{flexDirection:"row",gap:12,marginRight:25}}>
             <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'rgba(37, 99, 235, 1)'}}>
             <Image source={like} style={{ width:20, height: 30,marginLeft:14,marginTop:6 }} />
