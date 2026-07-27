@@ -115,7 +115,7 @@ return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
     <MessageDetailsCard messageDetails={formData} deactivateUserObj={deactivateUserObj}
-     completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify[0]} notifyChecks={notifyChecks}/>
+     completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify} notifyChecks={notifyChecks}/>
     </View>
     </>
 )

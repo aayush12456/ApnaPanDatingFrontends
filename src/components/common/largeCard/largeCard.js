@@ -502,31 +502,29 @@ const repeatCompleteObj=completeObj
             setFilterNotifyOnline([]);
           }
         }, [notifyArrayData, newAndOnlineContent?._id]);
+
         console.log('arrays notify like',filterNotify)
        console.log('array notify online',newAndOnlineContent)
 
+
         const sendNotification = async () => {
-          const notifyUser = filterNotify?.[0];
-        
-          if (!notifyUser?.notifyToken) {
+          if (!filterNotify || filterNotify.length === 0) {
             console.log("Notification token not found");
             return;
           }
         
           try {
-            const messages = [
-              {
-                to: notifyUser.notifyToken,
-                sound: "default",
-                title: "ApnaPan",
-                body: `${completeObj?.name} also liked your profile`,
-                data: {
-                  senderId: loginId,
-                  receiverId: likeContent?._id,
-                  type: "Likes",
-                },
-              },
-            ];
+            const messages = filterNotify.map((user)=>({
+              to: user.notifyToken,
+              sound: "default",
+              // title: "ApnaPan",
+              body: `${completeObj?.name} also liked your profile`,
+              data:{
+                senderId: loginId,
+                receiverId:likeContent?._id,
+                type:"Likes",
+              }
+            }));
         
             const response = await axios.post(
               "https://exp.host/--/api/v2/push/send",
@@ -540,6 +538,47 @@ const repeatCompleteObj=completeObj
             );
         
             console.log("Like Push Response:", response.data);
+            const ticketMap = {};
+            response.data.data.forEach((item,index)=>{
+              if(item.status==="ok"){
+                ticketMap[item.id] = filterNotify[index].notifyToken;
+              }
+            });
+        
+            const ticketIds = Object.keys(ticketMap);
+            if(ticketIds.length > 0){
+              // Receipt check
+              const receiptRes = await axios.post(
+                "https://exp.host/--/api/v2/push/getReceipts",
+                {
+                  ids: ticketIds
+                }
+              );
+              console.log("Receipt Response",receiptRes.data);
+              const invalidTokens=[];
+              Object.entries(receiptRes.data.data)
+              .forEach(([ticketId,receipt])=>{
+                if(receipt.status==="error" &&receipt.details?.error==="DeviceNotRegistered"){
+                  // yaha se actual token milega
+                  invalidTokens.push(
+                    ticketMap[ticketId]
+                  );
+                }
+              });
+              console.log("Invalid Tokens",invalidTokens);
+              // invalid token delete API call
+              if(invalidTokens.length > 0){
+                await axios.post(
+                  `${BASE_URL}/user/deleteMultipleVisitorNotify/${likeContent?._id}`,
+                  {
+                   
+                      tokens:invalidTokens
+                    }
+                  
+                );
+                console.log("Invalid token deleted");
+              }
+            }
         
           } catch (error) {
             console.log(
@@ -551,28 +590,24 @@ const repeatCompleteObj=completeObj
   
 
         const sendNotificationOnline = async () => {
-          const notifyUser = filterNotifyOnline?.[0];
-        
-          if (!notifyUser?.notifyToken) {
+          if (!filterNotifyOnline || filterNotifyOnline.length === 0) {
             console.log("Notification token not found");
             return;
           }
         
           try {
-            const messages = [
-              {
-                to: notifyUser.notifyToken,
-                sound: "default",
-                title: "ApnaPan",
-                body: `${completeObj?.name} liked your profile`,
-                data: {
-                  senderId: loginId,
-                  receiverId: newAndOnlineContent?._id,
-                  type: "Likes",
-                },
-              },
-            ];
-        
+            const messages = filterNotifyOnline.map((user)=>({
+              to: user.notifyToken,
+              sound: "default",
+              // title: "ApnaPan",
+              body: `${completeObj?.name} liked your profile`,
+              data:{
+                senderId: loginId,
+                receiverId: newAndOnlineContent?._id,
+                type:"Likes",
+              }
+            }));
+
             const response = await axios.post(
               "https://exp.host/--/api/v2/push/send",
               messages,
@@ -585,6 +620,47 @@ const repeatCompleteObj=completeObj
             );
         
             console.log("Like Push Response online:", response.data);
+            const ticketMap = {};
+    response.data.data.forEach((item,index)=>{
+      if(item.status==="ok"){
+        ticketMap[item.id] = filterNotifyOnline[index].notifyToken;
+      }
+    });
+
+    const ticketIds = Object.keys(ticketMap);
+    if(ticketIds.length > 0){
+      // Receipt check
+      const receiptRes = await axios.post(
+        "https://exp.host/--/api/v2/push/getReceipts",
+        {
+          ids: ticketIds
+        }
+      );
+      console.log("Receipt Response",receiptRes.data);
+      const invalidTokens=[];
+      Object.entries(receiptRes.data.data)
+      .forEach(([ticketId,receipt])=>{
+        if(receipt.status==="error" &&receipt.details?.error==="DeviceNotRegistered"){
+          // yaha se actual token milega
+          invalidTokens.push(
+            ticketMap[ticketId]
+          );
+        }
+      });
+      console.log("Invalid Tokens",invalidTokens);
+      // invalid token delete API call
+      if(invalidTokens.length > 0){
+        await axios.post(
+          `${BASE_URL}/user/deleteMultipleVisitorNotify/${newAndOnlineContent?._id}`,
+          {
+           
+              tokens:invalidTokens
+            }
+          
+        );
+        console.log("Invalid token deleted");
+      }
+    }
         
           } catch (error) {
             console.log(

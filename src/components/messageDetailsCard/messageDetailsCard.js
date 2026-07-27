@@ -218,35 +218,25 @@ useEffect(() => {
 
 
 const sendNotification = async () => {
-  if (!notifyUser?.notifyToken) return;
+
+
+  if (!notifyUser || notifyUser.length === 0) {
+    console.log("Notification token not found");
+    return;
+  }
 
   try {
-    // const messages = [
-    //   {
-    //     to: notifyUser.notifyToken,
-    //     sound: "default",
-    //     title: "ApnaPan",
-    //     body: messageText,
-    //     data: {
-    //       senderId: loginId,
-    //       receiverId: messageDetails?._id,
-    //       type: "CHAT_MESSAGE",
-    //     },
-    //   },
-    // ];
-    const messages = [
-      {
-        to: notifyUser.notifyToken,
-        sound: "default",
-        // title: "ApnaPan",
-        body: `${completeObj?.name} messaged you`,
-        data: {
-          senderId: loginId,
-          receiverId: messageDetails?._id,
-          type: "Messages",
-        },
-      },
-    ];
+    const messages = notifyUser.map((user)=>({
+      to: user.notifyToken,
+      sound: "default",
+      // title: "ApnaPan",
+      body: `${completeObj?.name} messaged you`,
+      data:{
+        senderId: loginId,
+        receiverId: messageDetails?._id,
+        type:"Messages",
+      }
+    }));
     const response = await axios.post(
       "https://exp.host/--/api/v2/push/send",
       messages,
@@ -259,18 +249,51 @@ const sendNotification = async () => {
     );
 
     console.log("Push Response", response.data);
+    const ticketMap = {};
+    response.data.data.forEach((item,index)=>{
 
-    const ticketIds = response.data.data
-      .filter(item => item.status === "ok")
-      .map(item => item.id);
+      if(item.status==="ok"){
 
-    if (ticketIds.length > 0) {
+        ticketMap[item.id] = notifyUser[index].notifyToken;
+
+      }
+
+    });
+
+    const ticketIds = Object.keys(ticketMap);
+    if(ticketIds.length > 0){
+      // Receipt check
       const receiptRes = await axios.post(
         "https://exp.host/--/api/v2/push/getReceipts",
-        { ids: ticketIds }
+        {
+          ids: ticketIds
+        }
       );
+      console.log("Receipt Response",receiptRes.data);
 
-      console.log("Receipt", receiptRes.data);
+      const invalidTokens=[];
+      Object.entries(receiptRes.data.data)
+      .forEach(([ticketId,receipt])=>{
+        if(receipt.status==="error" &&receipt.details?.error==="DeviceNotRegistered"){
+          // yaha se actual token milega
+          invalidTokens.push(
+            ticketMap[ticketId]
+          );
+        }
+      });
+      console.log("Invalid Tokens",invalidTokens);
+      // invalid token delete API call
+      if(invalidTokens.length > 0){
+        await axios.post(
+          `${BASE_URL}/user/deleteMultipleVisitorNotify/${messageDetails?._id}`,
+          {
+           
+              tokens:invalidTokens
+            }
+          
+        );
+        console.log("Invalid token deleted");
+      }
     }
   } catch (error) {
     console.log(

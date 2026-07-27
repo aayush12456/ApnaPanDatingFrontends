@@ -73,27 +73,24 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
       const age = year ? currentYear - parseInt(year) : "";
 
       const sendNotification = async () => {
-        const notifyUser = filterNotify?.[0];
-      
-        if (!notifyUser?.notifyToken) {
+        if (!filterNotify || filterNotify.length === 0) {
           console.log("Notification token not found");
           return;
         }
       
+      
         try {
-          const messages = [
-            {
-              to: notifyUser.notifyToken,
-              sound: "default",
-              title: "ApnaPan",
-              body: `${completeObj?.name} liked your profile`,
-              data: {
-                senderId: loginId,
-                receiverId: matchObj?._id,
-                type: "Likes",
-              },
-            },
-          ];
+          const messages = filterNotify.map((user)=>({
+            to: user.notifyToken,
+            sound: "default",
+            // title: "ApnaPan",
+            body: `${completeObj?.name} liked your profile`,
+            data:{
+              senderId: loginId,
+              receiverId: matchObj?._id,
+              type:"Likes",
+            }
+          }));
       
           const response = await axios.post(
             "https://exp.host/--/api/v2/push/send",
@@ -105,8 +102,50 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
               },
             }
           );
-      
+    
           console.log("Like Push Response:", response.data);
+
+          const ticketMap = {};
+    response.data.data.forEach((item,index)=>{
+      if(item.status==="ok"){
+        ticketMap[item.id] = filterNotify[index].notifyToken;
+      }
+    });
+
+    const ticketIds = Object.keys(ticketMap);
+    if(ticketIds.length > 0){
+      // Receipt check
+      const receiptRes = await axios.post(
+        "https://exp.host/--/api/v2/push/getReceipts",
+        {
+          ids: ticketIds
+        }
+      );
+      console.log("Receipt Response",receiptRes.data);
+      const invalidTokens=[];
+      Object.entries(receiptRes.data.data)
+      .forEach(([ticketId,receipt])=>{
+        if(receipt.status==="error" &&receipt.details?.error==="DeviceNotRegistered"){
+          // yaha se actual token milega
+          invalidTokens.push(
+            ticketMap[ticketId]
+          );
+        }
+      });
+      console.log("Invalid Tokens",invalidTokens);
+      // invalid token delete API call
+      if(invalidTokens.length > 0){
+        await axios.post(
+          `${BASE_URL}/user/deleteMultipleVisitorNotify/${matchObj?._id}`,
+          {
+           
+              tokens:invalidTokens
+            }
+          
+        );
+        console.log("Invalid token deleted");
+      }
+    }
       
         } catch (error) {
           console.log(
