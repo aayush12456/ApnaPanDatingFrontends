@@ -1,5 +1,5 @@
 import { Text, Button, TextInput, Card } from "react-native-paper";
-import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator} from "react-native";
+import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator,Keyboard} from "react-native";
 import back from "../../../assets/signUpFormIcon/back.png";
 import dots from "../../../assets/chatIcons/dots.png";
 import send from "../../../assets/chatIcons/sendIcon.png";
@@ -37,6 +37,7 @@ console.log('complete obj',completeObj)
   const [showTypingResponse,setShowTypingResponse]=useState(false)
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
  
@@ -50,6 +51,7 @@ const [cameraFacing, setCameraFacing] = useState("back");
 
   const windowHeight = Dimensions.get('window').height;
   // console.log('window heigth', windowHeight)
+  const scrollBottomMargin = -windowHeight * 0.11;
   const navigation = useNavigation();
   const dispatch = useDispatch()
   // console.log("message details is", messageDetails);
@@ -650,12 +652,27 @@ if (isImageMessage) {
     );
   };
 
+
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+  
+    const hide = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardHeight(0);
+    });
+  
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
   return (
     <>
     <AlertNotificationRoot>
     <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : undefined}   // Android me thoda adjust kar sakte ho
       >
     <View style={{ flex: 1 }}>
@@ -751,7 +768,7 @@ if (isImageMessage) {
           <ScrollView
            keyboardShouldPersistTaps="handled"
            contentContainerStyle={{ flexGrow: 1 }}
-           style={{marginBottom:-90}}
+           style={{ marginBottom: scrollBottomMargin }}
           >
             {
               finalMessageArray.map((finalMessage,index) => {
@@ -1021,7 +1038,7 @@ deactivateUserObj.selfDeactivate === loginId ? (
         paddingHorizontal: 6,
         paddingVertical: 2,
         minHeight: 40,
-        
+        paddingBottom: Platform.OS === "android" ? keyboardHeight : 0,
       }}
     >
       {/* Camera Icon (left side - blue circle) */}
