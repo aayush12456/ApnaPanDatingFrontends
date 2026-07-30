@@ -177,42 +177,79 @@ useEffect(() => {
   }, [loginId])
   
   
+console.log('fetch messages',fetchMessages)
+//   useEffect(() => {
+//     if (fetchMessages.length && chatIdArray.length) {
+//         const currentTime = new Date();
 
-  useEffect(() => {
-    if (fetchMessages.length && chatIdArray.length) {
-        const currentTime = new Date();
+//         // Map through chatIdArray to find the closest message for each chatId
+//         const closestMessagesArray = chatIdArray.map(chatItem => {
+//             // Filter messages matching the current chatId
+//             const matchingMessages = fetchMessages.filter(messageItem => messageItem.chatId === chatItem?._id);
 
-        // Map through chatIdArray to find the closest message for each chatId
-        const closestMessagesArray = chatIdArray.map(chatItem => {
-            // Filter messages matching the current chatId
-            const matchingMessages = fetchMessages.filter(messageItem => messageItem.chatId === chatItem?._id);
+//             // Find the message with the closest timestamp to the current time
+//             if (matchingMessages.length > 0) {
+//                 return matchingMessages.reduce((closest, currentMessage) => {
+//                     const currentMessageTime = new Date(currentMessage.timestamp);
+//                     const closestMessageTime = new Date(closest.timestamp);
 
-            // Find the message with the closest timestamp to the current time
-            if (matchingMessages.length > 0) {
-                return matchingMessages.reduce((closest, currentMessage) => {
-                    const currentMessageTime = new Date(currentMessage.timestamp);
-                    const closestMessageTime = new Date(closest.timestamp);
+//                     // Calculate time differences
+//                     const currentTimeDiff = Math.abs(currentTime - currentMessageTime);
+//                     const closestTimeDiff = Math.abs(currentTime - closestMessageTime);
 
-                    // Calculate time differences
-                    const currentTimeDiff = Math.abs(currentTime - currentMessageTime);
-                    const closestTimeDiff = Math.abs(currentTime - closestMessageTime);
-
-                    // Return the message with the smaller time difference
-                    return currentTimeDiff < closestTimeDiff ? currentMessage : closest;
-                }, matchingMessages[0]);
+//                     // Return the message with the smaller time difference
+//                     return currentTimeDiff < closestTimeDiff ? currentMessage : closest;
+//                 }, matchingMessages[0]);
                 
-            }
-            return null;
-        }).filter(message => message !== null); // Filter out any nulls
+//             }
+//             return null;
+//         }).filter(message => message !== null); // Filter out any nulls
 
-        // console.log('Array of closest messages for each chatId:', closestMessagesArray);
-        setFilteredMessages(closestMessagesArray)
-    }
+//         // console.log('Array of closest messages for each chatId:', closestMessagesArray);
+//         setFilteredMessages(closestMessagesArray)
+//     }
+// }, [fetchMessages, chatIdArray]);
+// // console.log('fetch message in message card',filteredMessages)
+
+
+// console.log('filter messages',filteredMessages)
+
+useEffect(() => {
+
+  if (!chatIdArray.length) {
+      setFilteredMessages([]);
+      return;
+  }
+
+  if (!fetchMessages.length) {
+      setFilteredMessages([]);
+      return;
+  }
+
+  const currentTime = new Date();
+
+  const closestMessagesArray = chatIdArray
+      .map(chatItem => {
+
+          const matchingMessages = fetchMessages.filter(
+              messageItem => messageItem.chatId === chatItem._id
+          );
+
+          if (!matchingMessages.length) return null;
+
+          return matchingMessages.reduce((closest, current) => {
+              return new Date(current.timestamp) >
+                     new Date(closest.timestamp)
+                     ? current
+                     : closest;
+          });
+
+      })
+      .filter(Boolean);
+
+  setFilteredMessages(closestMessagesArray);
+
 }, [fetchMessages, chatIdArray]);
-// console.log('fetch message in message card',filteredMessages)
-
-
-
 
 
 useEffect(() => {
@@ -305,7 +342,7 @@ return (
                     </Text>
                   </View>
                   <View>
-                    {showTypingResponse===true?null:
+                    {/* {showTypingResponse===true?null:
                       filteredMessages.map((filterMessage)=>{
                     
                         return (
@@ -319,7 +356,35 @@ return (
                  {checkMessages===false && <Text style={{ color:`white`,
                   fontWeight: "500",paddingTop:2 }}>
            You have both paired
-                    </Text>}
+                    </Text>} */}
+                    {showTypingResponse ? null : (() => {
+
+const currentUserMessages = filteredMessages.filter(
+  (msg) =>
+    (msg.senderId === finalMessageUser?._id && msg.recieverId === loginId) ||
+    (msg.senderId === loginId && msg.recieverId === finalMessageUser?._id)
+);
+
+if (currentUserMessages.length === 0) {
+  return (
+    <Text style={{ color: "white", fontWeight: "500", paddingTop: 2 }}>
+      You have both paired
+    </Text>
+  );
+}
+
+return currentUserMessages.map((filterMessage) => (
+  <FilteredChatMessage
+    key={filterMessage._id}
+    filterMessage={filterMessage}
+    filterUser={finalMessageUser}
+    loginObj={completeObj}
+    recordMessageId={recordMessageId}
+    completeObj={completeObj}
+  />
+));
+
+})()}
                     {showTypingResponse===true &&
                     <View style={{flexDirection:'row',gap:0}}>
           <Image source={typingIcon} style={{width:17,marginTop:6}}/>
