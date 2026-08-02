@@ -16,6 +16,8 @@ import ZegoExpressEngine, {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { ZegoAppID, ZegoAppSign } from "../zego/keyCenter";
 import { Image } from "expo-image";
+import { Audio } from "expo-av";
+import axios from "axios";
 
 // ✅ Shared socket use karo (naya io.connect mat banao)
 // Agar shared socket file nahi banayi to temporary yeh rakh sakte ho
@@ -42,13 +44,9 @@ export default function CallScreen() {
   } = route.params || {};
 
   const topImage = isCaller ? callerImage : recieverImage;
-
   const bottomImage = isCaller ? recieverImage : callerImage;
-  
   const topName = isCaller ? callerName : receiverName;
-  
   const bottomName = isCaller ? receiverName : callerName;
-
 
   const myUserID = isCaller ? String(callerId) : String(receiverId);
   const myUserName = isCaller ? callerName : receiverName;
@@ -62,6 +60,7 @@ export default function CallScreen() {
   const localViewRef = useRef(null);
   const remoteViewRef = useRef(null);
   const engineRef = useRef(null);
+  const ringbackRef = useRef(null);
   const isMounted = useRef(true);
 
   const localStreamID = `${myUserID}_stream`;
@@ -96,10 +95,11 @@ export default function CallScreen() {
   }, [roomID]);
 
 
-  
-
   const startCall = async () => {
     try {
+      if (isCaller) {
+        await playRingback();
+      }
       setStatusText("Creating engine...");
 
       // Purana engine ho to destroy
@@ -150,6 +150,7 @@ await engine.enableANS(true);     // Background noise kam karne ke liye
                 }
                 if (isMounted.current) {
                   setIsReady(true);
+                  await stopRingback();
                   setStatusText("Connected");
                   setCallConnected(true);
                 }
@@ -206,6 +207,31 @@ await engine.enableANS(true);     // Background noise kam karne ke liye
     }
   };
 
+  const playRingback = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/ringtone/callerringtone.mp3"),
+        {
+          shouldPlay: true,
+          isLooping: true,
+        }
+      );
+  
+      ringbackRef.current = sound;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const stopRingback = async () => {
+    if (ringbackRef.current) {
+      await ringbackRef.current.stopAsync();
+      await ringbackRef.current.unloadAsync();
+      ringbackRef.current = null;
+    }
+  };
+
+
   const cleanup = async () => {
     try {
       const engine = engineRef.current;
@@ -232,13 +258,29 @@ await engine.enableANS(true);     // Background noise kam karne ke liye
   };
 
   const endCall = async () => {
+    const endcallMessageObj = {
+      id:  callerId,
+      senderId:  callerId,
+      recieverId:receiverId,
+      message: "Audio call ended",
+      senderName: callerName || "",
+    };
     try {
+      const response = await axios.post(
+        `${BASE_URL}/chat/addSendMessage/${callerId}`,
+        endcallMessageObj
+      );
+      
+      socket.emit("sendMessage", response.data.chatUser);
+
+
       socket.emit("endCall", {
         roomID,
         userId: myUserID,
         targetId: otherUserID,
       });
     } catch (e) {}
+    await stopRingback();
     await cleanup();
     if (isMounted.current) {
       navigation.goBack();

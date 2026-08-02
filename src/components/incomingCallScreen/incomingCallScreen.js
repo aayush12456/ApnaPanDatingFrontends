@@ -3,16 +3,52 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import io from "socket.io-client";
 import { Image } from "expo-image";
-
+import { Audio } from "expo-av";
+import rejectIcon from '../../../assets/chatIcons/reject.png'
+import acceptIcon from '../../../assets/chatIcons/accept.png'
 const BASE_URL = "http://192.168.29.169:4000";
 const socket = io.connect(BASE_URL);
 
 export default function IncomingCallScreen() {
   const navigation = useNavigation();
+  const ringtone = React.useRef(null);
   const route = useRoute();
   const data = route.params || {};
 
-  const accept = () => {
+  const playRingtone = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/ringtone/incomingTone.mp3"),
+        {
+          shouldPlay: true,
+          isLooping: true,
+        }
+      );
+  
+      ringtone.current = sound;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const stopRingtone = async () => {
+    if (ringtone.current) {
+      await ringtone.current.stopAsync();
+      await ringtone.current.unloadAsync();
+      ringtone.current = null;
+    }
+  };
+
+  React.useEffect(() => {
+    playRingtone();
+    return () => {
+       stopRingtone();
+    };
+ 
+ }, []);
+
+  const accept = async() => {
+    await stopRingtone();
     socket.emit("acceptCall", {
       roomID: data.roomID,
       callerId: data.callerId,
@@ -26,7 +62,8 @@ export default function IncomingCallScreen() {
     });
   };
 
-  const reject = () => {
+  const reject = async() => {
+    await stopRingtone();
     socket.emit("rejectCall", {
       roomID: data.roomID,
       callerId: data.callerId,
@@ -58,12 +95,33 @@ export default function IncomingCallScreen() {
 <View style={styles.ring} />
       <View style={styles.row}>
         <Pressable onPress={reject} style={[styles.btn, styles.reject]}>
-        <Text style={styles.btnIcon}>❌</Text>
+        {/* <Text style={styles.btnIcon}>❌</Text> */}
+        {/* <Text
+  style={{
+    color: "black",
+    fontSize: 30,
+    fontWeight: "bold",
+  }}
+>
+  ✕
+</Text> */}
+  <Image
+    source={rejectIcon}
+    style={{ width: 32, height: 32 }}
+    contentFit="contain"
+    tintColor="#FFFFFF"
+  />
 <Text style={styles.btnLabel}>Reject</Text>
         </Pressable>
 
         <Pressable onPress={accept} style={[styles.btn, styles.accept]}>
-        <Text style={styles.btnIcon}>📞</Text>
+        {/* <Text style={styles.btnIcon}>📞</Text> */}
+        <Image
+    source={acceptIcon}
+    style={{ width: 32, height: 32 }}
+    contentFit="contain"
+    tintColor="#FFFFFF"
+  />
 <Text style={styles.btnLabel}>Accept</Text>
         </Pressable>
       </View>

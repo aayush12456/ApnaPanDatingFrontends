@@ -543,9 +543,12 @@ if (isImageMessage) {
   }, [loginId, fetchMessages, getChatDetailObj?._id])
   // console.log('final message array', finalMessageArray)
 
-  const messageClickHandler = (finalMessage, index) => {
+  const messageClickHandler = (finalMessage, index,isCallMessage) => {
     // console.log('final message', finalMessage)
     setOpenIndex(index)
+  if(isCallMessage ){
+    return
+  }
     dispatch(moreChatActions.moreChatToggle())
   }
 
@@ -621,7 +624,7 @@ if (isImageMessage) {
     };
   }, []);
 
-  const startCall = (callType = "video") => {
+  const startCall =async (callType = "video") => {
     if (!loginId || !messageDetails?._id) return;
   
     const roomID = `room_${[String(loginId), String(messageDetails._id)]
@@ -640,6 +643,30 @@ if (isImageMessage) {
     };
   
     socket.emit("callUser", callData);
+
+    const callMessageObj = {
+      id: loginId,
+      senderId: loginId,
+      recieverId: messageDetails?._id,
+      message: "Audio call started",
+      senderName: completeObj?.firstName || "",
+    };
+    try {
+
+      const response = await axios.post(
+        `${BASE_URL}/chat/addSendMessage/${loginId}`,
+        callMessageObj
+      );
+    
+      socket.emit("sendMessage", response.data.chatUser);
+    
+    } catch (error) {
+    
+      console.log(
+        error?.response?.data || error.message
+      );
+    
+    }
   
     navigation.navigate("CallScreenPage", {
       ...callData,
@@ -665,7 +692,8 @@ if (isImageMessage) {
     };
   
     const onCallFailed = (data) => {
-      alert(data?.message || "User is offline");
+      // alert(data?.message || "User is offline");
+      console.log('user is offline')
     };
   
     socket.on("incomingCall", onIncomingCall);
@@ -698,6 +726,7 @@ useEffect(() => {
     socket.off("incomingCall", onIncomingCall);
   };
 }, [loginId]);
+
 
   return (
     <>
@@ -822,7 +851,9 @@ useEffect(() => {
           >
             {
               finalMessageArray.map((finalMessage,index) => {
-        
+                const isCallMessage =
+                finalMessage.message === "Audio call started" ||
+                finalMessage.message === "Audio call ended";
                 return (
                   <View key={finalMessage?._id} style={{
                     flexDirection: 'row',
@@ -861,7 +892,7 @@ useEffect(() => {
       finalMessage.senderId === loginId ? "flex-end" : "flex-start",
   }}
   onStartShouldSetResponder={() => true}
-  onResponderRelease={() => messageClickHandler(finalMessage, index)}
+  onResponderRelease={() => messageClickHandler(finalMessage, index,isCallMessage)}
 >
   {/* Image (Bubble ke bahar) */}
  
@@ -902,7 +933,7 @@ useEffect(() => {
 
   {/* Text Bubble */}
 
-  {finalMessage.message ? (
+  {!isCallMessage? (
   <View
     style={{
       backgroundColor:
@@ -915,7 +946,7 @@ useEffect(() => {
       maxWidth: "100%",
     }}
   >
-    <Text
+  <Text
       style={{
         color:
           finalMessage.senderId === loginId ? "#fff" : "#000",
@@ -934,6 +965,46 @@ useEffect(() => {
           finalMessage.senderId === loginId
             ? "rgba(255,255,255,0.8)"
             : "#666",
+      }}
+    >
+    {new Date(finalMessage.timestamp).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })}
+    </Text>
+  </View>
+) : null}
+
+
+
+{isCallMessage? (
+  <View
+    style={{
+      backgroundColor:"#F3F3F3",
+      borderRadius: 22,
+      paddingHorizontal: 12,
+      paddingTop: 8,
+      paddingBottom: 6,
+      minWidth: 70,
+      maxWidth: "100%",
+    }}
+  >
+  <Text
+      style={{
+        color:'black',
+        fontSize: 14,
+      }}
+    >
+    📞 {finalMessage.message}
+    </Text>
+
+    <Text
+      style={{
+        alignSelf: "flex-end",
+        fontSize: 11,
+        marginTop: 4,
+        color:'black',
       }}
     >
     {new Date(finalMessage.timestamp).toLocaleTimeString("en-US", {
