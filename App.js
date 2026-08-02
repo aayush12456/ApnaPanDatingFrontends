@@ -67,6 +67,8 @@ import VerifyOtpPage from './src/Pages/verifyOtpPage/verifyOtpPage';
 import NewAndOnlinePage from './src/Pages/newAndOnlinePage/newAndOnlinePage';
 import MatchesPage from './src/Pages/matchesPage/matchesPage';
 import MessagePage from './src/Pages/messagePage/messagePage';
+import CallScreenPage from './src/Pages/callScreenPage/callScreenPage';
+import IncomingCallScreenPage from './src/Pages/incomingCallScreenPage/incomingCallScreenPage';
 
 
 const Stack = createNativeStackNavigator();
@@ -525,6 +527,16 @@ console.log('is log in',isLoggedIn)
           <Stack.Screen
           name="verifyOtpPage"
           component={VerifyOtpPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="CallScreenPage"
+          component={CallScreenPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="IncomingCallScreenPage"
+          component={IncomingCallScreenPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -31,6 +31,7 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlin
   const [messageText, setMessageText] = useState('')
 console.log('complete obj',completeObj)
  console.log('notify users data',notifyUser)
+ console.log('message details user',messageDetails)
   const [fetchMessages, setFetchMessages] = useState([])
   const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
   const [finalMessageArray, setFinalMessageArray] = useState([])
@@ -111,13 +112,6 @@ const [cameraFacing, setCameraFacing] = useState("back");
     navigation.goBack();
   };
 
-
- 
-
-
-
- 
-
   useEffect(() => {
     if (loginId) {
       const getActiveLoginId = onlineUserArray?.some(
@@ -150,9 +144,6 @@ console.log('login response',activeLoginIdResponse)
   }, [loginId]);
 
   // console.log('get chat details obj', getChatDetailObj)
-
-
-
 
   const messageTypingHandler = async (text) => {
     setMessageText(text);
@@ -198,7 +189,6 @@ useEffect(() => {
       if (loginId) {
         const response = await axios.get(`${BASE_URL}/chat/getTyping/${loginId}`);
    setFetchTypingIdObj(response.data)
-
       }
     } catch (error) {
       // console.error("Error fetching messages:", error);
@@ -231,13 +221,10 @@ useEffect(() => {
 
 
 const sendNotification = async () => {
-
-
   if (!notifyUser || notifyUser.length === 0) {
     console.log("Notification token not found");
     return;
   }
-
   try {
     const messages = notifyUser.map((user)=>({
       to: user.notifyToken,
@@ -266,11 +253,8 @@ const sendNotification = async () => {
     response.data.data.forEach((item,index)=>{
 
       if(item.status==="ok"){
-
         ticketMap[item.id] = notifyUser[index].notifyToken;
-
       }
-
     });
 
     const ticketIds = Object.keys(ticketMap);
@@ -316,15 +300,12 @@ const sendNotification = async () => {
 };
 
 const pickImageFromGallery = async () => {
-
   const permission =
     await ImagePicker.requestMediaLibraryPermissionsAsync();
-
   if (!permission.granted) {
     alert("Gallery permission required");
     return;
   }
-
 
   const result = await ImagePicker.launchImageLibraryAsync({
 
@@ -336,59 +317,38 @@ const pickImageFromGallery = async () => {
 
   });
 
-
   if (!result.canceled) {
-
     const image = result.assets[0];
-
     setSelectedImage(image);
-
   }
-
-};
+}
 
 const openCamera = async () => {
-
   if (!cameraPermission?.granted) {
-
     const permission = await requestCameraPermission();
-
     if (!permission.granted) {
-
       alert("Camera permission required");
-
       return;
-
     }
-
   }
-
-
   setShowCamera(true);
-
 };
+
 const takePhoto = async () => {
 
   if (cameraRef) {
-
     const photo = await cameraRef.takePictureAsync({
-
       quality: 0.8,
-
     });
 
-
     setSelectedImage(photo);
-
     setShowCamera(false);
 
   }
-
 };
+
 const removeSelectedImage = () => {
-
   setSelectedImage(null);
-
 };
 
 //   const submitHandler = async () => {
@@ -508,7 +468,6 @@ if (isImageMessage) {
         type: fileType,
       });
     }
-
     // ========== API call (FormData ke saath) ==========
     const response = await axios.post(
       `${BASE_URL}/chat/addSendMessage/${loginId}`,
@@ -519,23 +478,17 @@ if (isImageMessage) {
         },
       }
     );
-
     // Socket emit
     socket.emit("sendMessage", response.data.chatUser);
-
-    // Clear
     setMessageText("");
     setSelectedImage(null);
     setSendingImage(false);
-
     // Notification
     if (notifyChecks?.length === 0) {
       await sendNotification();
     }
-
     // Typing delete
     await axios.post(`${BASE_URL}/chat/deleteTyping`, deleteTypingObj);
-
     // Record message
     const recordResponseData = await axios.post(
       `${BASE_URL}/chat/addRecordMessage/${addRecordMessageObj.id}`,
@@ -551,7 +504,6 @@ if (isImageMessage) {
     );
   }
 };
-
 
   useEffect(() => {
 
@@ -582,8 +534,6 @@ if (isImageMessage) {
     }
   }, [loginId])
 
-
-
   useEffect(() => {
     if (loginId) {
       const filterMessageArray = fetchMessages.filter((messageItem) => messageItem.chatId === getChatDetailObj?._id)
@@ -608,17 +558,21 @@ if (isImageMessage) {
     }
     dispatch(moreChatActions.moreChatToggle())
   }
+
   const messageDetailsProfileHandler = (messageDetailProfile) => {
     navigation.navigate('MessageProfilePage', { formData: messageDetailProfile });
   }
+
   const dotPressHandler = () => {
     // console.log('dot is pressed')
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
+
   const viewProfileHandler=(messageDetailProfile)=>{
     navigation.navigate('MessageProfilePage', { formData: messageDetailProfile,completeObj });
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
+
   const viewProfileBlockHandler=async(messageDetailProfile)=>{
     const blockChatIdObj={
     id:loginId,
@@ -643,7 +597,6 @@ if (isImageMessage) {
   }
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
     navigation.goBack();
-  
   }
  
   const switchCamera = () => {
@@ -667,6 +620,85 @@ if (isImageMessage) {
       hide.remove();
     };
   }, []);
+
+  const startCall = (callType = "video") => {
+    if (!loginId || !messageDetails?._id) return;
+  
+    const roomID = `room_${[String(loginId), String(messageDetails._id)]
+      .sort()
+      .join("_")}`;
+  
+    const callData = {
+      roomID,
+      callerId: String(loginId),
+      callerName: completeObj?.name || "User",
+      callerImage:completeObj?.image||'',
+      receiverId: String(messageDetails._id),
+      receiverName: messageDetails?.firstName || "User",
+      recieverImage:messageDetails?.images[0]||'',
+      callType,
+    };
+  
+    socket.emit("callUser", callData);
+  
+    navigation.navigate("CallScreenPage", {
+      ...callData,
+      isCaller: true,
+    });
+  };
+
+
+  useEffect(() => {
+    const onIncomingCall = (data) => {
+      if (String(data.receiverId) === String(loginId)) {
+        navigation.navigate("IncomingCallScreenPage", data);
+      }
+    };
+  
+    const onCallRejected = () => {
+      // Caller ko reject mil gaya → CallScreen se wapas
+      navigation.goBack();
+    };
+    const onCallEnded = () => {
+      // Caller ko reject mil gaya → CallScreen se wapas
+      navigation.goBack();
+    };
+  
+    const onCallFailed = (data) => {
+      alert(data?.message || "User is offline");
+    };
+  
+    socket.on("incomingCall", onIncomingCall);
+    socket.on("callRejected", onCallRejected);
+    socket.on("callFailed", onCallFailed);
+    socket.on("callEnded", onCallEnded);
+  
+    return () => {
+      socket.off("incomingCall", onIncomingCall);
+      socket.off("callRejected", onCallRejected);
+      socket.off("callFailed", onCallFailed);
+      socket.off("callEnded", onCallEnded);
+    };
+  }, [loginId]);
+
+// App.js / Navigation level pe
+useEffect(() => {
+  if (!loginId) return;
+
+  socket.emit("registerUser", String(loginId));
+
+  const onIncomingCall = (data) => {
+    console.log("📞 Incoming Call received on frontend:", data);
+    navigation.navigate("IncomingCallScreenPage", data);
+  };
+
+  socket.on("incomingCall", onIncomingCall);
+
+  return () => {
+    socket.off("incomingCall", onIncomingCall);
+  };
+}, [loginId]);
+
   return (
     <>
     <AlertNotificationRoot>
@@ -725,6 +757,24 @@ if (isImageMessage) {
               {activeLoginIdResponse===true && !showTypingResponse===true?<Text style={{color:'#32cd32'}}>Online</Text>:null}
               </View>
             </View>
+{/* Header ke andar, dots se pehle yeh View daalo */}
+<View
+  style={{
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 12,
+    gap: 18,
+  }}
+>
+  <Pressable onPress={() => startCall("audio")}>
+    <Text style={{ color: "white", fontSize: 22 }}>📞</Text>
+  </Pressable>
+
+  <Pressable onPress={() => startCall("video")}>
+    <Text style={{ color: "white", fontSize: 22 }}>📹</Text>
+  </Pressable>
+</View>
+
           </Pressable>
           <Pressable onPress={dotPressHandler}>
             <Image
