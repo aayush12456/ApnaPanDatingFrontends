@@ -1,5 +1,7 @@
 import { Text, Button, TextInput, Card } from "react-native-paper";
-import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator,Keyboard} from "react-native";
+import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator,Keyboard,ImageBackground} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 import back from "../../../assets/signUpFormIcon/back.png";
 import dots from "../../../assets/chatIcons/dots.png";
 import send from "../../../assets/chatIcons/sendIcon.png";
@@ -8,6 +10,9 @@ import profile from "../../../assets/chatIcons/profile.png";
 import block from "../../../assets/chatIcons/block.png";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
 import guru from "../../../assets/chatIcons/guru.png";
+import pinkThemeImg from "../../../assets/chatIcons/pinktheme.png";
+import violetThemeImg from "../../../assets/chatIcons/violetTheme.png";
+import blueThemeImg from "../../../assets/chatIcons/blueTheme.png";
 import imageIcon from "../../../assets/chatIcons/gallery.png";
 import cameraIcon from "../../../assets/chatIcons/camera.png";
 import * as ImagePicker from "expo-image-picker";
@@ -15,13 +20,15 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { Image } from 'expo-image';
 import io from "socket.io-client";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState} from 'react'
+import { useEffect, useState,useRef} from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { moreChatActions } from "../../Redux/Slice/moreChatSlice/moreChatSlice";
 import { dotsOpenModalToggleActions } from "../../Redux/Slice/dotsOpenModalSlice/dotsOpenModalSlice";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
+import { bottomSheetOpenModalToggleActions } from "../../Redux/Slice/bottomSheetOpenModalSlice/bottomSheetOpenModalSlice";
+import ChatTheme from "../chatTheme/chatTheme";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser,notifyChecks }) => {
@@ -41,6 +48,10 @@ console.log('complete obj',completeObj)
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
+  const [messageStages, setMessageStages] = useState({});
+  const [themeObj,setThemeObj]=useState({})
+  const [loginUserTheme,setLoginUserTheme]=useState([])
+  const [recieverUserTheme,setRecieverUserTheme]=useState([])
  
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -50,8 +61,11 @@ const [cameraRef, setCameraRef] = useState(null);
 const [sendingImage, setSendingImage] = useState(false);
 const [cameraFacing, setCameraFacing] = useState("back");
 
+const themeSheetRef = useRef(null);
+
   const windowHeight = Dimensions.get('window').height;
   // console.log('window heigth', windowHeight)
+  // const scrollBottomMargin = -windowHeight * 0.11;
   const scrollBottomMargin = -windowHeight * 0.11;
   const navigation = useNavigation();
   const dispatch = useDispatch()
@@ -505,6 +519,78 @@ if (isImageMessage) {
   }
 };
 
+// const getBubbleColor = (message) => {
+
+//   const stage = messageStages[message._id] ?? 0;
+
+//   const isSender = message.senderId === loginId;
+
+//   // Last 1 minute
+//   if (stage === 2) {
+
+//       if (isSender) {
+//           return "#EF4444";   // Sender = Red
+//       }
+
+//       return "#FACC15";       // Receiver = Amber/Yellow
+
+//   }
+
+//   // Normal
+//   return isSender ? "#1E3AFF" : "#E5E5EA";
+
+// };
+const getBubbleColor = (message) => {
+
+  const stage = messageStages[message._id] ?? 0;
+
+  const isSender = message.senderId === loginId;
+
+  // Existing temporary message stage logic
+  if (stage === 2) {
+    if (isSender) {
+      return "#EF4444";
+    }
+
+    return "#FACC15";
+  }
+
+  // Theme based bubble
+  return isSender
+    ? themeMyBubble
+    : themeOtherBubble;
+};
+// const getTextColor = (message) => {
+
+//   const isSender = message.senderId === loginId;
+
+//   if (isSender) {
+//       return "#fff";
+//   }
+
+//   // Receiver side hamesha black
+//   return "#000";
+// };
+const getTextColor = (message) => {
+
+  const isSender = message.senderId === loginId;
+
+  return isSender
+    ? themeMyText
+    : themeOtherText;
+};
+const getTimeColor = (message) => {
+
+  const isSender = message.senderId === loginId;
+
+  if (isSender) {
+      return "rgba(255,255,255,0.8)";
+  }
+
+  // Receiver side hamesha black/gray
+  return "#333";
+};
+
   useEffect(() => {
 
     const fetchMessage = async () => {
@@ -543,6 +629,95 @@ if (isImageMessage) {
   }, [loginId, fetchMessages, getChatDetailObj?._id])
   // console.log('final message array', finalMessageArray)
 
+  useEffect(() => {
+
+    const timers = [];
+
+    finalMessageArray.forEach((msg) => {
+
+        const age = Date.now() - new Date(msg.timestamp).getTime();
+
+        const stageOne = 2 * 60 * 1000;
+
+        const stageTwo = 4 * 60 * 1000;
+
+        const deleteTime = 5 * 60 * 1000;
+
+        if (age < stageOne) {
+
+            timers.push(
+
+                setTimeout(() => {
+
+                    setMessageStages(prev => ({
+                        ...prev,
+                        [msg._id]: 1
+                    }));
+
+                }, stageOne - age)
+
+            );
+
+        } else if (age < stageTwo) {
+
+            setMessageStages(prev => ({
+                ...prev,
+                [msg._id]: 1
+            }));
+
+        }
+
+        if (age < stageTwo) {
+
+            timers.push(
+
+                setTimeout(() => {
+
+                    setMessageStages(prev => ({
+                        ...prev,
+                        [msg._id]: 2
+                    }));
+
+                }, stageTwo - age)
+
+            );
+
+        } else {
+
+            setMessageStages(prev => ({
+                ...prev,
+                [msg._id]: 2
+            }));
+
+        }
+
+        if (age < deleteTime) {
+
+            timers.push(
+
+                setTimeout(() => {
+
+                    setFetchMessages(prev =>
+                        prev.filter(item => item._id !== msg._id)
+                    );
+
+                }, deleteTime - age)
+
+            );
+
+        }
+
+    });
+
+    return () => {
+
+        timers.forEach(clearTimeout);
+
+    };
+
+}, [finalMessageArray]);
+
+
   const messageClickHandler = (finalMessage, index,isCallMessage) => {
     // console.log('final message', finalMessage)
     setOpenIndex(index)
@@ -571,8 +746,10 @@ if (isImageMessage) {
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
 
-  const viewProfileHandler=(messageDetailProfile)=>{
-    navigation.navigate('MessageProfilePage', { formData: messageDetailProfile,completeObj });
+ 
+  const openThemeSheet=()=>{
+    themeSheetRef.current?.open();
+    dispatch(bottomSheetOpenModalToggleActions.bottomSheetOpenModalToggle())
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
 
@@ -728,25 +905,127 @@ useEffect(() => {
 }, [loginId]);
 
 
+useEffect(() => {
+  console.log("Effect Fired");
+  console.log("loginId =", loginId);
+  console.log("receiverId =", messageDetails?._id);
+
+  if (!loginId || !messageDetails?._id) {
+    console.log("Missing ids");
+    return;
+  }
+
+  console.log("Calling API");
+
+  const fetchChatTheme = async () => {
+    const id=loginId
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/user/getChatTheme/${id}`,
+        {
+          params: {
+            recieverId: messageDetails._id,
+          },
+        }
+      );
+
+      console.log("Success", response.data);
+      setThemeObj(response.data);
+
+    } catch (e) {
+      console.log("Error", e.response?.data || e.message);
+    }
+  };
+
+  fetchChatTheme();
+  socket.on("getColourTheme", (newTheme) => {
+    setThemeObj(newTheme); // ✅ change
+    });
+    return () => {
+    socket.off("getColourTheme");
+    };
+
+}, [loginId, messageDetails?._id]);
+console.log('themes obj',themeObj)
+
+const loginThemeChat=themeObj.loginThemeChat
+const recieverThemeChat=themeObj.recieverThemeChat
+
+useEffect(()=>{
+if(loginId){
+const filterLoginTheme=loginThemeChat?.filter((theme)=>theme.loginId==loginId && theme.recieverId==messageDetails?._id || 
+theme.loginId==messageDetails._id && theme.recieverId==loginId
+)
+const filterRecieverTheme=recieverThemeChat?.filter((theme)=>theme.loginId==loginId && theme.recieverId==messageDetails?._id || 
+theme.loginId==messageDetails._id && theme.recieverId==loginId
+)
+setLoginUserTheme(filterLoginTheme)
+setRecieverUserTheme(filterRecieverTheme)
+}
+},[loginId,loginThemeChat,recieverThemeChat])
+
+console.log('login user themes',loginUserTheme)
+console.log('reciever user theme',recieverUserTheme)
+const loginThemeObj=loginUserTheme?.length>0?loginUserTheme[0]:{}
+const recieverThemeObj=recieverUserTheme?.length>0?recieverUserTheme[0]:{}
+console.log('obj login',loginThemeObj)
+
+const activeTheme = loginThemeObj || recieverThemeObj|| {};
+
+const themeHeader = activeTheme?.header?.length >= 2
+  ? activeTheme.header
+  : ["#343434", "#343434"];
+
+const themeMyBubble = activeTheme?.myBubble || "#1E3AFF";
+const themeOtherBubble = activeTheme?.otherBubble || "#E5E5EA";
+
+const themeMyText = activeTheme?.myText || "#FFFFFF";
+const themeOtherText = activeTheme?.otherText || "#000000";
+
+const themeIcon = activeTheme?.icon || "#0095f6";
+const themeCallBubble = activeTheme?.callBubble || "#F3F3F3";
+
+const themeInput = activeTheme?.input || "#FFF1F2";
+
   return (
     <>
     <AlertNotificationRoot>
+    <StatusBar
+        style="light"
+        translucent
+        backgroundColor="transparent"
+      />
+
     <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : undefined}   // Android me thoda adjust kar sakte ho
+        
       >
     <View style={{ flex: 1 }}>
         {/* Header Section */}
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
             backgroundColor: `#343434`,
             marginTop: 40,
           }}
-        >
-          <View style={{ marginTop: 10 }}>
+        > */}
+      
+        <LinearGradient
+  colors={themeHeader}
+  start={{ x: 0, y: 0 }}
+  end={{ x: 1, y: 0 }}
+  style={{
+    height: 110,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 35,
+  }}
+>
+          <View>
             <Button onPress={backHandler}>
               <Image source={back} style={{ width: 15, height: 15,tintColor:`white` }} />
             </Button>
@@ -755,8 +1034,8 @@ useEffect(() => {
             <View
               style={{
                 flexDirection: "row",
-                gap: 12,
-                marginRight: 130,
+                gap: 18,
+                marginRight:12,
               }}
             >
               <Image
@@ -787,46 +1066,90 @@ useEffect(() => {
               </View>
             </View>
 {/* Header ke andar, dots se pehle yeh View daalo */}
-<View
-  style={{
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 12,
-    gap: 18,
-  }}
->
-  <Pressable onPress={() => startCall("audio")}>
-    <Text style={{ color: "white", fontSize: 22 }}>📞</Text>
-  </Pressable>
-
-  <Pressable onPress={() => startCall("video")}>
-    <Text style={{ color: "white", fontSize: 22 }}>📹</Text>
-  </Pressable>
-</View>
-
           </Pressable>
-          <Pressable onPress={dotPressHandler}>
-            <Image
-              source={dots}
-              style={{
-                width: 20,
-                height: 20,
-                marginRight: 20,
-                marginTop: 15,
-                tintColor:`white`
-              }}
-            />
-          </Pressable>
-        </View>
-        {dotOpenHandler &&<View style={{flexDirection:'row',justifyContent:'flex-end'}}>
+
+          <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+      gap: 10,
+      minWidth: 75,
+    }}
+  >
+
+    {/* CALL */}
+    <Pressable
+      onPress={() => startCall("audio")}
+      hitSlop={10}
+      style={{
+        width: 38,
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text
+        style={{
+          color: "white",
+          fontSize: 22,
+        }}
+      >
+        📞
+      </Text>
+    </Pressable>
+    <Pressable
+      onPress={() => startCall("audio")}
+      hitSlop={10}
+      style={{
+        width: 38,
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text
+        style={{
+          color: "white",
+          fontSize: 22,
+        }}
+      >
+        📞
+      </Text>
+    </Pressable>
+
+    {/* DOTS */}
+    <Pressable
+      onPress={dotPressHandler}
+      hitSlop={10}
+      style={{
+        width: 38,
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Image
+        source={dots}
+        style={{
+          width: 20,
+          height: 20,
+          tintColor: "white",
+        }}
+      />
+    </Pressable>
+
+  </View>
+          </LinearGradient>
+        {/* </View> */}
+        {dotOpenHandler &&<View style={{flexDirection:'row',justifyContent:'flex-end',   position: "absolute",
+      top: 100,
+      right: 2,
+      zIndex: 100,
+      elevation: 10,}}>
           <Card style={{width:150,marginRight:2}}>
             <Card.Content>
-              <Pressable onPress={()=>viewProfileHandler(messageDetails)}>
-              <View style={{flexDirection:"row", gap:8}}>
-              <Image source={profile} style={{width:30,height:30}}/>
-              <Text style={{paddingTop:4}}>View profile</Text>
-            </View>
-              </Pressable>
+            
               <Pressable onPress={()=>viewProfileBlockHandler(messageDetails)}>
               <View style={{flexDirection:"row", gap:8,marginTop:9}}>
               <Image source={block} style={{width:30,height:30}}/>
@@ -839,16 +1162,62 @@ useEffect(() => {
               <Text style={{paddingTop:4}}>Expert Chat</Text>
             </View>
               </Pressable> */}
+                <Pressable onPress={openThemeSheet}>
+              <View style={{flexDirection:"row", gap:8}}>
+              <Image source={profile} style={{width:30,height:30}}/>
+              <Text style={{paddingTop:4}}>Theme</Text>
+            </View>
+              </Pressable>
             </Card.Content>
           </Card>
         </View>}
 
-        <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==null?0:100}` }}>
+        <View style={{ flex: 1, marginBottom: `${deactivateUserObj.selfDeactivate!==null?0:0}` }}>
+        {activeTheme.name=="Sunset Love"?<Image
+    source={pinkThemeImg}
+    contentFit="cover"
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: "100%",
+      height: "100%",
+    }}
+  />:null}
+  {activeTheme.name=="Midnight"?<Image
+    source={violetThemeImg}
+    contentFit="cover"
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: "100%",
+      height: "100%",
+    }}
+  />:null}
+   {activeTheme.name=="Ocean Blue"?<Image
+    source={blueThemeImg}
+    contentFit="cover"
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: "100%",
+      height: "100%",
+    }}
+  />:null}
           <ScrollView
            keyboardShouldPersistTaps="handled"
-           contentContainerStyle={{ flexGrow: 1 }}
+           contentContainerStyle={{ flexGrow: 1,  paddingBottom: 10, }}
            style={{ marginBottom: scrollBottomMargin }}
           >
+            
             {
               finalMessageArray.map((finalMessage,index) => {
                 const isCallMessage =
@@ -915,13 +1284,23 @@ useEffect(() => {
       contentFit="cover"
     />
 
-    <Text
+    {/* <Text
       style={{
         marginTop: 4,
         fontSize: 11,
         color: "white",
       }}
-    >
+    > */}
+
+<Text
+  style={{
+    marginTop: 4,
+    fontSize: 11,
+    color: finalMessage.senderId === loginId
+      ? themeMyText
+      : themeOtherText,
+  }}
+>
         {new Date(finalMessage.timestamp).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -936,8 +1315,9 @@ useEffect(() => {
   {!isCallMessage? (
   <View
     style={{
-      backgroundColor:
-        finalMessage.senderId === loginId ? "#1E3AFF" : "#E5E5EA",
+      // backgroundColor:
+      //   finalMessage.senderId === loginId ? "#1E3AFF" : "#E5E5EA",
+      backgroundColor: getBubbleColor(finalMessage),
       borderRadius: 22,
       paddingHorizontal: 12,
       paddingTop: 8,
@@ -948,8 +1328,9 @@ useEffect(() => {
   >
   <Text
       style={{
-        color:
-          finalMessage.senderId === loginId ? "#fff" : "#000",
+        // color:
+        //   finalMessage.senderId === loginId ? "#fff" : "#000",
+        color: getTextColor(finalMessage),
         fontSize: 14,
       }}
     >
@@ -961,10 +1342,11 @@ useEffect(() => {
         alignSelf: "flex-end",
         fontSize: 11,
         marginTop: 4,
-        color:
-          finalMessage.senderId === loginId
-            ? "rgba(255,255,255,0.8)"
-            : "#666",
+        // color:
+        //   finalMessage.senderId === loginId
+        //     ? "rgba(255,255,255,0.8)"
+        //     : "#666",
+        color: getTimeColor(finalMessage),
       }}
     >
     {new Date(finalMessage.timestamp).toLocaleTimeString("en-US", {
@@ -981,7 +1363,8 @@ useEffect(() => {
 {isCallMessage? (
   <View
     style={{
-      backgroundColor:"#F3F3F3",
+      // backgroundColor:"#F3F3F3",
+      backgroundColor: themeCallBubble,
       borderRadius: 22,
       paddingHorizontal: 12,
       paddingTop: 8,
@@ -1122,32 +1505,59 @@ deactivateUserObj.selfDeactivate === loginId ? (
   </View>
 ) : (
   <View
-   
+ 
   >
     {/* Selected Image Preview */}
     {selectedImage && (
-      <View
+  <View
+    style={{
+      position: "absolute",
+      bottom: 52,
+      left: 8,
+      zIndex: 30,
+
+      flexDirection: "row",
+      alignItems: "center",
+
+      backgroundColor: "rgba(255,255,255,0.95)",
+      borderRadius: 12,
+      padding: 6,
+
+      elevation: 5,
+      shadowColor: "#000",
+      shadowOpacity: 0.2,
+      shadowRadius: 5,
+      shadowOffset: { width: 0, height: 2 },
+    }}
+  >
+    <Image
+      source={{ uri: selectedImage.uri }}
+      style={{
+        width: 70,
+        height: 70,
+        borderRadius: 10,
+      }}
+      contentFit="cover"
+    />
+
+    <Pressable
+      onPress={removeSelectedImage}
+      style={{
+        marginLeft: 8,
+        paddingHorizontal: 5,
+      }}
+    >
+      <Text
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 8,
-          paddingHorizontal: 4,
+          color: "red",
+          fontWeight: "600",
         }}
       >
-        <Image
-          source={{ uri: selectedImage.uri }}
-          style={{
-            width: 70,
-            height: 70,
-            borderRadius: 10,
-            marginRight: 10,
-          }}
-        />
-        <Pressable onPress={removeSelectedImage}>
-          <Text style={{ color: "red", fontWeight: "600" }}>Remove</Text>
-        </Pressable>
-      </View>
-    )}
+        Remove
+      </Text>
+    </Pressable>
+  </View>
+)}
 
     {/* Input Row - Instagram style */}
     <View
@@ -1169,7 +1579,7 @@ deactivateUserObj.selfDeactivate === loginId ? (
           width: 36,
           height: 36,
           borderRadius: 18,
-          backgroundColor: "#0095f6",
+          backgroundColor: themeIcon,
           justifyContent: "center",
           alignItems: "center",
           marginRight: 6,
@@ -1224,7 +1634,8 @@ deactivateUserObj.selfDeactivate === loginId ? (
           style={{
             width: 24,
             height: 24,
-            tintColor: "#0095f6",
+            // tintColor: "#0095f6",
+            tintColor: themeIcon,
           }}
         />
       </Pressable>
@@ -1237,7 +1648,8 @@ deactivateUserObj.selfDeactivate === loginId ? (
         style={{
           width: 24,
           height: 24,
-          tintColor: "#262626",
+          // tintColor: "#262626",
+          tintColor: themeIcon,
         }}
       />
     </Pressable>
@@ -1314,6 +1726,9 @@ deactivateUserObj.selfDeactivate === loginId ? (
     </CameraView>
   </View>
 )}
+
+<ChatTheme ref={themeSheetRef} loginId={loginId} recieverId={messageDetails?._id} 
+loginTheme={loginThemeChat} recieverTheme={recieverThemeChat}/>
 </KeyboardAvoidingView>
     </AlertNotificationRoot>
      
