@@ -69,7 +69,7 @@ import MatchesPage from './src/Pages/matchesPage/matchesPage';
 import MessagePage from './src/Pages/messagePage/messagePage';
 import CallScreenPage from './src/Pages/callScreenPage/callScreenPage';
 import IncomingCallScreenPage from './src/Pages/incomingCallScreenPage/incomingCallScreenPage';
-
+import InternetChecker from './src/components/internetChecker/internetChecker';
 
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
@@ -83,12 +83,6 @@ function AppContent() {
 const [isLoggedIn, setIsLoggedIn] = useState(false);
 const [loginDetails,setLoginDetails]=useState({})
 
-
-
-
-
-  
-  
   const darkColors = {
     label: '#ffffff',
     card: 'white',
@@ -269,8 +263,9 @@ console.log('is log in',isLoggedIn)
 
 
   return (
-    <AlertNotificationRoot colors={[darkColors]}  >
+    <AlertNotificationRoot colors={[darkColors]}>
     <NavigationContainer>
+    <InternetChecker/>
       {loading?(null):(
       <Stack.Navigator  initialRouteName={isLoggedIn===true ? "HeaderPage" : "LoginPage"}>
         <Stack.Screen

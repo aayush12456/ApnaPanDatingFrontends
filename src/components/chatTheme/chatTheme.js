@@ -137,107 +137,125 @@ const chatThemes = {
     paddingBottom: 20,
   }}
 >
-  {Object.entries(chatThemes).map(([key, theme]) => (
-    <Pressable
-      key={key}
+  {Object.entries(chatThemes).map(([key, theme]) => {
+const isSelectedTheme =
+    // User ne abhi manually select kiya
+    selectTheme?.name === theme.name ||
+
+    // loginTheme array ke KISI BHI object me match
+    loginTheme?.some(
+      (item) =>
+        item?.loginId === loginId &&
+        item?.recieverId === recieverId &&
+        item?.name === theme.name
+    ) ||
+
+    // recieverTheme array ke KISI BHI object me match
+    recieverTheme?.some(
+      (item) =>
+        item?.loginId === recieverId &&
+        item?.recieverId === loginId &&
+        item?.name === theme.name
+    );
+
+
+return (
+  <Pressable
+  key={key}
+  style={{
+    marginBottom: 15,
+  }}
+  onPress={()=>selectThemeHandler(theme)}
+>
+  <View
+    style={{
+      backgroundColor: "#fff",
+      borderRadius: 16,
+      padding: 14,
+      borderWidth:
+      isSelectedTheme ? 2 : 1,
+      borderColor: isSelectedTheme
+      ? theme?.header[0]
+      : "#E5E7EB",
+      elevation: 3,
+    }}
+  >
+    {/* Theme Name */}
+    <Text
       style={{
-        marginBottom: 15,
+        fontSize: 16,
+        fontWeight: "700",
+        marginBottom: 12,
       }}
-      onPress={()=>selectThemeHandler(theme)}
+    >
+      {theme.name}
+    </Text>
+
+    {/* Header Preview */}
+    <View
+      style={{
+        flexDirection: "row",
+        marginBottom: 12,
+      }}
     >
       <View
         style={{
-          backgroundColor: "#fff",
-          borderRadius: 16,
-          padding: 14,
-          borderWidth:
-          selectTheme?.name === theme.name ||
-          loginTheme?.[0]?.name === theme.name ||
-          recieverTheme?.[0]?.name === theme.name
-            ? 2
-            : 1,
-         borderColor:
-      selectTheme?.name === theme.name ||
-      loginTheme?.[0]?.name === theme.name ||
-      recieverTheme?.[0]?.name === theme.name
-        ? theme.header[0]
-        : "#E5E7EB",
-          elevation: 3,
+          flex: 1,
+          height: 12,
+          backgroundColor: theme.header[0],
+          borderTopLeftRadius: 8,
+          borderBottomLeftRadius: 8,
+        }}
+      />
+
+      <View
+        style={{
+          flex: 1,
+          height: 12,
+          backgroundColor: theme.header[1],
+          borderTopRightRadius: 8,
+          borderBottomRightRadius: 8,
+        }}
+      />
+    </View>
+
+    {/* Chat Preview */}
+    <View>
+      <View
+        style={{
+          alignSelf: "flex-start",
+          backgroundColor: theme.otherBubble,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderRadius: 18,
+          marginBottom: 8,
         }}
       >
-        {/* Theme Name */}
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: "700",
-            marginBottom: 12,
-          }}
-        >
-          {theme.name}
+        <Text style={{ color: theme.otherText }}>
+          Hi 👋
         </Text>
-
-        {/* Header Preview */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginBottom: 12,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              height: 12,
-              backgroundColor: theme.header[0],
-              borderTopLeftRadius: 8,
-              borderBottomLeftRadius: 8,
-            }}
-          />
-
-          <View
-            style={{
-              flex: 1,
-              height: 12,
-              backgroundColor: theme.header[1],
-              borderTopRightRadius: 8,
-              borderBottomRightRadius: 8,
-            }}
-          />
-        </View>
-
-        {/* Chat Preview */}
-        <View>
-          <View
-            style={{
-              alignSelf: "flex-start",
-              backgroundColor: theme.otherBubble,
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 18,
-              marginBottom: 8,
-            }}
-          >
-            <Text style={{ color: theme.otherText }}>
-              Hi 👋
-            </Text>
-          </View>
-
-          <View
-            style={{
-              alignSelf: "flex-end",
-              backgroundColor: theme.myBubble,
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 18,
-            }}
-          >
-            <Text style={{ color: theme.myText }}>
-              Hello ❤️
-            </Text>
-          </View>
-        </View>
       </View>
-    </Pressable>
-  ))}
+
+      <View
+        style={{
+          alignSelf: "flex-end",
+          backgroundColor: theme.myBubble,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderRadius: 18,
+        }}
+      >
+        <Text style={{ color: theme.myText }}>
+          Hello ❤️
+        </Text>
+      </View>
+    </View>
+  </View>
+</Pressable>
+)
+  }
+  
+  )}
 <Button
   mode="contained"
   buttonColor="#2563EB"
