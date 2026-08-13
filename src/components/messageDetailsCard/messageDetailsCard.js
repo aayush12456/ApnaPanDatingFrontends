@@ -29,7 +29,6 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 import { bottomSheetOpenModalToggleActions } from "../../Redux/Slice/bottomSheetOpenModalSlice/bottomSheetOpenModalSlice";
 import ChatTheme from "../chatTheme/chatTheme";
-import ScreenShotCapture from "../screenshotCapture/screenshotCapture";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser,notifyChecks }) => {
@@ -1737,7 +1736,6 @@ deactivateUserObj.selfDeactivate === loginId ? (
 loginTheme={loginThemeChat} recieverTheme={recieverThemeChat}/>
 </KeyboardAvoidingView>
     </AlertNotificationRoot>
-    {/* <ScreenShotCapture/> */}
     </>
   );
 };

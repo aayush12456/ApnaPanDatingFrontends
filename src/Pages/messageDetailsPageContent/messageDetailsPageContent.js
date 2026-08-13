@@ -3,6 +3,7 @@ import axios from 'axios'
 import io from "socket.io-client";
 import { useState,useEffect } from "react";
 import {View} from 'react-native'
+import ScreenShotCapture from "../../components/screenshotCapture/screenshotCapture";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsPageContent=({route})=>{
@@ -113,6 +114,7 @@ const MessageDetailsPageContent=({route})=>{
   console.log('checks data',notifyChecks)
 return (
     <>
+    <ScreenShotCapture/>
     <View style={{backgroundColor:`black`,height:"100%"}}>
     <MessageDetailsCard messageDetails={formData} deactivateUserObj={deactivateUserObj}
      completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify} notifyChecks={notifyChecks}/>

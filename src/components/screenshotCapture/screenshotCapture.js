@@ -11,7 +11,7 @@ return (
       //   alignItems: "center",
       // }}
     >
-      <Text>Protected Screen</Text>
+      {/* <Text>Protected Screen</Text> */}
     </View>
     </>
 )
