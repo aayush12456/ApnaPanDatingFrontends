@@ -747,6 +747,11 @@ const getTimeColor = (message) => {
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
 
+  const viewExpertChatHandler=async(messageDetailProfile)=>{
+    dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
+    navigation.navigate('ExpertChatPage', { formData:{... messageDetailProfile,loginName:completeObj.name} });
+   
+   }
  
   const openThemeSheet=()=>{
     themeSheetRef.current?.open();
@@ -1157,12 +1162,12 @@ const themeInput = activeTheme?.input || "#FFF1F2";
               <Text style={{paddingTop:4}}>Block</Text>
             </View>
               </Pressable>
-              {/* <Pressable onPress={()=>viewExpertChatHandler(messageDetails)}>
+              <Pressable onPress={()=>viewExpertChatHandler(messageDetails)}>
               <View style={{flexDirection:"row", gap:8,marginTop:9}}>
               <Image source={guru} style={{width:30,height:30}}/>
               <Text style={{paddingTop:4}}>Expert Chat</Text>
             </View>
-              </Pressable> */}
+              </Pressable>
                 <Pressable onPress={openThemeSheet}>
               <View style={{flexDirection:"row", gap:8}}>
               <Image source={profile} style={{width:30,height:30}}/>
@@ -1732,7 +1737,7 @@ deactivateUserObj.selfDeactivate === loginId ? (
 loginTheme={loginThemeChat} recieverTheme={recieverThemeChat}/>
 </KeyboardAvoidingView>
     </AlertNotificationRoot>
-    <ScreenShotCapture/>
+    {/* <ScreenShotCapture/> */}
     </>
   );
 };
