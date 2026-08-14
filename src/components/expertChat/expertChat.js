@@ -1,5 +1,6 @@
 
 import { Text, Button, TextInput } from "react-native-paper";
+import Markdown from '@ronradtke/react-native-markdown-display';
 import back from "../../../assets/signUpFormIcon/back.png";
 import guru from "../../../assets/chatIcons/guru.png";
 import send from "../../../assets/chatIcons/sendIcon.png";
@@ -18,8 +19,7 @@ import {
 
 
 
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
+
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -30,7 +30,6 @@ const ExpertChat = ({ obj, completeObj }) => {
   const [queryText, setQueryText] = useState("");
   const [responseExpertObj, setResponseExpertObj] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const navigation = useNavigation();
@@ -60,167 +59,20 @@ const ExpertChat = ({ obj, completeObj }) => {
     navigation.goBack();
   };
 
-  // --------------------------------------------------
-  // TEXT CHANGE
-  // --------------------------------------------------
+ 
 
   const textChangeHandler = (text) => {
     setQueryText(text);
   };
 
-  // --------------------------------------------------
-  // GALLERY
-  // --------------------------------------------------
-
-  const pickImageFromGallery = async () => {
-    try {
-
-      const permission =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (!permission.granted) {
-        Alert.alert(
-          "Permission Required",
-          "Gallery permission is required."
-        );
-        return;
-      }
-
-      const result =
-        await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ["images"],
-          allowsEditing: true,
-          quality: 0.8,
-        });
-
-      if (result.canceled) {
-        return;
-      }
-
-      const asset = result.assets[0];
-
-      setSelectedImage({
-        uri: asset.uri,
-        mimeType: asset.mimeType || "image/jpeg",
-        fileName: asset.fileName || "image.jpg",
-      });
-
-    } catch (error) {
-
-      console.log("Gallery Error:", error);
-
-      Alert.alert(
-        "Error",
-        "Unable to select image."
-      );
-    }
-  };
-
-  // --------------------------------------------------
-  // CAMERA
-  // --------------------------------------------------
-
-  const takePhoto = async () => {
-    try {
-
-      const permission =
-        await ImagePicker.requestCameraPermissionsAsync();
-
-      if (!permission.granted) {
-        Alert.alert(
-          "Permission Required",
-          "Camera permission is required."
-        );
-        return;
-      }
-
-      const result =
-        await ImagePicker.launchCameraAsync({
-          allowsEditing: true,
-          quality: 0.8,
-        });
-
-      if (result.canceled) {
-        return;
-      }
-
-      const asset = result.assets[0];
-
-      setSelectedImage({
-        uri: asset.uri,
-        mimeType: asset.mimeType || "image/jpeg",
-        fileName: asset.fileName || "camera.jpg",
-      });
-
-    } catch (error) {
-
-      console.log("Camera Error:", error);
-
-      Alert.alert(
-        "Error",
-        "Unable to open camera."
-      );
-    }
-  };
-
-  // --------------------------------------------------
-  // IMAGE SELECT OPTION
-  // --------------------------------------------------
-
-  const selectImage = () => {
-
-    Alert.alert(
-      "Select Image",
-      "Choose image source",
-      [
-        {
-          text: "Camera",
-          onPress: takePhoto,
-        },
-        {
-          text: "Gallery",
-          onPress: pickImageFromGallery,
-        },
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-      ]
-    );
-  };
-
-  // --------------------------------------------------
-  // REMOVE IMAGE
-  // --------------------------------------------------
-
-  const removeSelectedImage = () => {
-    setSelectedImage(null);
-  };
-
-  // --------------------------------------------------
-  // IMAGE TO BASE64
-  // --------------------------------------------------
-
-  const imageToBase64 = async (uri) => {
-
-    const base64 =
-      await FileSystem.readAsStringAsync(uri, {
-        encoding: "base64",
-      });
-
-    return base64;
-  };
-
-  // --------------------------------------------------
-  // SEND TO GEMINI
-  // --------------------------------------------------
+ 
 
   const chatTextSubmitHandler = async () => {
 
     // Text aur image dono nahi hain
     if (
-      !queryText.trim() &&
-      !selectedImage
+      !queryText.trim()
+    
     ) {
       return;
     }
@@ -256,72 +108,7 @@ const ExpertChat = ({ obj, completeObj }) => {
       // IMAGE + TEXT
       // ----------------------------------------------
 
-      if (selectedImage) {
-
-        const base64Image =
-          await imageToBase64(
-            selectedImage.uri
-          );
-
-        /*
-          Agar user ne text diya hai:
-          "Is image me kya hai?"
-
-          Ya Hindi:
-          "इस फोटो में क्या है?"
-
-          Ya Hinglish:
-          "Is photo ko explain karo"
-
-          To wahi exact prompt Gemini ko milega.
-        */
-
-        const prompt =
-          userPrompt ||
-          "Please analyze this image and explain what you see.";
-
-        result =
-          await model.generateContent([
-            {
-              text: prompt,
-            },
-            {
-              inlineData: {
-                mimeType:
-                  selectedImage.mimeType ||
-                  "image/jpeg",
-                data: base64Image,
-              },
-            },
-          ]);
-      }
-
-      // ----------------------------------------------
-      // ONLY TEXT
-      // ----------------------------------------------
-
-      else {
-
-        /*
-          User jo text field me likhega,
-          wahi exact prompt Gemini ko jayega.
-
-          English:
-          What is artificial intelligence?
-
-          Hindi:
-          आर्टिफिशियल इंटेलिजेंस क्या है?
-
-          Hinglish:
-          AI ko simple language me samjhao.
-        */
-
-        result =
-          await model.generateContent(
-            userPrompt
-          );
-      }
-
+      result = await model.generateContent(userPrompt);
       // ----------------------------------------------
       // RESPONSE
       // ----------------------------------------------
@@ -333,11 +120,10 @@ console.log('response of model',response)
         response.text();
 
       setResponseExpertObj({
-        text: text.replace(/\*/g, ""),
+        text: text,
       });
 
-      // Image clear after successful request
-      setSelectedImage(null);
+  
 
     } catch (error) {
 
@@ -551,19 +337,117 @@ console.log('response of model',response)
               }}
             >
 
-              <Text
-                style={{
-                  textAlign: "left",
-                  paddingTop: 20,
-                  paddingLeft: 12,
-                  paddingRight: 12,
-                  color:'white',
-                  fontSize: 15,
-                  lineHeight: 23,
-                }}
-              >
-                {responseExpertObj.text}
-              </Text>
+<Markdown
+  style={{
+    body: {
+      color: 'white',
+      fontSize: 15.5,
+      lineHeight: 24,
+      paddingHorizontal: 14,
+      paddingTop: 16,
+    },
+    heading1: {
+      color: '#ffffff',
+      fontSize: 22,
+      fontWeight: '700',
+      marginTop: 18,
+      marginBottom: 8,
+    },
+    heading2: {
+      color: '#ffffff',
+      fontSize: 19,
+      fontWeight: '700',
+      marginTop: 16,
+      marginBottom: 6,
+    },
+    heading3: {
+      color: '#ffffff',
+      fontSize: 17,
+      fontWeight: '600',
+      marginTop: 14,
+      marginBottom: 5,
+    },
+    paragraph: {
+      marginTop: 0,
+      marginBottom: 10,
+      color: 'white',
+    },
+    bullet_list: {
+      marginBottom: 10,
+    },
+    ordered_list: {
+      marginBottom: 10,
+    },
+    list_item: {
+      color: 'white',
+      fontSize: 15.5,
+      lineHeight: 23,
+      marginBottom: 5,
+    },
+    strong: {
+      fontWeight: '700',
+      color: 'white',
+    },
+    em: {
+      fontStyle: 'italic',
+      color: 'white',
+    },
+    code_inline: {
+      backgroundColor: '#404040',
+      color: '#f0f0f0',
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 5,
+      fontSize: 14,
+    },
+    code_block: {
+      backgroundColor: '#2c2c2c',
+      color: '#f0f0f0',
+      padding: 14,
+      borderRadius: 10,
+      marginVertical: 10,
+      fontSize: 14,
+    },
+    fence: {
+      backgroundColor: '#2c2c2c',
+      color: '#f0f0f0',
+      padding: 14,
+      borderRadius: 10,
+      marginVertical: 10,
+    },
+    table: {
+      borderWidth: 1,
+      borderColor: '#555',
+      borderRadius: 8,
+      marginVertical: 12,
+    },
+    thead: {
+      backgroundColor: '#404040',
+    },
+    th: {
+      padding: 10,
+      color: 'white',
+      fontWeight: '700',
+    },
+    td: {
+      padding: 10,
+      color: 'white',
+      borderColor: '#555',
+      borderWidth: 0.5,
+    },
+    blockquote: {
+      backgroundColor: '#3a3a3a',
+      borderLeftWidth: 4,
+      borderLeftColor: '#4a9eff',
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      marginVertical: 10,
+      borderRadius: 6,
+    },
+  }}
+>
+  {responseExpertObj.text}
+</Markdown>
 
             </ScrollView>
 
@@ -572,65 +456,7 @@ console.log('response of model',response)
 
       {/* ================= SELECTED IMAGE PREVIEW ================= */}
 
-      {selectedImage && (
-
-        <View
-          style={{
-            position: "absolute",
-            bottom: 62,
-            left: 10,
-            width: 90,
-            height: 90,
-            backgroundColor:'#444',
-            borderRadius: 10,
-            padding: 5,
-            zIndex: 100,
-            elevation: 5,
-          }}
-        >
-
-          <Image
-            source={{
-              uri: selectedImage.uri,
-            }}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 8,
-            }}
-          />
-
-          {/* REMOVE IMAGE */}
-
-          <Pressable
-            onPress={removeSelectedImage}
-            style={{
-              position: "absolute",
-              top: -8,
-              right: -8,
-              width: 25,
-              height: 25,
-              borderRadius: 15,
-              backgroundColor: "red",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-
-            <Text
-              style={{
-                color: "white",
-                fontSize: 18,
-                fontWeight: "bold",
-              }}
-            >
-              ×
-            </Text>
-
-          </Pressable>
-
-        </View>
-      )}
+     
 
       {/* ================= INPUT AREA ================= */}
 
@@ -640,68 +466,51 @@ console.log('response of model',response)
     left: 0,
     right: 0,
     bottom: 0,
-
+  
     flexDirection: "row",
     alignItems: "center",
-
-    backgroundColor: "#343434",
-
+  
+    backgroundColor: "#ffffff",
+  
     paddingTop: 3,
     paddingBottom: 0,
     borderRadius: 25,
     paddingHorizontal: 6,
     paddingVertical: 2,
     minHeight: 40,
-
-    marginBottom:Platform.OS === "android" ? keyboardHeight : 0,
+  
+    marginBottom:
+      Platform.OS === "android"
+        ? keyboardHeight
+        : 0,
   }}
 >
 
         {/* ================= IMAGE BUTTON ================= */}
-
-        <Pressable
-          onPress={selectImage}
-          disabled={isLoading}
-          style={{
-            width: 45,
-            height: 50,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-
-          <Text
-            style={{
-              fontSize: 28,
-              color:'white',
-              fontWeight: "300",
-            }}
-          >
-            +
-          </Text>
-
-        </Pressable>
 
         {/* ================= TEXT INPUT ================= */}
 
         <TextInput
           style={{
             flex: 1,
-            minHeight: 48,
-            maxHeight: 110,
-            borderWidth: 1,
-            borderColor:'#666',
-            borderRadius: 7,
-            backgroundColor: "white",
-            paddingHorizontal: 10,
-            paddingRight: 40,
-            color: "black",
+
+            backgroundColor: "transparent",
+          
+            minHeight: 60,
+            maxHeight: 120,
+          
+            fontSize: 16,
+          
+            color: "#000",
+          
+            borderWidth: 0,
+          
+            paddingHorizontal: 0,
+          
+            paddingRight: 10,
+            paddingLeft:20
           }}
-          placeholder={
-            selectedImage
-              ? "Image ke baare me puchhein..."
-              : "Message Expert..."
-          }
+          placeholder="Message Expert..."
           placeholderTextColor="#888"
           multiline={true}
           onChangeText={textChangeHandler}
@@ -721,13 +530,17 @@ console.log('response of model',response)
           disabled={
             isLoading ||
             (
-              !queryText.trim() &&
-              !selectedImage
+              !queryText.trim() 
             )
           }
           style={{
-            width: 50,
-            height: 50,
+            width: 52,
+            height: 52,
+          
+            borderRadius: 26,
+          
+            backgroundColor: "#d6d6d6",
+          
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -736,17 +549,12 @@ console.log('response of model',response)
           <Image
             source={send}
             style={{
-              width: 20,
-              height: 20,
+              width: 24,
+              height: 24,
               opacity:
-                isLoading ||
-                (
-                  !queryText.trim() &&
-                  !selectedImage
-                )
-                  ? 0.4
-                  : 1,
-                  tintColor:'white'
+              isLoading || !queryText.trim()
+                 ? 0.4
+                 : 1
             }}
           />
 

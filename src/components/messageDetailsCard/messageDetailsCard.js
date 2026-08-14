@@ -1601,7 +1601,7 @@ deactivateUserObj.selfDeactivate === loginId ? (
         style={{
           flex: 1,
           backgroundColor: "transparent",
-          fontSize: 15,
+          fontSize: 16,
           paddingVertical: 2,
           paddingHorizontal: 4,
           minHeight: 36,

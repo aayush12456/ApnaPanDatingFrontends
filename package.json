@@ -43,6 +43,7 @@
     "@reduxjs/toolkit": "^2.5.1",
     "@rneui/base": "^0.0.0-edge.2",
     "@rneui/themed": "^0.0.0-edge.2",
+    "@ronradtke/react-native-markdown-display": "^9.0.3",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "expo": "~54.0.35",
