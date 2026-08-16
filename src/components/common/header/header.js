@@ -1,4 +1,4 @@
-import {Image,Text,Pressable,View,Dimensions,  StatusBar} from 'react-native'
+import {Image,Text,View,Dimensions,  PermissionsAndroid,  Platform,  StatusBar} from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import matches from '../../../../assets/sidebarIcons/profileMatch.png'
 import girl from '../../../../assets/sidebarIcons/girl.png'
@@ -7,15 +7,12 @@ import boy from '../../../../assets/sidebarIcons/boy.png'
 import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
 import settings from '../../../../assets/sidebarIcons/settings.png'
-import visitors from '../../../../assets/sidebarIcons/interest.png'
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import { useEffect, useState } from 'react';
-import {useSelector} from 'react-redux'
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
 import SettingsPage from '../../../Pages/settingsPage/settingsPage.js';
-import VisitorPage from '../../../Pages/visitorPage/visitorPage.js';
 import MessagePage from '../../../Pages/messagePage/messagePage.js';
 import LikesPage from '../../../Pages/likesPage/likesPage.js';
 import NewAndOnlinePage from '../../../Pages/newAndOnlinePage/newAndOnlinePage.js';
@@ -293,7 +290,25 @@ useEffect(() => {
   return () => subscription.remove();
 }, [navigation]);
 
+const requestPermissions = async () => {
+  if (Platform.OS !== "android") {
+    return;
+  }
 
+  try {
+    await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+useEffect(() => {
+  if (loginId) {
+    requestPermissions();
+  }
+}, [loginId]);
 
 
 return (

@@ -70,6 +70,8 @@ import MessagePage from './src/Pages/messagePage/messagePage';
 import CallScreenPage from './src/Pages/callScreenPage/callScreenPage';
 import IncomingCallScreenPage from './src/Pages/incomingCallScreenPage/incomingCallScreenPage';
 import InternetChecker from './src/components/internetChecker/internetChecker';
+import VideoCallScreenPage from './src/Pages/videoCallScreenPage/videoCallScreenPage';
+import IncomingVideoCallScreenPage from './src/Pages/incomingVideoCallScreenPage/incomingVideoCallScreenPage';
 
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
@@ -532,6 +534,16 @@ console.log('is log in',isLoggedIn)
          <Stack.Screen
           name="IncomingCallScreenPage"
           component={IncomingCallScreenPage}
+          options={{ headerShown: false }}
+        />
+           <Stack.Screen
+          name="VideoCallScreenPage"
+          component={VideoCallScreenPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="IncomingVideoCallScreenPage"
+          component={IncomingVideoCallScreenPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

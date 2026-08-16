@@ -1,12 +1,14 @@
-import { Text, Button, TextInput, Card } from "react-native-paper";
-import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator,Keyboard,ImageBackground} from "react-native";
+import { Text, Button, TextInput, Card,Divider } from "react-native-paper";
+import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator,Keyboard,Linking,Alert,PermissionsAndroid,} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import back from "../../../assets/signUpFormIcon/back.png";
 import dots from "../../../assets/chatIcons/dots.png";
 import send from "../../../assets/chatIcons/sendIcon.png";
+import audioPhone from "../../../assets/chatIcons/accept.png";
+import zoomPhone from "../../../assets/chatIcons/zoom.png";
+import themesImg from "../../../assets/chatIcons/theme.png";
 import unsend from "../../../assets/chatIcons/unsend.png";
-import profile from "../../../assets/chatIcons/profile.png";
 import block from "../../../assets/chatIcons/block.png";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
 import guru from "../../../assets/chatIcons/guru.png";
@@ -16,6 +18,7 @@ import blueThemeImg from "../../../assets/chatIcons/blueTheme.png";
 import imageIcon from "../../../assets/chatIcons/gallery.png";
 import cameraIcon from "../../../assets/chatIcons/camera.png";
 import * as ImagePicker from "expo-image-picker";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Image } from 'expo-image';
 import io from "socket.io-client";
@@ -338,16 +341,35 @@ const pickImageFromGallery = async () => {
 }
 
 const openCamera = async () => {
-  if (!cameraPermission?.granted) {
-    const permission = await requestCameraPermission();
-    if (!permission.granted) {
-      alert("Camera permission required");
-      return;
-    }
+  if (cameraPermission?.granted) {
+    setShowCamera(true);
+    return;
   }
-  setShowCamera(true);
-};
 
+  const permission = await requestCameraPermission();
+
+  if (permission.granted) {
+    setShowCamera(true);
+    return;
+  }
+
+  if (!permission.canAskAgain) {
+    Alert.alert(
+      "Camera Permission Required",
+      "Please allow camera permission from settings.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Open Settings",
+          onPress: () => Linking.openSettings()
+        }
+      ]
+    );
+  }
+};
 const takePhoto = async () => {
 
   if (cameraRef) {
@@ -806,7 +828,40 @@ const getTimeColor = (message) => {
     };
   }, []);
 
-  const startCall =async (callType = "video") => {
+  const requestMicrophonePermission = async () => {
+    if (Platform.OS !== "android") {
+      return true;
+    }
+  
+    const permission = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
+    );
+  
+    return permission;
+  };
+
+  const startCall =async (callType = "audio") => {
+    const permission = await requestMicrophonePermission();
+
+    if (permission !== PermissionsAndroid.RESULTS.GRANTED) {
+      Alert.alert(
+        "Microphone Permission Required",
+        "Please enable microphone permission to make audio calls.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openSettings(),
+          },
+        ]
+      );
+    
+      return;
+    }
+
     if (!loginId || !messageDetails?._id) return;
   
     const roomID = `room_${[String(loginId), String(messageDetails._id)]
@@ -830,7 +885,7 @@ const getTimeColor = (message) => {
       id: loginId,
       senderId: loginId,
       recieverId: messageDetails?._id,
-      message: "Audio call started",
+      message:"Audio call started",
       senderName: completeObj?.firstName || "",
     };
     try {
@@ -992,6 +1047,18 @@ const themeCallBubble = activeTheme?.callBubble || "#F3F3F3";
 
 const themeInput = activeTheme?.input || "#FFF1F2";
 
+const startVideoCall = () => {
+  Alert.alert(
+    "Video Calling Coming Soon",
+    "We're currently working on the video calling feature. It will be available in a future update.",
+    [
+      {
+        text: "OK",
+      },
+    ]
+  );
+};
+
   return (
     <>
     <AlertNotificationRoot>
@@ -1094,17 +1161,17 @@ const themeInput = activeTheme?.input || "#FFF1F2";
         justifyContent: "center",
       }}
     >
-      <Text
+       <Image
+        source={audioPhone}
         style={{
-          color: "white",
-          fontSize: 22,
+          width: 20,
+          height: 20,
+          tintColor: "white",
         }}
-      >
-        📞
-      </Text>
+      />
     </Pressable>
     <Pressable
-      onPress={() => startCall("audio")}
+      onPress={() => startVideoCall()}
       hitSlop={10}
       style={{
         width: 38,
@@ -1113,14 +1180,14 @@ const themeInput = activeTheme?.input || "#FFF1F2";
         justifyContent: "center",
       }}
     >
-      <Text
+       <Image
+        source={zoomPhone}
         style={{
-          color: "white",
-          fontSize: 22,
+          width: 20,
+          height: 30,
+          tintColor: "white",
         }}
-      >
-        📞
-      </Text>
+      />
     </Pressable>
 
     {/* DOTS */}
@@ -1152,26 +1219,60 @@ const themeInput = activeTheme?.input || "#FFF1F2";
       right: 2,
       zIndex: 100,
       elevation: 10,}}>
-          <Card style={{width:150,marginRight:2}}>
-            <Card.Content>
+          <Card style={{width:170,marginRight:2}}>
+            <Card.Content >
             
               <Pressable onPress={()=>viewProfileBlockHandler(messageDetails)}>
-              <View style={{flexDirection:"row", gap:8,marginTop:9}}>
-              <Image source={block} style={{width:30,height:30}}/>
-              <Text style={{paddingTop:4}}>Block</Text>
-            </View>
+              <View
+  style={{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 4,
+  }}
+>
+  <View style={{ flexDirection: "row", gap: 8 }}>
+    <Image source={block} style={{ width: 30, height: 30 }} />
+    <Text style={{ paddingTop: 4 }}>Block</Text>
+  </View>
+
+  <Ionicons name="chevron-forward" size={18} color="black" />
+</View>
               </Pressable>
+              <Divider style={{ marginVertical: 8 }} />
               <Pressable onPress={()=>viewExpertChatHandler(messageDetails)}>
-              <View style={{flexDirection:"row", gap:8,marginTop:9}}>
-              <Image source={guru} style={{width:30,height:30}}/>
-              <Text style={{paddingTop:4}}>Expert Chat</Text>
-            </View>
+              <View
+  style={{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 9,
+  }}
+>
+  <View style={{ flexDirection: "row", gap: 8 }}>
+    <Image source={guru} style={{ width: 30, height: 30 }} />
+    <Text style={{ paddingTop: 4 }}>Expert Chat</Text>
+  </View>
+
+  <Ionicons name="chevron-forward" size={18} color="black" />
+</View>
               </Pressable>
+              <Divider style={{ marginVertical: 8 }} />
                 <Pressable onPress={openThemeSheet}>
-              <View style={{flexDirection:"row", gap:8}}>
-              <Image source={profile} style={{width:30,height:30}}/>
-              <Text style={{paddingTop:4}}>Theme</Text>
-            </View>
+              <View
+  style={{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  }}
+>
+  <View style={{ flexDirection: "row", gap: 8 }}>
+    <Image source={themesImg} style={{ width: 30, height: 30 }} />
+    <Text style={{ paddingTop: 4 }}>Theme</Text>
+  </View>
+
+  <Ionicons name="chevron-forward" size={18} color="black" />
+</View>
               </Pressable>
             </Card.Content>
           </Card>
@@ -1227,7 +1328,7 @@ const themeInput = activeTheme?.input || "#FFF1F2";
               finalMessageArray.map((finalMessage,index) => {
                 const isCallMessage =
                 finalMessage.message === "Audio call started" ||
-                finalMessage.message === "Audio call ended";
+                finalMessage.message === "Audio call ended" 
                 return (
                   <View key={finalMessage?._id} style={{
                     flexDirection: 'row',
@@ -1384,7 +1485,7 @@ const themeInput = activeTheme?.input || "#FFF1F2";
         fontSize: 14,
       }}
     >
-    📞 {finalMessage.message}
+    { "📞 "}{finalMessage.message}
     </Text>
 
     <Text
