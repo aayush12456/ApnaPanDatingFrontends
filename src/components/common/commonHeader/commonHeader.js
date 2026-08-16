@@ -1,4 +1,4 @@
-import {Text,View,Image} from 'react-native'
+import {Text,View,Image,StatusBar} from 'react-native'
 import { Button } from 'react-native-paper';
 import back from "../../../../assets/signUpFormIcon/back.png";
 import { useNavigation } from "@react-navigation/native";
@@ -44,21 +44,22 @@ const CommonHeader=({commonHeaderName,completeLoginObj})=>{
 
 return (
     <>
-      <View
-          style={{
-            flexDirection:'row',
-            backgroundColor: `#343434` ,
-            marginTop: 40,
-            gap:60
-          }}
-        >
+     <View
+      style={{
+    flexDirection: "row",
+    backgroundColor: "#343434",
+    paddingTop: StatusBar.currentHeight || 0,
+    paddingBottom: 8,
+    gap: 60,
+  }}
+      >
              <View style={{ marginTop: 5,marginBottom:5 }}>
             <Button onPress={backHandler}>
               <Image source={back} style={{ width: 15, height: 15,tintColor:`white` }} />
             </Button>
           </View>
           <View>
-            <Text style={{textAlign:'center',paddingLeft:5,paddingTop:9, fontSize: 17, fontWeight: '600',color:`white`,paddingBottom:5}}>{commonHeaderName}</Text>
+            <Text style={{textAlign:'center',paddingTop:9, fontSize: 17, fontWeight: '600', color:`white`,paddingBottom:5}}>{commonHeaderName}</Text>
           </View>
         </View>
     </>

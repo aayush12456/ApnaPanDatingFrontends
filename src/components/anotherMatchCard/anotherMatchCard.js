@@ -120,19 +120,19 @@ return (
         <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Mobile Number</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{mainNumber}</Text>
+          color:`white` }}>{mainNumber}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Relationship status</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.relationship}</Text>
+          color:`white` }}>{anotherMatch?.relationship}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>I'm looking for</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.looking}</Text>
+          color:`white` }}>{anotherMatch?.looking}</Text>
       </View>
 
       <View style={{paddingLeft:10,paddingTop:18}}>
@@ -145,7 +145,7 @@ return (
         row.map((rowItem, itemIndex) => (
           <View  key={`${rowIndex}-${itemIndex}`} style={{ backgroundColor: 'rgba(226, 232, 240, 0.5)', width: 130, height: 40 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', paddingTop: 6,  
-            color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{rowItem}</Text>
+            color:`white` }}>{rowItem}</Text>
           </View>
         ))
       }
@@ -158,34 +158,34 @@ return (
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Education</Text>
         <Text style={{fontSize:16 ,paddingTop:2,  
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.education}</Text>
+          color:`white` }}>{anotherMatch?.education}</Text>
       </View>
 
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Profession</Text>
         <Text style={{fontSize:16 ,paddingTop:2,  
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.profession}</Text>
+          color:`white` }}>{anotherMatch?.profession}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Drinking</Text>
         <Text style={{fontSize:16 ,paddingTop:2,
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.drinking}</Text>
+          color:`white` }}>{anotherMatch?.drinking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Smoking</Text>
         <Text style={{fontSize:16 ,paddingTop:2,  
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.smoking}</Text>
+          color:`white` }}>{anotherMatch?.smoking}</Text>
       </View>
 
       
       <View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Eating</Text>
         <Text style={{fontSize:16 ,paddingTop:2,  
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}>{anotherMatch?.eating}</Text>
+          color:`white` }}>{anotherMatch?.eating}</Text>
       </View>
 
     {anotherMatch.songId!=='none' || !anotherMatch.songId? <View style={{paddingLeft:10,paddingTop:18}}>
@@ -193,10 +193,10 @@ return (
         <View style={{flexDirection:'row',marginTop:8,gap:8}}>
           <Image source={{uri:songs &&songs.songImage}} style={{width:50,height:50,borderRadius:25}}/>
           <Text style={{fontSize:16 ,fontWeight:'semibold',
-          color:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}`,paddingTop:6}}>{songs && songs.songName}</Text>
+          color:`white`,paddingTop:6}}>{songs && songs.songName}</Text>
           <Pressable  onPress={() => playSongHandler(songs.songUrl)}> 
           <Image  source={isPlaying && currentSongUrl === songs.songUrl? pause: play}  style={{ width: 27, height: 27,
-             marginTop: 6, marginRight: 20,tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/>
+             marginTop: 6, marginRight: 20,tintColor:`white` }}/>
           </Pressable>
         </View>
       </View>:null}

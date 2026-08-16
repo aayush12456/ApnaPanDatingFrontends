@@ -1,4 +1,4 @@
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image,StatusBar } from 'react-native';
 import { Button } from 'react-native-paper';
 import arrow from '../../../assets/signUpFormIcon/back.png';
 import { useSelector } from 'react-redux';
@@ -67,21 +67,32 @@ const AnotherHeader = ({ editObj,navigation,completeObj }) => {
     };
 
     return (
-        <View style={{backgroundColor: `#343434` ,
-        height: 50, marginTop: 40, flexDirection: 'row', alignItems: 'center' }}>
+        <View
+        style={{
+      flexDirection: "row",
+      backgroundColor: "#343434",
+      paddingTop: StatusBar.currentHeight || 0,
+      paddingBottom: 8,
+      gap: 60,
+    }}
+        >
            
-                <Button onPress={()=>backArrowHandler(editObj?.name)} style={{marginLeft:7}}
+              <View style={{ marginTop: 5,marginBottom:5 }}>
+              <Button onPress={()=>backArrowHandler(editObj?.name)} 
                 ><Image source={arrow} style={{ width: 15, height: 15,
                     tintColor:`white` }} /></Button>
-      
-           { (editObj?.name===objSelector?.firstName)|| (editObj?.name===anotherObjSelector?.firstName)?<Text style={{ textAlign: 'center', fontSize: 17, fontWeight: '600',  color:`white`
-           , flex: 1,paddingRight:40}}>
+              </View>
+      <View>
+      { (editObj?.name===objSelector?.firstName)|| (editObj?.name===anotherObjSelector?.firstName)?<Text style={{ textAlign: 'center', fontSize: 17, fontWeight: '600',  color:`white`
+           , paddingTop:9,paddingBottom:9}}>
                 {`${editObj?.name} photos` }
             </Text>:
-           <Text style={{ textAlign: 'center', fontSize: 17, fontWeight: '600', color:`white`,
-            flex: 1,paddingRight:40}}>
+           <Text style={{ textAlign: 'center', fontSize: 17, fontWeight: '600', color:`white`,paddingTop:9,paddingBottom:9
+        }}>
                 {editObj?.name }
             </Text>}
+      </View>
+        
         </View>
     );
 };
