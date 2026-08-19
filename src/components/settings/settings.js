@@ -29,13 +29,36 @@ const Settings=({completeObj,notifyToken})=>{
         }
         navigation.navigate('AccountSettingsPage', {formData:accountSettingsObj});
     }
-    // const appearanceHandler=()=>{
-    //     const appearanceObj={
-    //         headerName:'Dark Mode',
-    //         loginDetails:completeObj
-    //     }
-    //     navigation.navigate('AppearancePage', {formData:appearanceObj});
-    // }
+  
+    const privacyPolicyHandler=()=>{
+        const privacyPolicyObj={
+            headerName:'Privacy Policy',
+            loginDetails:completeObj,
+        }
+        navigation.navigate('PrivacyPolicyPage', {formData:privacyPolicyObj});
+    }
+    const communityGuidelinesHandler=()=>{
+        const communityGuidelineObj={
+            headerName:'Community Guidelines',
+            loginDetails:completeObj,
+        }
+        navigation.navigate('CommunityGuidelinePage', {formData:communityGuidelineObj});
+    }
+
+    const TermsConditionHandler=()=>{
+        const TermsConditionObj={
+            headerName:'Terms & Conditions',
+            loginDetails:completeObj,
+        }
+        navigation.navigate('TermsConditionPage', {formData:TermsConditionObj});
+    }
+    const aboutUsHandler=()=>{
+        const aboutUsObj={
+            headerName:'About Us',
+            loginDetails:completeObj,
+        }
+        navigation.navigate('AboutUsPage', {formData:aboutUsObj});
+    }
 return (
     <>
     <View style={{marginTop:30}}>
@@ -61,6 +84,8 @@ return (
      </View>
     </View>
     </Pressable>
+    </View>
+
     <View style={{marginTop:20}}>
     <Text style={{paddingLeft:20,color:`white`}}>Account</Text>
     <Pressable onPress={accounSettingsHandler}>
@@ -76,20 +101,66 @@ return (
     </Pressable>
     </View>
     
-    {/* <View style={{marginTop:20}}>
-    <Text style={{paddingLeft:20,color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Appearance</Text>
-    <Pressable onPress={appearanceHandler}>
-    <View style={{backgroundColor:`${completeObj?.appearanceMode==='Dark Mode'?'#343434':'#dcdcdc'}`
-    ,width:'90%',marginLeft:20,marginTop:7}}>
+    <View style={{marginTop:20}}>
+    <Text style={{paddingLeft:20,color:`white`}}>Legal</Text>
+
+
+    <Pressable onPress={privacyPolicyHandler}>
+    <View style={{backgroundColor:`#343434`,
+    width:'90%',marginLeft:20,marginTop:7}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
         <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
-        color:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>Dark Mode</Text>
+        color:`white`}}>Privacy Policy</Text>
         <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
-         tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':'black'}` }}/>
+        tintColor:`white` }}/>
      </View>
     </View>
     </Pressable>
-    </View> */}
+    <Pressable onPress={TermsConditionHandler}>
+    <View style={{backgroundColor:`#343434`,width:'90%',marginLeft:20}}>
+     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+        <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
+        color:`white`}}>Terms & Conditions</Text>
+        <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
+         tintColor:`white` }}/>
+     </View>
+    </View>
+    </Pressable>
+    <Pressable onPress={communityGuidelinesHandler}>
+    <View style={{backgroundColor:`#343434`,width:'90%',marginLeft:20}}>
+     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+        <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
+        color:`white`}}>Community Guidelines</Text>
+        <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
+         tintColor:`white` }}/>
+     </View>
+    </View>
+    </Pressable>
+    </View>
+
+    <View style={{marginTop:20}}>
+    <Text style={{paddingLeft:20,color:`white`}}>Support</Text>
+    <Pressable onPress={skippedProfileHandler}>
+    <View style={{backgroundColor:`#343434`,
+    width:'90%',marginLeft:20,marginTop:7}}>
+     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+        <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
+        color:`white`}}>Contact Us</Text>
+        <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
+        tintColor:`white` }}/>
+     </View>
+    </View>
+    </Pressable>
+    <Pressable onPress={aboutUsHandler}>
+    <View style={{backgroundColor:`#343434`,width:'90%',marginLeft:20}}>
+     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+        <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
+        color:`white`}}>About Us</Text>
+        <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
+         tintColor:`white` }}/>
+     </View>
+    </View>
+    </Pressable>
     </View>
     </>
 )

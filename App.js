@@ -70,8 +70,11 @@ import MessagePage from './src/Pages/messagePage/messagePage';
 import CallScreenPage from './src/Pages/callScreenPage/callScreenPage';
 import IncomingCallScreenPage from './src/Pages/incomingCallScreenPage/incomingCallScreenPage';
 import InternetChecker from './src/components/internetChecker/internetChecker';
-import VideoCallScreenPage from './src/Pages/videoCallScreenPage/videoCallScreenPage';
-import IncomingVideoCallScreenPage from './src/Pages/incomingVideoCallScreenPage/incomingVideoCallScreenPage';
+import PrivacyPolicyPage from './src/Pages/privacyPolicyPage/privacyPolicyPage';
+import CommunityGuidelinePage from './src/Pages/communityGuidelinePage/communityGuidelinePage';
+import TermsConditionPage from './src/Pages/termsCondtionPage/termsConditionPage';
+import AboutUsPage from './src/Pages/aboutUsPage/aboutUsPage';
+
 
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
@@ -536,14 +539,24 @@ console.log('is log in',isLoggedIn)
           component={IncomingCallScreenPage}
           options={{ headerShown: false }}
         />
-           <Stack.Screen
-          name="VideoCallScreenPage"
-          component={VideoCallScreenPage}
+             <Stack.Screen
+          name="PrivacyPolicyPage"
+          component={PrivacyPolicyPage}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
-          name="IncomingVideoCallScreenPage"
-          component={IncomingVideoCallScreenPage}
+            <Stack.Screen
+          name="CommunityGuidelinePage"
+          component={CommunityGuidelinePage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="TermsConditionPage"
+          component={TermsConditionPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AboutUsPage"
+          component={AboutUsPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

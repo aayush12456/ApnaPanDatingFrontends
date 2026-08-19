@@ -26,6 +26,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const ExpertChat = ({ obj, completeObj }) => {
 
 
+
   const [queryText, setQueryText] = useState("");
   const [responseExpertObj, setResponseExpertObj] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
