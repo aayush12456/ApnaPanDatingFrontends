@@ -12,6 +12,7 @@ import unsend from "../../../assets/chatIcons/unsend.png";
 import block from "../../../assets/chatIcons/block.png";
 import typingIcon from "../../../assets/chatIcons/chat.gif";
 import guru from "../../../assets/chatIcons/guru.png";
+import reportIcon from "../../../assets/chatIcons/reportIcon.png";
 import pinkThemeImg from "../../../assets/chatIcons/pinktheme.png";
 import violetThemeImg from "../../../assets/chatIcons/violetTheme.png";
 import blueThemeImg from "../../../assets/chatIcons/blueTheme.png";
@@ -32,6 +33,8 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 import { bottomSheetOpenModalToggleActions } from "../../Redux/Slice/bottomSheetOpenModalSlice/bottomSheetOpenModalSlice";
 import ChatTheme from "../chatTheme/chatTheme";
+import { anotherBottomSheetModalToggleActions } from "../../Redux/Slice/anotherBottomSheetModalSlice/anotherBottomSheetModalSlice";
+import ReportSheet from "../reportSheet/reportSheet";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser,notifyChecks }) => {
@@ -65,6 +68,7 @@ const [sendingImage, setSendingImage] = useState(false);
 const [cameraFacing, setCameraFacing] = useState("back");
 
 const themeSheetRef = useRef(null);
+const anotherthemeSheetRef=useRef(null)
 
   const windowHeight = Dimensions.get('window').height;
   // console.log('window heigth', windowHeight)
@@ -780,6 +784,11 @@ const getTimeColor = (message) => {
     dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
   }
 
+  const anotheroOpenThemeSheet=()=>{
+    anotherthemeSheetRef.current?.open();
+    dispatch(anotherBottomSheetModalToggleActions.anotherBottomSheetModalToggle())
+    dispatch(dotsOpenModalToggleActions.dotsOpenModalToggle())
+  }
   const viewProfileBlockHandler=async(messageDetailProfile)=>{
     const blockChatIdObj={
     id:loginId,
@@ -1059,6 +1068,9 @@ const startVideoCall = () => {
   );
 };
 
+const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
+  recieverName:messageDetails?.firstName,recieverEmail:messageDetails?.email,loginId:loginId,blockId:messageDetails?._id}
+
   return (
     <>
     <AlertNotificationRoot>
@@ -1274,6 +1286,26 @@ const startVideoCall = () => {
   <Ionicons name="chevron-forward" size={18} color="black" />
 </View>
               </Pressable>
+
+              <Divider style={{ marginVertical: 8 }} /> 
+              <Pressable onPress={anotheroOpenThemeSheet}>
+              <View
+  style={{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 4,
+  }}
+>
+  <View style={{ flexDirection: "row", gap: 8 }}>
+    <Image source={reportIcon} style={{ width: 30, height: 30 }} />
+    <Text style={{ paddingTop: 4 }}>Report</Text>
+  </View>
+
+  <Ionicons name="chevron-forward" size={18} color="black" />
+</View>
+              </Pressable>
+           
             </Card.Content>
           </Card>
         </View>}
@@ -1835,6 +1867,8 @@ deactivateUserObj.selfDeactivate === loginId ? (
 
 <ChatTheme ref={themeSheetRef} loginId={loginId} recieverId={messageDetails?._id} 
 loginTheme={loginThemeChat} recieverTheme={recieverThemeChat}/>
+
+<ReportSheet ref={anotherthemeSheetRef} reportObj={reportObj}  />
 </KeyboardAvoidingView>
     </AlertNotificationRoot>
     </>

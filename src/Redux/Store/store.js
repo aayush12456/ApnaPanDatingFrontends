@@ -34,6 +34,9 @@ import appearModeSlice from "../Slice/appearModeSlice/appearModeSlice"
 import verifyOtpSlice from "../Slice/verifyOtpSlice/verifyOtpSlice"
 import getPersonalProfileSlice from "../Slice/getPersonalProfileSlice/getPersonalProfileSlice"
 import bottomSheetOpenModalSlice from "../Slice/bottomSheetOpenModalSlice/bottomSheetOpenModalSlice"
+import contactUsSlice from "../Slice/contactUsSlice/contactUsSlice"
+import anotherBottomSheetModalSlice from "../Slice/anotherBottomSheetModalSlice/anotherBottomSheetModalSlice"
+import reportSlice from "../Slice/reportSlice/reportSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -70,7 +73,11 @@ const store=configureStore({
         getBollyWoodSong:getBollywoodSongSlice,
         toasts:changePasswordToastSlice,
         appearMode:appearModeSlice,
-        bottomSheet:bottomSheetOpenModalSlice
+        bottomSheet:bottomSheetOpenModalSlice,
+        contactUs:contactUsSlice,
+        anotherBottomSheet:anotherBottomSheetModalSlice,
+        report:reportSlice
+
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

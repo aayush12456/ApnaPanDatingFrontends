@@ -49,6 +49,14 @@ const CommonHeader = ({ commonHeaderName }) => {
       navigation.goBack();
       return;
     }
+    if (commonHeaderName === "Contact Us") {
+      navigation.goBack();
+      return;
+    }
+    if (commonHeaderName === "Report") {
+      navigation.goBack();
+      return;
+    }
   };
 
   return (

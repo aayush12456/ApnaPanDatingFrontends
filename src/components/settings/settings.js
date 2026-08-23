@@ -1,5 +1,5 @@
 import { Text } from "react-native-paper"
-import {View,Image, Pressable} from 'react-native'
+import {View,Image, Pressable,ScrollView} from 'react-native'
 import rightArrow from '../../../assets/settingIcons/rightArrow.png'
 import { useNavigation } from "@react-navigation/native"
 
@@ -52,6 +52,15 @@ const Settings=({completeObj,notifyToken})=>{
         }
         navigation.navigate('TermsConditionPage', {formData:TermsConditionObj});
     }
+
+    const contactUsHandler=()=>{
+        const contactUsObj={
+            headerName:'Contact Us',
+            loginDetails:completeObj,
+        }
+        navigation.navigate('ContactUsPage', {formData:contactUsObj});
+    }
+
     const aboutUsHandler=()=>{
         const aboutUsObj={
             headerName:'About Us',
@@ -61,6 +70,7 @@ const Settings=({completeObj,notifyToken})=>{
     }
 return (
     <>
+    <ScrollView>
     <View style={{marginTop:30}}>
     <Text style={{paddingLeft:20,color:`white`}}>Skipped / Blocked profiles</Text>
     <Pressable onPress={skippedProfileHandler}>
@@ -140,7 +150,7 @@ return (
 
     <View style={{marginTop:20}}>
     <Text style={{paddingLeft:20,color:`white`}}>Support</Text>
-    <Pressable onPress={skippedProfileHandler}>
+    <Pressable onPress={contactUsHandler}>
     <View style={{backgroundColor:`#343434`,
     width:'90%',marginLeft:20,marginTop:7}}>
      <View style={{flexDirection:'row',justifyContent:'space-between'}}>
@@ -162,6 +172,8 @@ return (
     </View>
     </Pressable>
     </View>
+    </ScrollView>
+   
     </>
 )
 }

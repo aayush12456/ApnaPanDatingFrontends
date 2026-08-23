@@ -74,6 +74,8 @@ import PrivacyPolicyPage from './src/Pages/privacyPolicyPage/privacyPolicyPage';
 import CommunityGuidelinePage from './src/Pages/communityGuidelinePage/communityGuidelinePage';
 import TermsConditionPage from './src/Pages/termsCondtionPage/termsConditionPage';
 import AboutUsPage from './src/Pages/aboutUsPage/aboutUsPage';
+import ContactUsPage from './src/Pages/contactUsPage/contactUsPage';
+import ReportPage from './src/Pages/reportPage/reportPage';
 
 
 const Stack = createNativeStackNavigator();
@@ -83,13 +85,11 @@ function AppContent() {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const socketRef = useRef(null);
-  const [visitorNotifyObj, setVisitorNotifyObj] = useState([])
   const [loading, setLoading] = useState(true);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
 const [loginDetails,setLoginDetails]=useState({})
 
   const darkColors = {
-    label: '#ffffff',
     card: 'white',
     overlay: '#444444',
     success: '#28a745',
@@ -200,69 +200,7 @@ const [loginDetails,setLoginDetails]=useState({})
 
 
 
-useEffect(() => {
 
-  const fetchVisitorNotify = async () => {
-      try {
-        if(completeLoginObjData?._id){
-          const response = await axios.get(`${BASE_URL}/user/getVisitorCount/${completeLoginObjData?._id}`);
-          setVisitorNotifyObj(response.data.userObj);
-
-        }
-      } catch (error) {
-          // console.error("Error fetching messages:", error);
-      }
-  };
-  fetchVisitorNotify()
-  socket.on('getVisitorCountUser', (newVisitorNotifyUser) => {
-    setVisitorNotifyObj(newVisitorNotifyUser);
-  })
-  return () => {
-      socket.off('getVisitorCountUser')
-  }
-}, [completeLoginObjData?._id])
-// console.log('visitor notify in app.js',visitorNotifyObj)
-
-useEffect(() => {
-  if (visitorNotifyObj?.visitorNotify?.length > 0 && completeLoginObjData._id===visitorNotifyObj.id) {
-    visitorNotifyObj?.visitorNotify.map((notify, index) => {
-      Toast.show({
-        textBody: (
-          <View
-            key={index}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 10,
-              textAlign: 'left',
-            }}
-          >
-            <Image
-              source={{ uri: notify.images }}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25, // Circular image
-                marginRight: 10,
-              }}
-            />
-            <View>
-          <Text style={{color:'black'}}>{notify.visitorName} visited you</Text>
-          
-          <Text style={{color:'black'}} >please checkout your visitors</Text>
-            </View>
-            <View style={{width:20,height:20,borderRadius:20,backgroundColor:'black',marginLeft:40,marginTop:-10}}>
-            <Image source={right} style={{width:11,height:11,marginTop:4,marginLeft:3,tintColor:'white'}}/>
-            </View>
-          </View>
-        ),
-        autoClose: 13000, // Optional: automatically hide after 3 second
- 
-      });
-    });
-  }
-}, [visitorNotifyObj,completeLoginObjData,visitorNotifyObj?.visitorNotify?.length>0]);
-console.log('is log in',isLoggedIn)
 
 
 
@@ -557,6 +495,16 @@ console.log('is log in',isLoggedIn)
         <Stack.Screen
           name="AboutUsPage"
           component={AboutUsPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="ContactUsPage"
+          component={ContactUsPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="ReportPage"
+          component={ReportPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

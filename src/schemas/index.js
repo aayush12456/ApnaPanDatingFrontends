@@ -42,3 +42,9 @@ export const updatePasswordSchema=Yup.object({
   confirmNewPassword:Yup.string().min(6).required("Confirm Password is mandatory"),
   
 })
+
+export const contactUs=Yup.object({
+  name:Yup.string().min(2).required("Please enter name"),
+  phoneNumber:Yup.string().min(2).required("Please select mobile number"),
+  message:Yup.string().min(2).required("Please enter messagge"),
+})

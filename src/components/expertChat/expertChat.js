@@ -23,8 +23,7 @@ import {
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const ExpertChat = ({ obj, completeObj }) => {
-
+const ExpertChat = ({ obj }) => {
 
 
   const [queryText, setQueryText] = useState("");

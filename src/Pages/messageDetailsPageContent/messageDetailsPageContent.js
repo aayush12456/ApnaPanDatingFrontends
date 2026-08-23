@@ -114,7 +114,7 @@ const MessageDetailsPageContent=({route})=>{
   console.log('checks data',notifyChecks)
 return (
     <>
-    <ScreenShotCapture/>
+    {/* <ScreenShotCapture/> */}
     <View style={{backgroundColor:`black`,height:"100%"}}>
     <MessageDetailsCard messageDetails={formData} deactivateUserObj={deactivateUserObj}
      completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify} notifyChecks={notifyChecks}/>
