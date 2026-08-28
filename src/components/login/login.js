@@ -1,6 +1,6 @@
 
 import { TextInput } from 'react-native-paper';
-import { Image, View, TouchableOpacity, Text,StatusBar } from "react-native";
+import { Image, View, TouchableOpacity, Text,StatusBar,Alert } from "react-native";
 import { Button } from 'react-native-paper';
 import { Formik } from 'formik';
 import { loginSchema } from '../../schemas';
@@ -89,7 +89,40 @@ return (
       onSubmit={(values,action) => {
         setLoading(true);
         console.log('value is',values)
-       dispatch(userLoginAsync(values))
+       
+  if (values.phone === "9479918217") {
+    setLoading(false);
+
+    Alert.alert(
+      "Login",
+      "Please choose how you want to continue.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Admin Login",
+          onPress: () => {
+            // Admin login logic
+            console.log("Admin Login clicked");
+            navigation.navigate("verifyOtpPage",{
+              formData:{name:"admin"}
+               })
+          },
+        },
+        {
+          text: "User Login",
+          onPress: () => {
+            dispatch(userLoginAsync(values));
+          },
+        },
+      ]
+    );
+  } 
+        else{
+          dispatch(userLoginAsync(values))
+        }
       
       }}
     >

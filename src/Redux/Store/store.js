@@ -37,6 +37,8 @@ import bottomSheetOpenModalSlice from "../Slice/bottomSheetOpenModalSlice/bottom
 import contactUsSlice from "../Slice/contactUsSlice/contactUsSlice"
 import anotherBottomSheetModalSlice from "../Slice/anotherBottomSheetModalSlice/anotherBottomSheetModalSlice"
 import reportSlice from "../Slice/reportSlice/reportSlice"
+import getFieldRegisterUserSlice from "../Slice/getFieldRegisterUserSlice/getFieldRegisterUserSlice"
+import deleteProfileArraySlice from "../Slice/deleteProfileArraySlice/deleteProfileArraySlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -76,7 +78,9 @@ const store=configureStore({
         bottomSheet:bottomSheetOpenModalSlice,
         contactUs:contactUsSlice,
         anotherBottomSheet:anotherBottomSheetModalSlice,
-        report:reportSlice
+        report:reportSlice,
+        fieldReport:getFieldRegisterUserSlice,
+        profileDeleteArray:deleteProfileArraySlice
 
     },
     middleware: (getDefaultMiddleware) =>

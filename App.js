@@ -76,6 +76,8 @@ import TermsConditionPage from './src/Pages/termsCondtionPage/termsConditionPage
 import AboutUsPage from './src/Pages/aboutUsPage/aboutUsPage';
 import ContactUsPage from './src/Pages/contactUsPage/contactUsPage';
 import ReportPage from './src/Pages/reportPage/reportPage';
+import AdminHeaderPage from './src/Pages/adminHeaderPage/adminHeaderPage';
+import AdminPageContent from './src/Pages/adminPageContent/adminPageContent';
 
 
 const Stack = createNativeStackNavigator();
@@ -505,6 +507,22 @@ const [loginDetails,setLoginDetails]=useState({})
          <Stack.Screen
           name="ReportPage"
           component={ReportPage}
+          options={{ headerShown: false }}
+        />
+
+{/* <Stack.Screen
+          name="AdminPage"
+          component={AdminPage}
+          options={{ headerShown: false }}
+        /> */}
+        <Stack.Screen
+          name="AdminHeaderPage"
+          component={AdminHeaderPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="AdminPageContent"
+          component={AdminPageContent}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
