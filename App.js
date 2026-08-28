@@ -78,6 +78,7 @@ import ContactUsPage from './src/Pages/contactUsPage/contactUsPage';
 import ReportPage from './src/Pages/reportPage/reportPage';
 import AdminHeaderPage from './src/Pages/adminHeaderPage/adminHeaderPage';
 import AdminPageContent from './src/Pages/adminPageContent/adminPageContent';
+import ReplyMailPage from './src/Pages/replyMailPage/replyMailPage';
 
 
 const Stack = createNativeStackNavigator();
@@ -523,6 +524,11 @@ const [loginDetails,setLoginDetails]=useState({})
          <Stack.Screen
           name="AdminPageContent"
           component={AdminPageContent}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="ReplyMailPage"
+          component={ReplyMailPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

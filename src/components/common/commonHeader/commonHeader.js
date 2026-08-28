@@ -57,6 +57,10 @@ const CommonHeader = ({ commonHeaderName }) => {
       navigation.goBack();
       return;
     }
+    if (commonHeaderName === "Reply Mail") {
+      navigation.goBack();
+      return;
+    }
   };
 
   return (

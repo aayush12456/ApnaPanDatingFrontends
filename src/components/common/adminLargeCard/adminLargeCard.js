@@ -50,6 +50,15 @@ dispatch( getFieldRegisterUserData(userObj?._id))
 
       const finalRegister=useSelector((state)=>state?.profileDeleteArray?.deleteProfileArrayObj)
       // console.log('final register',finalRegister)
+
+      const replyMailHandler=(userObj)=>{
+        const replyObj={
+          name:userObj.firstName,
+          phone:userObj.phone,
+          email:userObj.email
+        }
+        navigation.navigate('ReplyMailPage',{formData:replyObj,headerName:'Reply Mail'})
+      }
 return (
     <>
       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, 
@@ -314,7 +323,7 @@ return (
                         marginTop: 9,
                       }}
                       buttonColor="blue"
-                   
+                    onPress={()=>replyMailHandler(userObj)}
                     >
                       Reply
                     </Button>
