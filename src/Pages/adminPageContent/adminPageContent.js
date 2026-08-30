@@ -1,5 +1,5 @@
 import AdminLargeCard from "../../components/common/adminLargeCard/adminLargeCard"
-import { StatusBar,Image ,Text,View} from 'react-native';
+import { StatusBar,View} from 'react-native';
 const AdminPageContent=({route})=>{
     // console.log('route page',route)
     const userObj=route?.params?.formData

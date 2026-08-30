@@ -1,4 +1,4 @@
-import {View,Text,ScrollView} from 'react-native' 
+import {View,Text,ScrollView,RefreshControl} from 'react-native' 
 import { useEffect,useState } from 'react'
 import axios from 'axios'
 import io from "socket.io-client";
@@ -8,36 +8,79 @@ const Admin=()=>{
 const BASE_URL = "http://192.168.29.169:4000";    
 const id=1
 const [allUserArray,setAllUserArray]=useState({})
+const [refreshing, setRefreshing] = useState(false);
+// useEffect(() => {
+//     const fetchRegisterUsers = async () => {
+//       try {
+//         if (id) {
+//           const response = await axios.get(
+//             `${BASE_URL}/user/allRegisterUser/${id}`
+//           );
+//           setAllUserArray(response?.data );
+//         }
+//       } catch (error) {
+//         // console.error("Error fetching matches:", error);
+//       }
+//     };
+  
+//     fetchRegisterUsers();
+  
+//     socket.on("getRegisterUser", (newUser) => {
+  
+//       setAllUserArray(newUser)
+//     });
+  
+//     return () => {
+//       socket.off("getRegisterUser");
+//     };
+//   }, [id]);
+const fetchRegisterUsers = async () => {
+  try {
+    if (id) {
+      const response = await axios.get(
+        `${BASE_URL}/user/allRegisterUser/${id}`
+      );
+
+      setAllUserArray(response?.data);
+    }
+  } catch (error) {
+    console.log("Error fetching register users:", error);
+  }
+};
+
+const onRefresh = async () => {
+  setRefreshing(true);
+
+  await fetchRegisterUsers();
+
+  setRefreshing(false);
+};
 
 useEffect(() => {
-    const fetchRegisterUsers = async () => {
-      try {
-        if (id) {
-          const response = await axios.get(
-            `${BASE_URL}/user/allRegisterUser/${id}`
-          );
-          setAllUserArray(response?.data );
-        }
-      } catch (error) {
-        // console.error("Error fetching matches:", error);
-      }
-    };
-  
-    fetchRegisterUsers();
-  
-    socket.on("getRegisterUser", (newUser) => {
-  
-      setAllUserArray(newUser)
-    });
-  
-    return () => {
-      socket.off("getRegisterUser");
-    };
-  }, [id]);
+
+  fetchRegisterUsers();
+
+  socket.on("getRegisterUser", (newUser) => {
+    setAllUserArray(newUser);
+  });
+
+  return () => {
+    socket.off("getRegisterUser");
+  };
+
+}, [id]);
+
   console.log('all user array',allUserArray)
 return (
     <>
-    <ScrollView>
+ <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
     {
         allUserArray?.users?.map((user,index)=>{
             return (

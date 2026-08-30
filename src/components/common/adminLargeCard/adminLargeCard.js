@@ -1,5 +1,5 @@
 import { Text, Card ,Button} from "react-native-paper";
-import { useState,useEffect,useRef } from "react";
+import { useState,useEffect} from "react";
 import { View,Image,ScrollView,StyleSheet,Dimensions,Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import back from '../../../../assets/signUpFormIcon/back.png'

@@ -1,6 +1,6 @@
 import { View,ScrollView,KeyboardAvoidingView, Platform,Text,ActivityIndicator,Alert,Pressable} from "react-native"
 import { TextInput,Button } from 'react-native-paper';
-import {  useState } from "react";
+import {  useState,useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from 'expo-image';
@@ -117,7 +117,6 @@ setMessageText(text)
       console.log("REPORT FORM DATA READY",formData);
 
       dispatch(userReportAsync(formData))
-      setMessageText('')
     } catch (error) {
       console.log("Submit report error:", error);
 
@@ -151,7 +150,14 @@ setMessageText(text)
 const finishedHandler=()=>{
   dispatch(reportUsData());
 }
- 
+
+useEffect(() => {
+  if (reportSelector?.mssg === "Report submitted successfully") {
+    setSelectedImage(null);
+    setMessageText('')
+  }
+}, [reportSelector?.mssg]);
+
 return (
     <>
 <KeyboardAvoidingView
