@@ -82,6 +82,7 @@ import ReplyMailPage from './src/Pages/replyMailPage/replyMailPage';
 import ReportPageContent from './src/Pages/reportPageContent/reportPageContent';
 
 
+
 const Stack = createNativeStackNavigator();
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -512,11 +513,6 @@ const [loginDetails,setLoginDetails]=useState({})
           options={{ headerShown: false }}
         />
 
-{/* <Stack.Screen
-          name="AdminPage"
-          component={AdminPage}
-          options={{ headerShown: false }}
-        /> */}
         <Stack.Screen
           name="AdminHeaderPage"
           component={AdminHeaderPage}
@@ -537,6 +533,7 @@ const [loginDetails,setLoginDetails]=useState({})
           component={ReportPageContent}
           options={{ headerShown: false }}
         />
+     
       </Stack.Navigator>
       )
 }

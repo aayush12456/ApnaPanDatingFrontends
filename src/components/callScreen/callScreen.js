@@ -15,8 +15,9 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { ZegoAppID, ZegoAppSign } from "../zego/keyCenter";
 import { Image } from "expo-image";
 import { Audio } from "expo-av";
+import { getCredAsync } from "../../Redux/Slice/getCredSlice/getCredSlice";
 import axios from "axios";
-
+import {useDispatch,useSelector} from 'react-redux';
 // ✅ Shared socket use karo (naya io.connect mat banao)
 // Agar shared socket file nahi banayi to temporary yeh rakh sakte ho
 import io from "socket.io-client";
@@ -28,6 +29,23 @@ const { width, height } = Dimensions.get("window");
 export default function CallScreen() {
   const navigation = useNavigation();
   const route = useRoute();
+
+  // const dispatch=useDispatch()
+  // const id=1
+  // const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
+  // console.log('get cred select',getCredSelector)
+
+
+  // useEffect(()=>{
+  //   if(id ){
+  //     dispatch(getCredAsync(id))
+  //   }
+  //     },[dispatch,id])
+
+  //     const ZegoAppID=getCredSelector?.zegoAppId
+  //     const ZegoAppSign=getCredSelector?.zegoAppSign
+  //     console.log('zego id',ZegoAppID)
+  //     console.log('zego sign',ZegoAppSign)
 
   const {
     roomID,

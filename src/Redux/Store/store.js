@@ -40,6 +40,8 @@ import reportSlice from "../Slice/reportSlice/reportSlice"
 import getFieldRegisterUserSlice from "../Slice/getFieldRegisterUserSlice/getFieldRegisterUserSlice"
 import deleteProfileArraySlice from "../Slice/deleteProfileArraySlice/deleteProfileArraySlice"
 import replyUserSlice from "../Slice/replyUserSlice/replyUserSlice"
+import addCredSlice from "../Slice/addCredSlice/addCredSlice"
+import getCredSlice from "../Slice/getCredSlice/getCredSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -82,7 +84,9 @@ const store=configureStore({
         report:reportSlice,
         fieldReport:getFieldRegisterUserSlice,
         profileDeleteArray:deleteProfileArraySlice,
-        replyUser:replyUserSlice
+        replyUser:replyUserSlice,
+        credential:addCredSlice,
+        getCred:getCredSlice
 
     },
     middleware: (getDefaultMiddleware) =>

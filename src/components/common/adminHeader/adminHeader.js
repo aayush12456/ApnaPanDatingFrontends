@@ -8,6 +8,7 @@ import reportIcon from "../../../../assets/adminIcon/report.png";
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import ReportUserPages from "../../../Pages/reportUserPages/reportUserPages"
+import CredentialsPage from '../../../Pages/credentialsPage/credentialsPage';
 
 const AdminHeader = () => {
   const Drawer = createDrawerNavigator();
@@ -116,7 +117,37 @@ const AdminHeader = () => {
               Report User
             </Text>
           </View>
+          <View 
+  style={{ 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingVertical: 12, 
+    paddingHorizontal: 20, 
+  }}
+>
+  <Image 
+    source={reportIcon} 
+    style={{ 
+      width: 28, 
+      height: 28, 
+      tintColor: 'white', 
+    }} 
+  />
 
+  <Text 
+    style={{ 
+      color: 'white', 
+      marginLeft: 15, 
+      fontSize: 15, 
+      fontWeight: '500', 
+    }}
+    onPress={() => {
+      props.navigation.navigate('Credentials');
+    }}
+  >
+    Credentials
+  </Text>
+</View>
         </View>
 
 
@@ -199,6 +230,17 @@ const AdminHeader = () => {
     }}
   >
     {() => <ReportUserPages />}
+  </Drawer.Screen>
+
+  <Drawer.Screen
+    name="Credentials"
+    options={{
+      drawerItemStyle: {
+        display: "none",
+      },
+    }}
+  >
+    {() => <CredentialsPage/>}
   </Drawer.Screen>
 </Drawer.Navigator>
     </>

@@ -8,6 +8,7 @@ import typingIcon from "../../../assets/chatIcons/chat.gif";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {KeyboardAvoidingView,StatusBar,Platform,Keyboard } from "react-native";
+import {useSelector,useDispatch} from 'react-redux'
 
 import {
   View,
@@ -22,10 +23,22 @@ import {
 
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getCredAsync } from "../../Redux/Slice/getCredSlice/getCredSlice";
 
 const ExpertChat = ({ obj }) => {
+const dispatch=useDispatch()
+  const id=1
+  const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
+  console.log('get cred select',getCredSelector)
 
 
+  useEffect(()=>{
+    if(id ){
+      dispatch(getCredAsync(id))
+    }
+      },[dispatch,id])
+
+  
 
   const [queryText, setQueryText] = useState("");
   const [responseExpertObj, setResponseExpertObj] = useState(null);
