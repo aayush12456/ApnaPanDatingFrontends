@@ -25,7 +25,6 @@ import passwordUpdateSlice from "../Slice/passwordUpdateSlice/passwordUpdateSlic
 import toastSlice from "../Slice/toastSlice/toastSlice"
 import deleteProfileUserSlice from "../Slice/deleteProfileUserSlice/deleteProfileUserSlice"
 import loginWithOtpSlice from "../Slice/loginWithOtpSlice/loginWithOtpSlice"
-import getAllPhoneNumberSlice from "../Slice/getAllPhoneNumberSlice/getAllPhoneNumberSlice"
 import finalLoginWithOtpSlice from "../Slice/finalLoginWithOtpSlice/finalLoginWithOtpSlice"
 import forgotUpdatePasswordUserSlice from "../Slice/forgotUpdatePasswordUserSlice/forgotUpdatePasswordUserSlice"
 import getBollywoodSongSlice from "../Slice/getBollyWoodSongSlice/getBollywoodSongSlice"
@@ -42,6 +41,7 @@ import deleteProfileArraySlice from "../Slice/deleteProfileArraySlice/deleteProf
 import replyUserSlice from "../Slice/replyUserSlice/replyUserSlice"
 import addCredSlice from "../Slice/addCredSlice/addCredSlice"
 import getCredSlice from "../Slice/getCredSlice/getCredSlice"
+import getAllPhoneMailSlice from "../Slice/getAllPhoneMailSlice/getAllPhoneMailSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -73,7 +73,7 @@ const store=configureStore({
         deleteProfileData:deleteProfileUserSlice,
         loginOtpData:loginWithOtpSlice,
         finalLoginWithOtpData:finalLoginWithOtpSlice,
-        getAllPhoneNumber:getAllPhoneNumberSlice,
+        getAllPhoneMail:getAllPhoneMailSlice,
         forgotPasswordUpdateData:forgotUpdatePasswordUserSlice,
         getBollyWoodSong:getBollywoodSongSlice,
         toasts:changePasswordToastSlice,

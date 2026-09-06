@@ -6,7 +6,8 @@ import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect,useState } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
-import { verifyOtpAsync } from '../../Redux/Slice/verifyOtpSlice/verifyOtpSlice';
+import { clearOtpResponse, verifyOtpAsync } from '../../Redux/Slice/verifyOtpSlice/verifyOtpSlice';
+import { clearLoginResponse } from "../../Redux/Slice/loginSlice/loginSlice";
 const VerifyOtp=({datas})=>{
     console.log('data is',datas)
     const navigation = useNavigation();
@@ -38,15 +39,18 @@ const VerifyOtp=({datas})=>{
       };
       //  console.log('final otp obj',finalOtpObj)
       dispatch(verifyOtpAsync(finalOtpObj))
+      dispatch(clearLoginResponse());
       }
 
 
     const cancelOtpHandler=()=>{
         if(datas){
           navigation.goBack()
+          dispatch(clearLoginResponse());
         }
         else{
           navigation.navigate('LoginPage')
+
         }
       }
 
@@ -64,28 +68,54 @@ const VerifyOtp=({datas})=>{
   //     navigation.navigate('HeaderPage');
   //   }
   // }, [loginUser?.token]);
-  useEffect(() => {
-    if (!loginUser) return;
+  // useEffect(() => {
+  //   if (!loginUser) return;
   
-    if (loginUser?.token) {
-      const saveToSecureStore = async () => {
-        try {
-          await SecureStore.setItemAsync(
-            "loginObj",
-            JSON.stringify(loginUser)
-          );
-        } catch (error) {}
+  //   if (loginUser?.token) {
+  //     const saveToSecureStore = async () => {
+  //       try {
+  //         await SecureStore.setItemAsync(
+  //           "loginObj",
+  //           JSON.stringify(loginUser)
+  //         );
+  //       } catch (error) {}
+  
+  //       setLoading(false);
+  //       navigation.navigate("HeaderPage");
+  //     };
+  
+  //     saveToSecureStore();
+  //   } else {
+  //     // API response aa gaya lekin token nahi mila
+  //     setLoading(false);
+  //   }
+  // }, [loginUser]);
+  useEffect(() => {
+    if (!loginUser?.token) return;
+  
+    const saveToSecureStore = async () => {
+      try {
+        await SecureStore.setItemAsync(
+          "loginObj",
+          JSON.stringify(loginUser)
+        );
+  
+        console.log("Login data stored successfully!");
+  
+        // Redux login response clear
+        dispatch(clearOtpResponse());
   
         setLoading(false);
         navigation.navigate("HeaderPage");
-      };
   
-      saveToSecureStore();
-    } else {
-      // API response aa gaya lekin token nahi mila
-      setLoading(false);
-    }
-  }, [loginUser]);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+  
+    saveToSecureStore();
+  
+  }, [loginUser?.token]);
 return (
     <>
 <StatusBar

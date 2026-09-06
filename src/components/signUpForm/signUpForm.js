@@ -38,8 +38,8 @@ const SignUpForm = ({ navigation,allUserObj }) => {
       validationSchema={signUpSchema}
       onSubmit={(values) => {
         // console.log(values); // Handle form submission
-        const emailExists = allUserObj.emailArray.includes(values.email);
-        const phoneExists = allUserObj.phoneNumberArray.includes(values.phone.trim());
+        const emailExists = allUserObj.phoneMailDetail.some((item)=>item.email==values.email);
+        const phoneExists = allUserObj.phoneMailDetail.some((item)=>item.phone==values.phone.trim());
         if (emailExists || phoneExists) {
           setEmailError(emailExists ? 'Email already present' : '');
           setPhoneError(phoneExists ? 'Phone Number already present' : '');

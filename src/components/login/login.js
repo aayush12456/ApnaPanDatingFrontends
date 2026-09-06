@@ -7,62 +7,21 @@ import { loginSchema } from '../../schemas';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import back from '../../../assets/signUpFormIcon/back.png';
-import { userLoginAsync, clearLoginResponse } from '../../Redux/Slice/loginSlice/loginSlice';
+import { userLoginAsync} from '../../Redux/Slice/loginSlice/loginSlice';
 import { useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Login=({navigation})=>{
   const dispatch=useDispatch()
   const [loading, setLoading] = useState(false);
-  // const loginResponse=useSelector((state)=>state.loginData.loginData.token)
+  const [errorBack,setErrorBack]=useState('')
+
   const loginObj=useSelector((state)=>state.loginData.loginObj)
-  // const loginError=useSelector((state)=>state.loginData.error)
-  // console.log('login eror is',loginError)
-  // const getAllLoginIdUserArray=useSelector((state)=>state.loginData.loginData.loginIdUserArray)
-  // console.log('get all login id user array',getAllLoginIdUserArray)
+  const errorObj=useSelector((state)=>state.loginData)
+  console.log('error objs',errorObj)
   console.log(' login response data in login',loginObj)
 
-  // useEffect(() => {
-  //   if (getAllLoginIdUserArray) {
-  //     socket.emit('loginUser',getAllLoginIdUserArray);
-  //     // console.log('Emitted login data:',getAllLoginIdUserArray);
-  //   }
-  // }, [getAllLoginIdUserArray]);
-  // useEffect(() => {
-  //   if (loginResponse) {
-  //     const saveToSecureStore = async () => {
-  //       try {
-  //         await SecureStore.setItemAsync('loginObj', JSON.stringify(loginObj));
-  //         // console.log("Login data stored successfully!");
-  //       } catch (error) {
-  //         // console.error("Failed to store login data:", error);
-  //       }
-  //   };
-  //     saveToSecureStore();
-  //   }
-  // }, [loginResponse]);
-
-  
-
-// useEffect(() => {
-//   if(loginResponse){
-//     const fetchData = async () => {
-//       try {
-//         const token = await SecureStore.getItemAsync('loginToken');
-//         // console.log("Fetched Token:", token);
-//         setLoginToken(token);
-  
-//         if (token) {
-//           navigation.navigate('HeaderPage'); // Navigate if token exists
-//         }
-//       } catch (error) {
-//         // console.error("Error fetching login token:", error);
-//       }
-//     };
-//     fetchData();
-//   }
-
-// }, [loginResponse,navigation]);
+ 
 useEffect(() => {
   if (loginObj?.mssg === "Send OTP successfully") {
     setLoading(false);
@@ -70,13 +29,17 @@ useEffect(() => {
    formData:loginObj
     });
 
-    const timer = setTimeout(() => {
-      dispatch(clearLoginResponse());
-    }, 60000); // 1 minute
+    // const timer = setTimeout(() => {
+    //   dispatch(clearLoginResponse());
+    // }, 30000); // 1 minute
 
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }
-}, [loginObj, navigation, dispatch]);
+  else if(errorObj.error=="No account found with this phone number."){
+    setErrorBack(errorObj.error)
+    setLoading(false)
+  }
+}, [loginObj, errorObj.error, navigation, dispatch]);
 
 
 return (
@@ -88,6 +51,7 @@ return (
       validationSchema={loginSchema}
       onSubmit={(values,action) => {
         setLoading(true);
+        setErrorBack('');
         console.log('value is',values)
        
   if (values.phone === "9479918217") {
@@ -151,11 +115,15 @@ return (
               style={{ marginLeft: 12, marginRight: 20, marginTop: 30 }}
               mode="outlined"
               keyboardType="number-pad"
-              onChangeText={handleChange('phone')}
+              onChangeText={(text) => {
+                setErrorBack('');
+                handleChange('phone')(text);
+              }}
               onBlur={handleBlur('phone')}
               value={values.phone}
             />
-            {touched.phone && errors.phone && <Text style={{ color: 'red', marginLeft: 12 }}>{errors.phone}</Text>}
+            {touched.phone && errors.phone && <Text style={{ color: 'red', marginLeft: 12,paddingTop:3 }}>{errors.phone}</Text>}
+            {errorBack?<Text style={{ color: 'red', marginLeft: 12,paddingTop:3 }}>{errorBack}</Text>:null}
           </View>
               <View style={{ width: '100%', overflow: 'hidden' }}>
                <Button
@@ -196,8 +164,6 @@ return (
                     </Button>
           </View>
                  </View>
-
-           {/* <Text style={{textAlign:'center',paddingTop:13}}>------   OR   ------</Text> */}
              </>
           )}
     </Formik>

@@ -50,10 +50,6 @@ import ChangePasswordPage from './src/Pages/changePasswordPage/changePasswordPag
 import MannageAccountPage from './src/Pages/manageAccountPage/manageAccountPage';
 import DeactivateAccountPage from './src/Pages/deactivateAccountPage/deactivateAccountPage';
 import DeleteAccountPage from './src/Pages/deleteAccountPage/deleteAccountPage';
-import LoginWithOtpPage from './src/Pages/loginWithOtpPage/loginWithOtpPage';
-import LoginWithOtpDataPage from './src/Pages/loginWithOtpDataPage/loginWithOtpDataPage';
-import ForgotPasswordPage from './src/Pages/forgotPasswordPage/forgotPasswordPage';
-import ResetPasswordPage from './src/Pages/resetPasswordPage/resetPasswordPage';
 import ExpertChatPage from './src/Pages/expertChatPage/expertChatPage';
 import axios from 'axios'
 import EditSongsPage from './src/Pages/editSongsPage/editSongsPage';
@@ -272,26 +268,7 @@ const [loginDetails,setLoginDetails]=useState({})
           component={LoginPage}
           options={{ headerShown: false }}
         />
-             <Stack.Screen
-          name="LoginWithOtpPage"
-          component={LoginWithOtpPage}
-          options={{ headerShown: false }}
-        />
-         <Stack.Screen
-          name="LoginWithOtpDataPage"
-          component={LoginWithOtpDataPage}
-          options={{ headerShown: false }}
-        />
-          <Stack.Screen
-          name="ForgotPasswordPage"
-          component={ForgotPasswordPage}
-          options={{ headerShown: false }}
-        />
-          <Stack.Screen
-          name="ResetPasswordPage"
-          component={ResetPasswordPage}
-          options={{ headerShown: false }}
-        />
+           
         <Stack.Screen
           name="HeaderPage"
           component={HeaderPage}

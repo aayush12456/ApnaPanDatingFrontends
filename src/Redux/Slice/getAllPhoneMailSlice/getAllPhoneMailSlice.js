@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from '../../axios/axios'
 
-export const getAllPhoneNumbersData = createAsyncThunk(
-  'phoneNumber/getPhoneNumber',
+export const getAllPhoneMailData = createAsyncThunk(
+  'phoneMail/getAllPhoneMail',
   async (userId, { rejectWithValue }) => {
 
     try {
-      const response = await axios.get(`/completeAllUser/${userId}`); 
+      const response = await axios.get(`/getPhoneMail/${userId}`); 
       // console.log('response of all phone number',response.data)
       return response.data
     } catch (error) {
@@ -15,31 +15,31 @@ export const getAllPhoneNumbersData = createAsyncThunk(
   }
 );
 
-const getAllPhoneNumberSlice = createSlice({
-  name: 'getMatches',
+const getAllPhoneMailSlice = createSlice({
+  name: 'getAllPhoneMail',
   initialState: {
-    getAllPhoneNumbersObj:{},
+    getAllPhoneMailObj:{},
     isLoading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getAllPhoneNumbersData.pending, (state) => {
+    builder.addCase(getAllPhoneMailData.pending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
-    builder.addCase(getAllPhoneNumbersData.fulfilled, (state, action) => {
+    builder.addCase(getAllPhoneMailData.fulfilled, (state, action) => {
       
       state.isLoading = false;
-      state.getAllPhoneNumbersObj = action.payload;
+      state.getAllPhoneMailObj = action.payload;
       // console.log('matches data', state.getUserArray)
     });
-    builder.addCase(getAllPhoneNumbersData.rejected, (state, action) => {
+    builder.addCase(getAllPhoneMailData.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     });
   },
 });
 
-export default getAllPhoneNumberSlice.reducer;
-export const getAllPhoneNumberSliceActions = getAllPhoneNumberSlice.actions;
+export default getAllPhoneMailSlice.reducer;
+export const getAllPhoneMailSliceActions = getAllPhoneMailSlice.actions;

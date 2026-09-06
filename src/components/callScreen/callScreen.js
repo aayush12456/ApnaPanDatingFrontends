@@ -12,7 +12,7 @@ import ZegoExpressEngine, {
   ZegoScenario,
 } from "zego-express-engine-reactnative";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { ZegoAppID, ZegoAppSign } from "../zego/keyCenter";
+// import { ZegoAppID, ZegoAppSign } from "../zego/keyCenter";
 import { Image } from "expo-image";
 import { Audio } from "expo-av";
 import { getCredAsync } from "../../Redux/Slice/getCredSlice/getCredSlice";
@@ -30,22 +30,22 @@ export default function CallScreen() {
   const navigation = useNavigation();
   const route = useRoute();
 
-  // const dispatch=useDispatch()
-  // const id=1
-  // const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
-  // console.log('get cred select',getCredSelector)
+  const dispatch=useDispatch()
+  const id=1
+  const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
+  console.log('get cred select',getCredSelector)
 
 
-  // useEffect(()=>{
-  //   if(id ){
-  //     dispatch(getCredAsync(id))
-  //   }
-  //     },[dispatch,id])
+  useEffect(()=>{
+    if(id ){
+      dispatch(getCredAsync(id))
+    }
+      },[dispatch,id])
 
-  //     const ZegoAppID=getCredSelector?.zegoAppId
-  //     const ZegoAppSign=getCredSelector?.zegoAppSign
-  //     console.log('zego id',ZegoAppID)
-  //     console.log('zego sign',ZegoAppSign)
+      const ZegoAppID=getCredSelector?.zegoAppId
+      const ZegoAppSign=getCredSelector?.zegoAppSign
+      console.log('zego id',ZegoAppID)
+      console.log('zego sign',ZegoAppSign)
 
   const {
     roomID,
