@@ -1,4 +1,4 @@
-import {Image,Text,View,Dimensions,  PermissionsAndroid,  Platform,  StatusBar} from 'react-native'
+import {Image,Text,View,Dimensions,PermissionsAndroid,Platform,StatusBar,Alert} from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import matches from '../../../../assets/sidebarIcons/profileMatch.png'
 import girl from '../../../../assets/sidebarIcons/girl.png'
@@ -21,6 +21,7 @@ import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
 import { registerForPushNotificationsAsync } from '../../notificationToken/notificationToken';
 import * as Notifications from "expo-notifications";
 
+
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Header=()=>{
@@ -36,7 +37,7 @@ const Header=()=>{
     const [recordMessage, setRecordMessage] = useState([])
     const [onlineUsers,setOnlineUsers]=useState([]);
     const [notifyToken,setNotifyToken]=useState('')
-   
+    const [allUserArray,setAllUserArray]=useState({})
    
     // const completeLoginObjForOtp=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.completeLoginData)
     // const completeLoginObj = useSelector(
@@ -123,35 +124,6 @@ const deleteFunction = async () => {
         // console.error('Error deleting like count:', error?.response?.data || error.message);
     }
 };
-
-useEffect(() => {
-  const fetchVisitorCountId = async () => {
-    try {
-      if (loginId) {
-        const response = await axios.get(
-          `${BASE_URL}/user/getVisitorCount/${loginId}`
-        );
-   setVisitorCountObj(response?.data?.userObj)
-      }
-    } catch (error) {
-      // console.error("Error fetching matches:", error);
-    }
-  };
-
-  fetchVisitorCountId();
-
-  socket.on("getVisitorCountUser", (newUser) => {
-
-    setVisitorCountObj(newUser)
-  });
-
-  return () => {
-    socket.off("getVisitorCountUser");
-
-  };
-}, [loginId]);
-// console.log('visitor count obj',visitorCountObj)
-
 
 useEffect(() => {
 
@@ -311,6 +283,70 @@ useEffect(() => {
 }, [loginId]);
 
 
+useEffect(() => {
+    const fetchRegisterUsers = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `${BASE_URL}/user/allRegisterUser/${loginId}`
+          );
+          setAllUserArray(response?.data );
+        }
+      } catch (error) {
+        // console.error("Error fetching matches:", error);
+      }
+    };
+  
+    fetchRegisterUsers();
+  
+    socket.on("getRegisterUser", (newUser) => {
+  
+      setAllUserArray(newUser)
+    });
+  
+    return () => {
+      socket.off("getRegisterUser");
+    };
+  }, [loginId]);
+
+  console.log('all user header',allUserArray)
+
+  useEffect(() => {
+    if (!loginId || !allUserArray?.users) return;
+  
+    const matchId = allUserArray.users.some(
+      (user) => user._id == loginId
+    );
+  
+    console.log("match id header", matchId);
+  
+    if (matchId === false) {
+      Alert.alert(
+        "Access Revoked",
+        "Your Access has been revoked",
+        [
+          {
+            text: "OK",
+            onPress: async () => {
+              await removeLoginData();
+            },
+          },
+        ],
+        {
+          cancelable: false,
+        }
+      );
+    }
+  }, [allUserArray?.users, loginId]);
+
+  const removeLoginData = async () => {
+    try {
+      await SecureStore.deleteItemAsync("loginObj");
+      navigation.navigate("FrontPage");
+    } catch (error) {
+      console.error("Error removing login obj:", error);
+    }
+  };
 return (
     <>
         <StatusBar

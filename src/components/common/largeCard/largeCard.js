@@ -50,6 +50,14 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
   const [animate,setAnimate]=useState(false)
   const [animateObj,setAnimateObj]=useState({})
  
+  useEffect(() => {
+    return () => {
+      if (sound) {
+        sound.stopAsync();
+        sound.unloadAsync();
+      }
+    };
+  }, [sound]);
  
   
   const completeLoginObjData=completeObj || {}
@@ -387,6 +395,7 @@ const repeatCompleteObj=completeObj
           const finalContent=newAndOnlineContent || likeContent 
           // console.log('get all songs',getAllSongsSelector)
           // console.log('finalContent',finalContent.songId)
+          console.log('final content',finalContent)
           useEffect(() => {
             if (finalContent && getAllSongsSelector?.length > 0) {
               const foundSong = getAllSongsSelector.find(

@@ -1,18 +1,29 @@
 import { Card} from "react-native-paper";
 import {View,Text,Image,Pressable,ScrollView,Dimensions,StyleSheet} from 'react-native'
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigation } from '@react-navigation/native';
 import downArrow from '../../../assets/matchIcons/downArrow.png'
 import play from '../../../assets/myProfileIcons/play.png'
 import pause from '../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
-const AnotherMatchCard=({anotherMatch,songs,completeObj})=>{
+const AnotherMatchCard=({anotherMatch,songs})=>{
   // console.log('songs is',songs)
+  console.log('another match board',anotherMatch)
     const navigation = useNavigation();
     const [active, setActive] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSongUrl, setCurrentSongUrl] = useState(null);
     const [sound, setSound] = useState(null);
+
+    useEffect(() => {
+      return () => {
+        if (sound) {
+          sound.stopAsync();
+          sound.unloadAsync();
+        }
+      };
+    }, [sound]);
+
     const getProfile = () =>anotherMatch
     const dob = getProfile()?.DOB;
   const dobBreak = dob?.split("/");
@@ -188,7 +199,7 @@ return (
           color:`white` }}>{anotherMatch?.eating}</Text>
       </View>
 
-    {anotherMatch.songId!=='none' || !anotherMatch.songId? <View style={{paddingLeft:10,paddingTop:18}}>
+    {!anotherMatch.songId || anotherMatch.songId==='none'?null: <View style={{paddingLeft:10,paddingTop:18}}>
       <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Bio Track</Text>
         <View style={{flexDirection:'row',marginTop:8,gap:8}}>
           <Image source={{uri:songs &&songs.songImage}} style={{width:50,height:50,borderRadius:25}}/>
@@ -199,7 +210,7 @@ return (
              marginTop: 6, marginRight: 20,tintColor:`white` }}/>
           </Pressable>
         </View>
-      </View>:null}
+      </View>}
     </ScrollView>
   
     </Card.Content>

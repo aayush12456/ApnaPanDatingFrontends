@@ -27,6 +27,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   console.log('logins id',loginId)
   console.log('notifys',notifyArray)
+  console.log('match obj matches',matchObj)
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [deactivateUserObj,setDeactivateUserObj]=useState({})

@@ -16,7 +16,8 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     // console.log('online like user obj in new and online card',onlineLikeUserObj)
     // console.log('login id',loginId)
-    // console.log('all user',allUser)
+    console.log('online like user',onlineLikeUserObj)
+    console.log('all user',allUser)
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selfLikeMatch,setSelfLikeMatch]=useState(false)
@@ -33,45 +34,45 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
 
-    useEffect(()=>{
-      const fetchAllLoginIdUser = async () => {
-        try {
-          if (loginId) {
-            const response = await axios.get(
-              `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
-            );
-            // setLikesArray(response?.data?.anotherMatchUser || []);
-            // console.log('get all login id user is', response?.data?.loginIdUserArray)
-            setLoginIdUserArray(response?.data?.loginIdUserArray)
-          }
-        } catch (error) {
-          console.error("Error fetching in chat id obj:", error);
-        }
-      };
-      fetchAllLoginIdUser();
+    // useEffect(()=>{
+    //   const fetchAllLoginIdUser = async () => {
+    //     try {
+    //       if (loginId) {
+    //         const response = await axios.get(
+    //           `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
+    //         );
+    //         // setLikesArray(response?.data?.anotherMatchUser || []);
+    //         // console.log('get all login id user is', response?.data?.loginIdUserArray)
+    //         setLoginIdUserArray(response?.data?.loginIdUserArray)
+    //       }
+    //     } catch (error) {
+    //       console.error("Error fetching in chat id obj:", error);
+    //     }
+    //   };
+    //   fetchAllLoginIdUser();
   
-      socket.on("getLoginUser", (newUser) => {
+    //   socket.on("getLoginUser", (newUser) => {
   
-        setLoginIdUserArray(newUser)
-      });
-      socket.on("deleteLoginIdUser", (newUser) => {
-        setLoginIdUserArray(newUser)
-      });
-      return () => {
-        socket.off("getLoginUser");
-        socket.off("deleteLoginIdUser");
-      };
-    },[loginId])
+    //     setLoginIdUserArray(newUser)
+    //   });
+    //   socket.on("deleteLoginIdUser", (newUser) => {
+    //     setLoginIdUserArray(newUser)
+    //   });
+    //   return () => {
+    //     socket.off("getLoginUser");
+    //     socket.off("deleteLoginIdUser");
+    //   };
+    // },[loginId])
   
-    // console.log('login id user array is',loginIdUserArray)
-    useEffect(() => {
-      if (loginId) {
-        const getActiveLoginId = loginIdUserArray?.some(
-          (item) => item === allUser?._id
-        );
-        setActiveLoginIdResponse(getActiveLoginId)
-      }
-    }, [loginId, loginIdUserArray, allUser]);
+    // // console.log('login id user array is',loginIdUserArray)
+    // useEffect(() => {
+    //   if (loginId) {
+    //     const getActiveLoginId = loginIdUserArray?.some(
+    //       (item) => item === allUser?._id
+    //     );
+    //     setActiveLoginIdResponse(getActiveLoginId)
+    //   }
+    // }, [loginId, loginIdUserArray, allUser]);
 
     useEffect(()=>{
       const fetchDeactivateUser = async () => {
@@ -161,6 +162,7 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     const isLiked = onlineLikeUserObj?.selfOnlineLikeUser?.some(
         (onlineLike) => onlineLike?.firstName === allUser?.firstName
     );
+    console.log('is like',isLiked)
     setSelfLikeMatch(isLiked);
 }, [onlineLikeUserObj?.selfOnlineLikeUser, allUser]);
     //  console.log('self online like',selfLikeMatch)

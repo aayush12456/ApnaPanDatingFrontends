@@ -17,18 +17,17 @@ const NewAndOnline = ({route,completeObj}) => {
   console.log('form data in new ', formData);
 
   const dispatch = useDispatch();
-
+console.log('complete objs online',completeObj)
   const completeLoginObjData=completeObj
   const getAllUserArray = useSelector(
     (state) => state.getAllUserData.getAllUserArray.users
   );
   // console.log("get all user array in new ", getAllUserArray);
-
+const loginId=completeObj.userId
 
   const [allUser,setAllUser]=useState(getAllUserArray)
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
   const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
-  const [loginId,setLoginId]=useState('')
   const [visitorArray,setVisitorArray]=useState([])
   const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
   const [deactivateUserObj,setDeactivateUserObj]=useState({})

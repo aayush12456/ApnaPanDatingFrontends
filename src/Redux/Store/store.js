@@ -24,9 +24,6 @@ import passSkipProfileSlice from "../Slice/passSkipProfileSlice/passSkipProfileS
 import passwordUpdateSlice from "../Slice/passwordUpdateSlice/passwordUpdateSlice"
 import toastSlice from "../Slice/toastSlice/toastSlice"
 import deleteProfileUserSlice from "../Slice/deleteProfileUserSlice/deleteProfileUserSlice"
-import loginWithOtpSlice from "../Slice/loginWithOtpSlice/loginWithOtpSlice"
-import finalLoginWithOtpSlice from "../Slice/finalLoginWithOtpSlice/finalLoginWithOtpSlice"
-import forgotUpdatePasswordUserSlice from "../Slice/forgotUpdatePasswordUserSlice/forgotUpdatePasswordUserSlice"
 import getBollywoodSongSlice from "../Slice/getBollyWoodSongSlice/getBollywoodSongSlice"
 import changePasswordToastSlice from "../Slice/changePasswordToastSlice/changePasswordToastSlice"
 import appearModeSlice from "../Slice/appearModeSlice/appearModeSlice"
@@ -71,10 +68,8 @@ const store=configureStore({
         passwordUpdate:passwordUpdateSlice,
         toastData:toastSlice,
         deleteProfileData:deleteProfileUserSlice,
-        loginOtpData:loginWithOtpSlice,
-        finalLoginWithOtpData:finalLoginWithOtpSlice,
+
         getAllPhoneMail:getAllPhoneMailSlice,
-        forgotPasswordUpdateData:forgotUpdatePasswordUserSlice,
         getBollyWoodSong:getBollywoodSongSlice,
         toasts:changePasswordToastSlice,
         appearMode:appearModeSlice,
