@@ -375,13 +375,11 @@ return (
           style={{
             fontSize: 16,
             color:'white',
-            marginRight: 60,
+     
           }}
         >
           {loginObj?.name || 'data'}
         </Text>
-
-       
       </View>
     ),
 

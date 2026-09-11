@@ -28,8 +28,6 @@ const loginId=completeObj.userId
   const [allUser,setAllUser]=useState(getAllUserArray)
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
   const [likeMatchUserObj,setLikeMatchUserObj]=useState({})
-  const [visitorArray,setVisitorArray]=useState([])
-  const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [refreshing, setRefreshing] = useState(false); 
   useEffect(() => {
@@ -41,16 +39,18 @@ const loginId=completeObj.userId
 
   
 // console.log('login id in new and online',loginId)
+const onlinSkipUserSelector=useSelector((state)=>state.onlineSkipUser.addOnlineSkipData.skipUserId)
+console.log('online skip user select',onlinSkipUserSelector)
   useEffect(()=>{
-    if(formData?.onlinePersonSkipUserId){
-      let updateArray=allUser?.filter((filterItem)=>filterItem?._id!==formData?.onlinePersonSkipUserId)
+    if(onlinSkipUserSelector){
+      let updateArray=allUser?.filter((filterItem)=>filterItem?._id!==onlinSkipUserSelector)
       setAllUser(updateArray)
     }
     else{
       setAllUser(getAllUserArray)
     }
     
-    },[formData?.onlinePersonSkipUserId,getAllUserArray])
+    },[onlinSkipUserSelector,getAllUserArray])
 console.log('all user array',allUser)
     useEffect(() => {
       const fetchOnlineLikeUsers = async () => {

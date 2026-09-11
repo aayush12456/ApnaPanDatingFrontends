@@ -27,10 +27,12 @@ const addOnlineSkipUserSlice = createSlice({
   name: 'addOnlineSkipUserSlice',
   initialState: {
     addOnlineSkipData: {}, // Initialize responseData in the state
-
-
   },
-  reducers: {},
+  reducers: {
+    contactUsData: (state) => {
+        state.addOnlineSkipData = {};
+      },
+  },
   extraReducers: (builder) => {
     builder.addCase( addOnlineSkipUserAsync.fulfilled, (state, action) => {
       state.addOnlineSkipData = action.payload; // Update responseData in the state after successful login
@@ -45,3 +47,4 @@ const addOnlineSkipUserSlice = createSlice({
 
 export default addOnlineSkipUserSlice.reducer;
 export const addOnlineSkipUserSliceAction = addOnlineSkipUserSlice.actions;
+export const {addOnlineSkipData} = addOnlineSkipUserSlice.actions;

@@ -17,7 +17,6 @@ import passMatchArrayDataSlice from "../Slice/passMatchArrayDataSlice/passMatchA
 import addLikeSmsSlice from "../Slice/addLikeSmsSlice/addLikeSmsSlice"
 import addOnlineSkipUserSlice from "../Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice"
 import onlinePassDataSlice from "../Slice/onlinePassDataSlice/onlinePassDataSlice"
-import addVisitorEmailSlice from "../Slice/addVisitorEmailSlice/addVisitorEmailSlice"
 import moreChatSlice from "../Slice/moreChatSlice/moreChatSlice"
 import dotsOpenModalSlice from "../Slice/dotsOpenModalSlice/dotsOpenModalSlice"
 import passSkipProfileSlice from "../Slice/passSkipProfileSlice/passSkipProfileSlice"
@@ -59,9 +58,8 @@ const store=configureStore({
         getMatchUserData:getMatchUserSlice,
         passMatchArrayData:passMatchArrayDataSlice,
         addSmsLikeText:addLikeSmsSlice,
-        onlneSkipUser:addOnlineSkipUserSlice,
+        onlineSkipUser:addOnlineSkipUserSlice,
         onlinePassData:onlinePassDataSlice,
-        addVisitorEmailData:addVisitorEmailSlice,
         moreChatData:moreChatSlice,
         dotsOpenData:dotsOpenModalSlice,
         passSkipProfile:passSkipProfileSlice,

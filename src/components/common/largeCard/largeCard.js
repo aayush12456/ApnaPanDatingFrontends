@@ -903,7 +903,7 @@ const repeatCompleteObj=completeObj
           <Text style={{fontSize:16 ,fontWeight:'semibold', color:`white`,paddingTop:6}}>{songObj && songObj.songName}</Text>
           <Pressable  onPress={() => playSongHandler(songObj.songUrl)}> 
           <Image  source={isPlaying && currentSongUrl === songObj.songUrl? pause: play}  style={{ width: 27, height: 27, marginTop: 6, marginRight: 20,
-            tintColor:`${completeObj?.appearanceMode==='Dark Mode'?'white':''}` }}/>
+            tintColor:`white` }}/>
           </Pressable>
         </View>
       </View>}

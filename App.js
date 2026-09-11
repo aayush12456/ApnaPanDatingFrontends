@@ -76,6 +76,10 @@ import AdminHeaderPage from './src/Pages/adminHeaderPage/adminHeaderPage';
 import AdminPageContent from './src/Pages/adminPageContent/adminPageContent';
 import ReplyMailPage from './src/Pages/replyMailPage/replyMailPage';
 import ReportPageContent from './src/Pages/reportPageContent/reportPageContent';
+import MatchesNearByPage from './src/Pages/matchesNearByPage/matchesNearByPage';
+import DisoverNewConnectPage from './src/Pages/discoverNewConnectPage/discoverNewConnectPage';
+import ConnectYourWayPage from './src/Pages/connectYourWayPage/connectYourWayPage';
+import StayControlPage from './src/Pages/stayControlPage/stayControlPage';
 
 
 
@@ -89,6 +93,7 @@ function AppContent() {
   const [loading, setLoading] = useState(true);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
 const [loginDetails,setLoginDetails]=useState({})
+const [flag, setFlag] = useState(null);
 
   const darkColors = {
     card: 'white',
@@ -105,15 +110,27 @@ const [loginDetails,setLoginDetails]=useState({})
   
         console.log("Login Token:", token);
         setLoginDetails(JSON.parse(token))
+
         if (token) {
           setIsLoggedIn(true);
         } else {
           setIsLoggedIn(false);
         }
+
+        const storedFlag = await SecureStore.getItemAsync('flag');
+        if (storedFlag) {
+          setFlag(storedFlag);
+        } else {
+          setFlag(null);
+        }
       } catch (error) {
         console.log(error);
+        setLoginDetails({})
       } finally {
-        setLoading(false);
+        // setTimeout(() => {
+        //   setLoading(false);
+        // }, 2000);  
+      setLoading(false)
       }
     };
   
@@ -211,10 +228,30 @@ const [loginDetails,setLoginDetails]=useState({})
     <NavigationContainer>
     <InternetChecker/>
       {loading?(null):(
-      <Stack.Navigator  initialRouteName={isLoggedIn===true ? "HeaderPage" : "LoginPage"}>
+      <Stack.Navigator  initialRouteName={isLoggedIn===true ? "HeaderPage" :flag==1?'FrontPage': "MatchesNearByPage"}>
         <Stack.Screen
           name="FrontPage"
           component={FrontPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="MatchesNearByPage"
+          component={MatchesNearByPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="DiscoverNewConnectPage"
+          component={DisoverNewConnectPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="ConnectYourWayPage"
+          component={ConnectYourWayPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="StayControlPage"
+          component={StayControlPage}
           options={{ headerShown: false }}
         />
           {/* {isAuthenticated ? <AuthenticatedStack /> : <UnauthenticatedStack />} */}

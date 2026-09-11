@@ -38,7 +38,7 @@ const dispatch=useDispatch()
     }
       },[dispatch,id])
 
-  
+ 
 
   const [queryText, setQueryText] = useState("");
   const [responseExpertObj, setResponseExpertObj] = useState(null);
