@@ -80,6 +80,7 @@ import MatchesNearByPage from './src/Pages/matchesNearByPage/matchesNearByPage';
 import DisoverNewConnectPage from './src/Pages/discoverNewConnectPage/discoverNewConnectPage';
 import ConnectYourWayPage from './src/Pages/connectYourWayPage/connectYourWayPage';
 import StayControlPage from './src/Pages/stayControlPage/stayControlPage';
+import SplashScreen from './src/components/splashScreen/splashScreen';
 
 
 
@@ -127,10 +128,10 @@ const [flag, setFlag] = useState(null);
         console.log(error);
         setLoginDetails({})
       } finally {
-        // setTimeout(() => {
-        //   setLoading(false);
-        // }, 2000);  
-      setLoading(false)
+        setTimeout(() => {
+          setLoading(false);
+        }, 4000);  
+      // setLoading(false)
       }
     };
   
@@ -227,7 +228,7 @@ const [flag, setFlag] = useState(null);
     <AlertNotificationRoot colors={[darkColors]}>
     <NavigationContainer>
     <InternetChecker/>
-      {loading?(null):(
+      {loading?( <SplashScreen/>):(
       <Stack.Navigator  initialRouteName={isLoggedIn===true ? "HeaderPage" :flag==1?'FrontPage': "MatchesNearByPage"}>
         <Stack.Screen
           name="FrontPage"
