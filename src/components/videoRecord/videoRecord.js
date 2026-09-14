@@ -79,7 +79,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
 
      {videoUri?null: <TouchableOpacity onPress={recordVideo}  style={{
                 height: 50,
-                backgroundColor: 'rgb(22, 163, 74)',
+                backgroundColor: '#6D21FF',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: 28,
@@ -87,7 +87,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
                 marginRight: 20,
                 borderRadius: 11,
               }}>
-        <Text style={{ fontSize: 18, color: 'white' }}>START RECORDING</Text>
+        <Text style={{ fontSize: 16, color: 'white' }}>START RECORDING</Text>
       </TouchableOpacity>}
 
       {videoUri && (
@@ -109,7 +109,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
       )}
   {videoUri?<TouchableOpacity onPress={downloadVideo}  style={{
                 height: 50,
-                backgroundColor: 'rgb(59,130,246)',
+                backgroundColor: '#6D21FF',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: 28,
@@ -117,13 +117,14 @@ const VideoRecord = ({navigation,videoRecord}) => {
                 marginRight: 20,
                 borderRadius: 11,
               }}>
-        <Text style={{ fontSize: 18, color: 'white' }}>DOWNLOAD VIDEO</Text>
+        <Text style={{ fontSize: 16, color: 'white' }}>DOWNLOAD VIDEO</Text>
       </TouchableOpacity>:null}
      { videoUri?<TouchableOpacity
             onPress={restartVideo}
             style={{
               height: 50,
-              backgroundColor: 'rgb(239,68,68)',
+              backgroundColor: '#1A1424',
+              borderColor: '#6D21FF',
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 12,
@@ -132,7 +133,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
               borderRadius: 11,
             }}
           >
-            <Text style={{ fontSize: 18, color: 'white' }}>RESTART VIDEO</Text>
+            <Text style={{ fontSize: 16, color: 'white' }}>RESTART VIDEO</Text>
           </TouchableOpacity>:null}
       </View>
 

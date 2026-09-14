@@ -1,4 +1,5 @@
 import { Text, Image, View,Modal,StatusBar} from "react-native";
+import splashScreenImg from '../../../assets/splash.png'
 import holdingHands from '../../../assets/frontImages/holdingHands.png';
 import love from '../../../assets/frontImages/love.png';
 import { FrontImages } from "../../utils/frontImages";
@@ -92,13 +93,10 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
         <Text style={{ fontWeight: 'bold', fontSize: 40,color:"white" }}>Apna
           <View style={{ marginTop: 20 }}>
             <Image
-              source={holdingHands} // Local image
+              source={splashScreenImg} // Local image
               style={{ width: 25, height: 25 }} // Adjust the size as needed
             />
-            <Image
-              source={love} // Local image
-              style={{ width: 25, height: 25 }} // Adjust the size as needed
-            />
+          
           </View>
           Pan
         </Text>
@@ -130,7 +128,7 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
                          justifyContent:'center',
                          width:'100%'
                       }}
-                      buttonColor="#007BFF"
+                      buttonColor="#D347FF"
                     >
                      SIGN UP NOW
                     </Button>
@@ -146,7 +144,7 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
                          width:'100%',
                          marginTop: 20
                       }}
-                      buttonColor="#28a745"
+                      buttonColor="#6D21FF"
                     >
                LOGIN
                     </Button>

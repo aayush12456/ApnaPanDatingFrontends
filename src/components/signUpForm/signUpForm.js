@@ -194,9 +194,9 @@ keyboardShouldPersistTaps="handled"
                          marginLeft: 12,
                          marginRight: 20,
                       }}
-                      buttonColor="rgba(234, 88, 12, 1)"
+                      buttonColor="#6D21FF"
                     >
-           SUBMIT
+           CONTINUE
                     </Button>
           </View>
 </View>

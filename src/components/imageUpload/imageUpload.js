@@ -368,11 +368,13 @@ const ImageUpload = ({ imageUpload }) => {
       {fileUploadError? <Text style={{color:"red",textAlign:'center'}}>{fileUploadError}</Text>:null}
       <Pressable onPress={guideImagesHandler}>
       <View style={{
-        backgroundColor: 'rgb(245, 158, 11)', borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
+       backgroundColor: '#1A1424',
+borderWidth: 1,
+borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
         flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
       }}>
-        <Image source={bulb} style={{ width: 25, height: 25, marginTop: 8, marginBottom: 8 }} />
-        <Text style={{ fontSize: 15, color: 'black', paddingTop: 4, paddingBottom: 4 }}>
+        <Image source={bulb} style={{ width: 25, height: 25, marginTop: 8, marginBottom: 8,tintColor:'white' }} />
+        <Text style={{ fontSize: 15, color: 'white', paddingTop: 4, paddingBottom: 4 }}>
        How to upload image similar to Capture image
         </Text>
       </View>
@@ -391,12 +393,12 @@ const ImageUpload = ({ imageUpload }) => {
                          marginLeft: 12,
                          marginRight: 20,
                       }}
-                      buttonColor="rgba(234, 88, 12, 1)"
+                      buttonColor="#6D21FF"
                     >
        {loading ? (
     <ActivityIndicator color="#fff" />
   ) : (
-    "SUBMIT"
+    "CREATE PROFILE"
   )}
                     </Button>
       </View>

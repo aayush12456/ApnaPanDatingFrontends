@@ -1,4 +1,5 @@
 import { Text, View, Image, TouchableOpacity,StatusBar } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { Button } from "react-native-paper";
 import uploadImage from '../../../assets/signUpFormIcon/uploadImg.png';
 import videoPlayer from '../../../assets/signUpFormIcon/videoPlayer.png';
@@ -7,13 +8,14 @@ import { ResizeMode } from 'expo-av';
 import VideoPlayer from 'expo-video-player';
 import { useState } from "react";
 const VideoUpload = ({ VideoUpload,navigation }) => {
+  const isFocused = useIsFocused();
   const [file, setFile] = useState(null);
   const [fileType,setFileType]=useState(null)
   const [fileUploadError,setFileUploadError]=useState('')
 
   const uploadVideoData = async () => {
     try {
-      const maxFileSize=5*1024*1024
+      const maxFileSize=15*1024*1024
       let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       // console.log('Permissions: ', permissionResult);
 
@@ -73,7 +75,7 @@ const videoSubmitHandler=()=>{
           {file? <View style={{height:'10%',marginTop:'-20%'}}>
           <VideoPlayer
             videoProps={{
-              shouldPlay: true,
+              shouldPlay: isFocused, 
               resizeMode: ResizeMode.CONTAIN,
               source: {
                 uri: file,
@@ -92,10 +94,10 @@ const videoSubmitHandler=()=>{
           </TouchableOpacity>}
         </View>
         <View style={{
-          backgroundColor: 'blue', borderRadius: 8, width: '95%', marginLeft: 8, marginTop: file?120:30,
+          backgroundColor: '#1A1424' , borderRadius: 8, width: '95%', marginLeft: 8, marginTop: file?120:30,
           flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8
         }}>
-          <Image source={videoPlayer} style={{ width: 25, height: 25, marginTop: 8, marginBottom: 8 }} />
+          <Image source={videoPlayer} style={{ width: 25, height: 25, marginTop: 8, marginBottom: 8,tintColor:'white' }} />
           <Text style={{ fontSize: 15, color: 'white', paddingTop: 4, paddingBottom: 4 }}>
             Upload video to show up in matches
           </Text>
@@ -114,9 +116,9 @@ const videoSubmitHandler=()=>{
                          marginLeft: 12,
                          marginRight: 20,
                       }}
-                      buttonColor="rgba(234, 88, 12, 1)"
+                      buttonColor="#6D21FF"
                     >
-           SUBMIT
+           CONTINUE
                     </Button>
         </View>
       </View>

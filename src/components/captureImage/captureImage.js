@@ -86,7 +86,7 @@ const downloadImageHandler = async () => {
           onPress={captureImage}
           style={{
             height: 50,
-            backgroundColor: 'rgb(22, 163, 74)',
+            backgroundColor: '#6D21FF',
             justifyContent: 'center',
             alignItems: 'center',
             paddingHorizontal: 30,
@@ -95,7 +95,7 @@ const downloadImageHandler = async () => {
          
           }}
         >
-          <Text style={{ fontSize: 18, color: 'white' }}>Capture</Text>
+          <Text style={{ fontSize: 16, color: 'white' }}>Capture</Text>
         </TouchableOpacity>
       )}
 
@@ -107,17 +107,18 @@ const downloadImageHandler = async () => {
           {/* Image Preview */}
           <Image
             source={{ uri: imageUri }}
-            style={{ width: 300, height: 300, borderRadius: 10 }}
+            style={{ width: 300, height: 300, borderRadius: 10,marginLeft:10 }}
             resizeMode="contain"
           />
           
           {/* Capture Again Button */}
-          <View style={{flexDirection:"row",justifyContent:'space-between'}}>
+          <View style={{flexDirection:"row",justifyContent:'space-between',gap:10}}>
               <TouchableOpacity
             onPress={captureImage} // Call the same function to start the camera again
             style={{
               height: 50,
-              backgroundColor: 'rgb(220, 38, 38)',
+              backgroundColor: '#1A1424',
+              borderWidth: 1.5,
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 30,
@@ -125,13 +126,13 @@ const downloadImageHandler = async () => {
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 18, color: 'white' }}>Capture Again</Text>
+            <Text style={{ fontSize: 16, color: 'white' }}>CAPTURE AGAIN</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={sumbitImageHandler} // Call the same function to start the camera again
             style={{
               height: 50,
-              backgroundColor: 'rgb(59,130,246)',
+              backgroundColor: '#6D21FF',
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 30,
@@ -139,7 +140,7 @@ const downloadImageHandler = async () => {
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 18, color: 'white' }}>Submit</Text>
+            <Text style={{ fontSize: 16, color: 'white' }}>CONTINUE</Text>
           </TouchableOpacity>
             </View>
 
@@ -147,7 +148,8 @@ const downloadImageHandler = async () => {
                onPress={downloadImageHandler}
             style={{
               height: 50,
-              backgroundColor: 'rgb(59,130,246)',
+              backgroundColor: '#1A1424',
+              borderWidth: 1.5,
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 30,
@@ -155,7 +157,7 @@ const downloadImageHandler = async () => {
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 18, color: 'white' }}>Download Capture Image</Text>
+            <Text style={{ fontSize: 16, color: 'white' }}>DOWNLOAD CAPTURE IMAGE</Text>
           </TouchableOpacity>
         </View>
         

@@ -1,15 +1,13 @@
 
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Provider, useSelector } from 'react-redux';
+import { Provider} from 'react-redux';
 import { useRef, useEffect,useState } from 'react';
-import {Toast, AlertNotificationRoot } from 'react-native-alert-notification';
+import { AlertNotificationRoot } from 'react-native-alert-notification';
 import * as SecureStore from 'expo-secure-store';
-import {Image} from 'react-native'
-import {Text} from 'react-native-paper'
 import io from 'socket.io-client';
 import store from './src/Redux/Store/store';
 
@@ -51,10 +49,8 @@ import MannageAccountPage from './src/Pages/manageAccountPage/manageAccountPage'
 import DeactivateAccountPage from './src/Pages/deactivateAccountPage/deactivateAccountPage';
 import DeleteAccountPage from './src/Pages/deleteAccountPage/deleteAccountPage';
 import ExpertChatPage from './src/Pages/expertChatPage/expertChatPage';
-import axios from 'axios'
 import EditSongsPage from './src/Pages/editSongsPage/editSongsPage';
 import CaptureImagePage from './src/Pages/captureImagePage/captureImagePage';
-import right from './assets/signUpFormIcon/right.png';
 import EditBasicInfoPage from './src/Pages/editBasicInfoPage/editBasicInfoPage';
 import CompareFacePage from './src/Pages/compareFacePage/compareFacePage';
 import AppearancePage from './src/Pages/appearancePage/appearancePage';

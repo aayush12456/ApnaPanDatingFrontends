@@ -140,7 +140,7 @@ return (
                          marginLeft: 12,
                          marginRight: 20,
                       }}
-                      buttonColor="rgba(234, 88, 12, 1)"
+                      buttonColor="#6D21FF"
                     >
   {loading ? (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
