@@ -40,7 +40,7 @@ return (
                          justifyContent:'center',
                          borderRadius: 6,
                       }}
-                      buttonColor="#5394e4"
+                      buttonColor="#EF4444"
                       onPress={deleteAccountHandler}
                     >
                    Delete Account

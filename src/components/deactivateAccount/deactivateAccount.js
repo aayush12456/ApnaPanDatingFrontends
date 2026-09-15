@@ -88,7 +88,7 @@ return (
                          justifyContent:'center',
                          borderRadius: 6,
                       }}
-                      buttonColor="#bbc5d1"
+                      buttonColor="#6D21FF"
                       onPress={deactivateAccountHandler}
                     >
                   Deactivate Account
@@ -102,7 +102,7 @@ return (
                        justifyContent:'center',
                        borderRadius: 6,
                     }}
-                    buttonColor="#bbc5d1"
+                    buttonColor="#6D21FF"
                     onPress={activateAccountHandler}
                   >
                Activate Account
@@ -122,7 +122,7 @@ return (
                          justifyContent:'center',
                          borderRadius: 6,
                       }}
-                      buttonColor="#5394e4"
+                      buttonColor="#1A1024"
                       onPress={matchesHandler}
                     >
                  Go to Matches

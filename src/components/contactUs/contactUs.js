@@ -140,7 +140,7 @@ keyboardShouldPersistTaps="handled">
     marginLeft: 12,
     fontSize: 16,
     marginRight: 20,
-    backgroundColor: "#007BFF", // force color
+    backgroundColor: "#6D21FF", // force color
     // opacity:loading ? 0.8 : 1, // disabled feel
   }}
   contentStyle={{ height: 50 }}

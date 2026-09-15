@@ -225,7 +225,7 @@ return (
                             <Text style={{ color: 'black', paddingTop: 8, fontWeight: "600",
                            color:`white`
                           }}>
-                                Liked!
+                                 ❤️Liked!
                             </Text>
                         </View>
                     )}
@@ -238,7 +238,7 @@ return (
                         borderRadius: 10,
                         marginTop: 9,
                       }}
-                      buttonColor="rgba(34, 197, 94, 2)"
+                      buttonColor="#6D21FF"
                     >
                       Add Chat
                     </Button>

@@ -781,7 +781,7 @@ const repeatCompleteObj=completeObj
 
             <View style={{marginLeft:-105,marginTop:11,marginRight:30}}>
   <Pressable onPress={playVideoHandler}>
-  <View style={{width:95,height:40,borderRadius:20,backgroundColor:'rgba(34, 197, 94, 2)'}}>
+  <View style={{width:95,height:40,borderRadius:20,backgroundColor:'#6D21FF'}}>
     <View style={{flexDirection:'row',marginTop:8,marginLeft:20}}>
   <Image source={play} style={{ width: 20, height:20, tintColor: 'white'}} />
   <Text style={{color:'white'}}>Play</Text>

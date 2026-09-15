@@ -1,6 +1,7 @@
 
 import { OtpInput } from "react-native-otp-entry";
 import { View,Text,Image,ActivityIndicator,StatusBar } from 'react-native';
+// import LottieView from "lottie-react-native";
 import * as SecureStore from 'expo-secure-store';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -124,6 +125,14 @@ return (
       barStyle="light-content"
     />
         <View style={{backgroundColor:'black',flex:1}}>
+          {/* <View style={{flexDirection:"row",justifyContent:'center',marginTop:50}}>
+          <LottieView
+        source={require("../../../assets/animation/OTP.json")}
+        autoPlay
+        loop
+        style={{ width: 200, height: 200 }}
+      />
+          </View> */}
         <Text style={{textAlign:'center',paddingBottom:15,color: '#6B7280'}}>otp send to {datas?.email} </Text>
         <View style={{ paddingHorizontal: 16 }}>
     <OtpInput numberOfDigits={5} onTextChange={(text) => setMyOtp(text)}
@@ -153,13 +162,13 @@ return (
                          marginRight: 20,
                          width:`${loading?100:""}`
                       }}
-                      buttonColor="#007BFF"
+                      buttonColor="#6D21FF"
                       onPress={verifyOtpHandler}
                     >
            {
                     loading?
                     <ActivityIndicator color="#fff" />
-                    :'VERiFY OTP'
+                    :'VERIFY OTP'
                    }
                     </Button>
       </View>
@@ -176,7 +185,7 @@ return (
                          marginTop:12,
                          marginRight: 20,
                       }}
-                      buttonColor="#6C757D"
+                      buttonColor="#1A1424"
                       onPress={cancelOtpHandler}
                     >
            CANCEL

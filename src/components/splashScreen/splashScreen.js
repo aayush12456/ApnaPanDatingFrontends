@@ -137,16 +137,7 @@ export default function SplashScreen() {
         />
       </View>
 
-      <Text
-        style={{
-          position: "absolute",
-          bottom: height * 0.08,
-          color: "#80758E",
-          fontSize: 12,
-        }}
-      >
-        v1.0.0
-      </Text>
+    
     </View>
   );
 }
