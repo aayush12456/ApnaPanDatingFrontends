@@ -178,32 +178,7 @@ return ()=>{
 },[]);
 
 console.log('online user array',onlineUsers)
-useEffect(() => {
-  if (!loginId) return;
 
-  const init = async () => {
-    const token = await registerForPushNotificationsAsync();
-  
-    if (token) {
-      console.log("tokens expo", token);
-      setNotifyToken(token)
-  
-      await axios.post(
-        `${BASE_URL}/user/notifyUser/${loginId}`,
-        {
-          notifyToken: token,
-        }
-      );
-  
-      socket.emit("addNotifyId", {
-        loginId,
-        notifyToken: token,
-      });
-    }
-  };
-
-  init();
-}, [loginId]);
 
 
 useEffect(() => {
@@ -272,6 +247,25 @@ const requestPermissions = async () => {
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
     ]);
+    const token = await registerForPushNotificationsAsync();
+
+    if (token && loginId) {
+      console.log("tokens expo", token);
+      setNotifyToken(token);
+
+      await axios.post(
+        `${BASE_URL}/user/notifyUser/${loginId}`,
+        {
+          notifyToken: token,
+        }
+      );
+
+      socket.emit("addNotifyId", {
+        loginId,
+        notifyToken: token,
+      });
+    }
+
   } catch (error) {
     console.log(error);
   }

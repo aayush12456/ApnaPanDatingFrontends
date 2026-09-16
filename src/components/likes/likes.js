@@ -307,7 +307,7 @@ setRefreshing(false); // Stop loading
             ))}
           </View>
         )):<Text style={{textAlign:'center',fontSize:17,fontWeight:"400",position:'relative',top:200,
-        color:`${completeObj?._id && completeObj?.appearanceMode==='Dark Mode'?'white':''}`}}>No Likes Profile is there</Text>}
+        color:`white`}}>No Likes Profile is there</Text>}
       </ScrollView>
     </>
   );

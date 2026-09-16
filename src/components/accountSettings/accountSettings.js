@@ -28,6 +28,8 @@ const removeLoginData = async () => {
 
 const logoutHandler = async () => {
   try {
+    if (loginId) { socket.emit("logoutUser", loginId); }
+
     const response = await axios.post(
       `${BASE_URL}/user/deleteNotifyUser/${loginId}`,
       {
