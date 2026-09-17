@@ -1,9 +1,7 @@
 import MyProfile from "../../components/myProfile/myProfile"
-import { useSelector } from "react-redux";
-import { useEffect,useState } from "react";
 import { View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-const MyProfilePage=({loginId,loginObj})=>{
+const MyProfilePage=({loginObj})=>{
   const navigation=useNavigation()
    
 return(

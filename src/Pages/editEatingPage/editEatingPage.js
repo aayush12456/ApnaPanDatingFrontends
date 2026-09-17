@@ -2,14 +2,12 @@ import AnotherHeader from "../../components/anotherHeader/anotherHeader"
 import EditEating from "../../components/editEating/editEating"
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from "react-redux";
-import { useEffect,useState } from "react";
 import { View } from "react-native";
 const EditEatingPage=()=>{
     const navigation = useNavigation();
     const eatingObj={
         name:'Select Eating Habit'
     }
-    const [completeObj,setCompleteObj]=useState({})
     const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
     )
 

@@ -58,7 +58,7 @@ return (
             // console.log('block user data',blockUserData)
             return (
   
-                <BlockProfile blockProfileUser={blockUserData} key={blockUserData?._id} loginId={loginId} completeObj={completeLoginObjData}/>
+                <BlockProfile blockProfileUser={blockUserData} key={blockUserData?._id} loginId={loginId} />
           
             )
         }):<Text  style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'30%',

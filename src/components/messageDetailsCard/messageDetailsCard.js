@@ -42,9 +42,9 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlin
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
   const [messageText, setMessageText] = useState('')
-console.log('complete obj',completeObj)
- console.log('notify users data',notifyUser)
- console.log('message details user',messageDetails)
+// console.log('complete obj',completeObj)
+//  console.log('notify users data',notifyUser)
+//  console.log('message details user',messageDetails)
   const [fetchMessages, setFetchMessages] = useState([])
   const [fetchTypingIdObj, setFetchTypingIdObj] = useState([])
   const [finalMessageArray, setFinalMessageArray] = useState([])
@@ -84,33 +84,7 @@ const anotherthemeSheetRef=useRef(null)
   // console.log("dot open selector", dotOpenHandler);
   // console.log("delete chat selector", deleteChatSelector);
 
-//   useEffect(()=>{
 
-//     if(loginId){
-
-//         socket.emit("registerUser",loginId);
-
-//     }
-
-// },[loginId]);
-
-// useEffect(()=>{
-
-//   socket.on("onlineUsers",(users)=>{
-
-//       setOnlineUsers(users);
-
-//   });
-
-//   return ()=>{
-
-//       socket.off("onlineUsers");
-
-//   }
-
-// },[]);
-
-// console.log('online user array',onlineUsers)
 
 
   const backHandler = async() => {
@@ -119,7 +93,7 @@ const anotherthemeSheetRef=useRef(null)
       anotherId: messageDetails?._id
     };
     socket.emit('deleteChatUsers', deleteChatUserObj);
-    console.log('emitted deleteChatUsers', deleteChatUserObj);
+    // console.log('emitted deleteChatUsers', deleteChatUserObj);
     const deleteAnotherRecordMessageIdObj={
       id:loginId,
       recieverId:messageDetails?._id
@@ -141,7 +115,7 @@ const anotherthemeSheetRef=useRef(null)
       setActiveLoginIdResponse(getActiveLoginId)
     }
   }, [loginId, onlineUserArray, messageDetails]);
-console.log('login response',activeLoginIdResponse)
+// console.log('login response',activeLoginIdResponse)
 
   useEffect(() => {
     const fetchChatId = async () => {
@@ -243,7 +217,7 @@ useEffect(() => {
 
 const sendNotification = async () => {
   if (!notifyUser || notifyUser.length === 0) {
-    console.log("Notification token not found");
+    // console.log("Notification token not found");
     return;
   }
   try {
@@ -269,7 +243,7 @@ const sendNotification = async () => {
       }
     );
 
-    console.log("Push Response", response.data);
+    // console.log("Push Response", response.data);
     const ticketMap = {};
     response.data.data.forEach((item,index)=>{
 
@@ -287,7 +261,7 @@ const sendNotification = async () => {
           ids: ticketIds
         }
       );
-      console.log("Receipt Response",receiptRes.data);
+      // console.log("Receipt Response",receiptRes.data);
 
       const invalidTokens=[];
       Object.entries(receiptRes.data.data)
@@ -299,7 +273,7 @@ const sendNotification = async () => {
           );
         }
       });
-      console.log("Invalid Tokens",invalidTokens);
+      // console.log("Invalid Tokens",invalidTokens);
       // invalid token delete API call
       if(invalidTokens.length > 0){
         await axios.post(
@@ -310,7 +284,7 @@ const sendNotification = async () => {
             }
           
         );
-        console.log("Invalid token deleted");
+        // console.log("Invalid token deleted");
       }
     }
   } catch (error) {
@@ -391,67 +365,7 @@ const removeSelectedImage = () => {
   setSelectedImage(null);
 };
 
-//   const submitHandler = async () => {
-//     if (messageText.trim()) {
-//       const messageSubmitData = {
-//         id: loginId,
-//         senderId: loginId,
-//         recieverId: messageDetails?._id,
-//         message: messageText,
-//         senderName: completeObj?.firstName,
-//         images: completeObj?.image,
-//       };
-//       const deleteTypingObj = {
-//         loginId: loginId,
-//         senderId: loginId,
-//         recieverId: messageDetails?._id,
-//       };
-//       const addRecordMessageObj = {
-//         id: loginId,
-//         recieverId: messageDetails?._id,
-//       };
-  
-//       // console.log("Message sent:", messageSubmitData);
-  
-//       try {
-//         // Call addSendMessage API
-//         const response = await axios.post(
-//           `${BASE_URL}/chat/addSendMessage/${messageSubmitData.id}`,
-//           messageSubmitData
-//         );
-//         // console.log('Send message data:', response.data);
-//         socket.emit('sendMessage', response.data.chatUser);
-//         setMessageText('');
-     
-// if (notifyChecks.length===0) {
-//   await sendNotification();
-// }
-//         // Call deleteTyping API
-//         const responseData = await axios.post(
-//           `${BASE_URL}/chat/deleteTyping`,
-//           deleteTypingObj
-//         );
-//         // console.log('Delete typing message data:', responseData.data);
-  
-//         // Call addRecordMessage API
-//         // console.log('About to call addRecordMessage API with:', addRecordMessageObj);
-//         const recordResponseData = await axios.post(
-//           `${BASE_URL}/chat/addRecordMessage/${addRecordMessageObj.id}`,
-//           addRecordMessageObj
-//         );
-//         // console.log('Add record message ID array is:', recordResponseData.data);
-//         socket.emit('addRecordMessageId', recordResponseData.data
-//         );
-//       } catch (error) {
-//         // console.error(
-//         //   'Error during API calls:',
-//         //   error.response ? error.response.data : error.message
-//         // );
-//       }
-//     } else {
-//       // console.log("Message text is empty");
-//     }
-//   };
+
 
 //new
 const submitHandler = async () => {
@@ -962,7 +876,7 @@ useEffect(() => {
   socket.emit("registerUser", String(loginId));
 
   const onIncomingCall = (data) => {
-    console.log("📞 Incoming Call received on frontend:", data);
+    // console.log("📞 Incoming Call received on frontend:", data);
     navigation.navigate("IncomingCallScreenPage", data);
   };
 
@@ -975,16 +889,16 @@ useEffect(() => {
 
 
 useEffect(() => {
-  console.log("Effect Fired");
-  console.log("loginId =", loginId);
-  console.log("receiverId =", messageDetails?._id);
+  // console.log("Effect Fired");
+  // console.log("loginId =", loginId);
+  // console.log("receiverId =", messageDetails?._id);
 
   if (!loginId || !messageDetails?._id) {
-    console.log("Missing ids");
+    // console.log("Missing ids");
     return;
   }
 
-  console.log("Calling API");
+  // console.log("Calling API");
 
   const fetchChatTheme = async () => {
     const id=loginId
@@ -998,7 +912,7 @@ useEffect(() => {
         }
       );
 
-      console.log("Success", response.data);
+      // console.log("Success", response.data);
       setThemeObj(response.data);
 
     } catch (e) {
@@ -1015,7 +929,7 @@ useEffect(() => {
     };
 
 }, [loginId, messageDetails?._id]);
-console.log('themes obj',themeObj)
+// console.log('themes obj',themeObj)
 
 const loginThemeChat=themeObj.loginThemeChat
 const recieverThemeChat=themeObj.recieverThemeChat
@@ -1033,11 +947,11 @@ setRecieverUserTheme(filterRecieverTheme)
 }
 },[loginId,loginThemeChat,recieverThemeChat])
 
-console.log('login user themes',loginUserTheme)
-console.log('reciever user theme',recieverUserTheme)
+// console.log('login user themes',loginUserTheme)
+// console.log('reciever user theme',recieverUserTheme)
 const loginThemeObj=loginUserTheme?.length>0?loginUserTheme[0]:{}
 const recieverThemeObj=recieverUserTheme?.length>0?recieverUserTheme[0]:{}
-console.log('obj login',loginThemeObj)
+// console.log('obj login',loginThemeObj)
 
 const activeTheme = loginThemeObj || recieverThemeObj|| {};
 
@@ -1088,14 +1002,7 @@ const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
       >
     <View style={{ flex: 1 }}>
         {/* Header Section */}
-        {/* <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: `#343434`,
-            marginTop: 40,
-          }}
-        > */}
+      
       
         <LinearGradient
   colors={themeHeader}
@@ -1538,21 +1445,7 @@ const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
 ) : null}
 
   {/* Time */}
-  {/* <Text
-    style={{
-      fontSize: 10,
-      marginTop: 3,
-      alignSelf: "flex-end",
-      color:
-        finalMessage.senderId === loginId ? "#888" : "black",
-    }}
-  >
-    {new Date(finalMessage.timestamp).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })}
-  </Text> */}
+  
 </View>
                   </View>
                 );
@@ -1561,64 +1454,7 @@ const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
           </ScrollView>
         </View>
 
-        {/* Message Input Section */}
-       {/* {deactivateUserObj.selfDeactivate!==null && deactivateUserObj.selfDeactivate===loginId?
-       <View style={{
-        position: "absolute",
-        bottom: 0,
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#f5f5f5",
-        width: "100%",
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-      }}>
-       <Text>You can't message {messageDetails.firstName}  untill you should activate yourself</Text>
-       </View>
-       : <View
-          style={{
-            position: "absolute",
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#f5f5f5",
-            width:'100%',
-            bottom:1,
-          }}
-        >
-          
-          <TextInput
-            style={{
-              flex: 1,
-              height: 40,
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 5,
-              backgroundColor: "#fff",
-              // marginLeft:-20
-              height: 50,
-              paddingRight: 50, // Space for the image
-              textAlignVertical: "top", // Align text properly
-            }}
-            placeholder="Message"
-            onChangeText={(text) => messageTypingHandler(text)}
-            onSubmitEditing={submitHandler}
-            value={messageText}
-        
-          />
-          <Pressable onPress={submitHandler}>
-            <Image
-              source={send}
-              style={{
-                width: 20,
-                height: 20,
-                marginLeft: -30,
-                position: 'relative',
-                right: 20
-
-              }}
-            />
-          </Pressable>
-        </View>} */}
+      
 
         {/* Message Input Section */}
         {/* new */}

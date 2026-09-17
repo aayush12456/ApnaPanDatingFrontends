@@ -12,8 +12,8 @@ const ContactUs=({completeLoginObj})=>{
   const [loading, setLoading] = useState(false);
   const [formReset, setFormReset] = useState(null);
   const contactSelector=useSelector((state)=>state.contactUs.contactUsObj)
-console.log('contact us data',completeLoginObj)
-console.log('test contact select',contactSelector)
+// console.log('contact us data',completeLoginObj)
+// console.log('test contact select',contactSelector)
 
 useEffect(() => {
   if (contactSelector?.mssg === "Email sent successfully") {
@@ -62,7 +62,7 @@ return (
         message:values.message,
         email:completeLoginObj.email,
      }
-     console.log('contact us data detail',contactUsData)
+    //  console.log('contact us data detail',contactUsData)
      dispatch(contactUsAsync(contactUsData))
     }}
       >

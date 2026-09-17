@@ -1,6 +1,6 @@
 
 import { OtpInput } from "react-native-otp-entry";
-import { View,Text,Image,ActivityIndicator,StatusBar } from 'react-native';
+import { View,Text,ActivityIndicator,StatusBar } from 'react-native';
 // import LottieView from "lottie-react-native";
 import * as SecureStore from 'expo-secure-store';
 import { Button } from 'react-native-paper';
@@ -10,14 +10,14 @@ import { useDispatch,useSelector } from 'react-redux';
 import { clearOtpResponse, verifyOtpAsync } from '../../Redux/Slice/verifyOtpSlice/verifyOtpSlice';
 import { clearLoginResponse } from "../../Redux/Slice/loginSlice/loginSlice";
 const VerifyOtp=({datas})=>{
-    console.log('data is',datas)
+    // console.log('data is',datas)
     const navigation = useNavigation();
     const dispatch=useDispatch()
     const [myOtp,setMyOtp]=useState('')
     const [otpError,setOtpError]=useState('')
     const [loading, setLoading] = useState(false);
     const loginUser=useSelector((state)=>state.verifyOtp.loginObj)
-    console.log('login uses',loginUser)
+    // console.log('login uses',loginUser)
 
     const verifyOtpHandler=()=>{
         if (loading) return; 
@@ -55,42 +55,7 @@ const VerifyOtp=({datas})=>{
         }
       }
 
-  //     useEffect(() => {
-  //   if (loginUser?.token) {
-  //     const saveToSecureStore = async () => {
-  //       try {
-  //         await SecureStore.setItemAsync('loginObj', JSON.stringify(loginUser));
-  //         console.log("Login data stored successfully!");
-  //       } catch (error) {
-  //         // console.error("Failed to store login data:", error);
-  //       }
-  //   };
-  //     saveToSecureStore();
-  //     navigation.navigate('HeaderPage');
-  //   }
-  // }, [loginUser?.token]);
-  // useEffect(() => {
-  //   if (!loginUser) return;
   
-  //   if (loginUser?.token) {
-  //     const saveToSecureStore = async () => {
-  //       try {
-  //         await SecureStore.setItemAsync(
-  //           "loginObj",
-  //           JSON.stringify(loginUser)
-  //         );
-  //       } catch (error) {}
-  
-  //       setLoading(false);
-  //       navigation.navigate("HeaderPage");
-  //     };
-  
-  //     saveToSecureStore();
-  //   } else {
-  //     // API response aa gaya lekin token nahi mila
-  //     setLoading(false);
-  //   }
-  // }, [loginUser]);
   useEffect(() => {
     if (!loginUser?.token) return;
   
@@ -101,7 +66,7 @@ const VerifyOtp=({datas})=>{
           JSON.stringify(loginUser)
         );
   
-        console.log("Login data stored successfully!");
+        // console.log("Login data stored successfully!");
   
         // Redux login response clear
         dispatch(clearOtpResponse());

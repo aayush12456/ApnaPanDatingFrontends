@@ -13,7 +13,7 @@ const Message=({completeObj,loginId,onlineUserArray})=>{
     const [blockUserObj,setBlockUserObj]=useState({})
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const [refreshing, setRefreshing] = useState(false); 
-    console.log('online users message',onlineUserArray)
+    // console.log('online users message',onlineUserArray)
 
     useEffect(() => {
         const fetchLikeMatchUsers = async () => {

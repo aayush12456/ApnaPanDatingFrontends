@@ -13,7 +13,6 @@ import back from '../../../../assets/signUpFormIcon/back.png'
 import { useNavigation } from "@react-navigation/native";
 import { anotherPassDataSliceActions } from "../../../Redux/Slice/anotherPassDataSlice/anotherPassDataSlice";
 import axios from 'axios'
-import * as SecureStore from 'expo-secure-store';
 import { addOnlineSkipUserAsync } from "../../../Redux/Slice/addOnlineSkipUserSlice/addOnlineSkipUserSlice";
 import { getBollywoodSongAsync } from "../../../Redux/Slice/getBollyWoodSongSlice/getBollywoodSongSlice";
 import Notification from "../../notification/notification";
@@ -26,7 +25,7 @@ const socket = io.connect("http://192.168.29.169:4000")
 const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeObj }) => {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
-  console.log('like contenct card',likeContent)
+  // console.log('like contenct card',likeContent)
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
@@ -38,9 +37,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
   const [likeMatch,setLikeMatch]=useState(true)
   const [likeMatchUser,setLikeMatchUser]=useState({})
   const [onlineLikeUserObj,setOnlineLikeUserObj]=useState({})
-  const [visitorLikeUserObj,setVisitorLikeUserObj]=useState({})
   const [selfLikeMatch,setSelfLikeMatch]=useState(true)
-  const [selfVisitorLikeMatch,setSelfVisitorLikeMatch]=useState(true)
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
   const [openDailog,setOpenDialog]=useState(false)
   const [isPlaying, setIsPlaying] = useState(false);
@@ -136,7 +133,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
 const repeatCompleteObj=completeObj
 
    const skipUserHandler=async(likeContent,newOnline)=>{
-    console.log('new online',newOnline)
+    // console.log('new online',newOnline)
     // console.log('user is skipped',likeContent)
     if(likeContent){
       const likeSkipUserObj={
@@ -166,7 +163,7 @@ const repeatCompleteObj=completeObj
         id:loginId,
         onlinePersonSkipUserId:newAndOnlineContent?._id
       }
-      console.log('new online skip obj',onlineSkipUserObj)
+      // console.log('new online skip obj',onlineSkipUserObj)
       dispatch(addOnlineSkipUserAsync(onlineSkipUserObj))
       // navigation.navigate('HeaderPage',{formData:onlineSkipUserObj})
       navigation.goBack()
@@ -395,7 +392,7 @@ const repeatCompleteObj=completeObj
           const finalContent=newAndOnlineContent || likeContent 
           // console.log('get all songs',getAllSongsSelector)
           // console.log('finalContent',finalContent.songId)
-          console.log('final content',finalContent)
+          // console.log('final content',finalContent)
           useEffect(() => {
             if (finalContent && getAllSongsSelector?.length > 0) {
               const foundSong = getAllSongsSelector.find(
@@ -475,7 +472,7 @@ const repeatCompleteObj=completeObj
         
         useEffect(() => {
           socket.on("getNotifyId", (data) => {
-            console.log("notify socket", data);
+            // console.log("notify socket", data);
             setNotifyArrayData(data);
           });
         
@@ -483,7 +480,7 @@ const repeatCompleteObj=completeObj
             socket.off("getNotifyId");
           };
         }, []);
-        console.log('notify array data',notifyArrayData)
+        // console.log('notify array data',notifyArrayData)
 
         useEffect(() => {
           if (notifyArrayData?.length > 0 && likeContent?._id) {
@@ -496,7 +493,7 @@ const repeatCompleteObj=completeObj
             setFilterNotify([]);
           }
         }, [notifyArrayData, likeContent?._id]);
-        console.log('arrays notify like',filterNotify)
+        // console.log('arrays notify like',filterNotify)
 
 
         
@@ -512,13 +509,13 @@ const repeatCompleteObj=completeObj
           }
         }, [notifyArrayData, newAndOnlineContent?._id]);
 
-        console.log('arrays notify like',filterNotify)
-       console.log('array notify online',newAndOnlineContent)
+      //   console.log('arrays notify like',filterNotify)
+      //  console.log('array notify online',newAndOnlineContent)
 
 
         const sendNotification = async () => {
           if (!filterNotify || filterNotify.length === 0) {
-            console.log("Notification token not found");
+            // console.log("Notification token not found");
             return;
           }
         
@@ -546,7 +543,7 @@ const repeatCompleteObj=completeObj
               }
             );
         
-            console.log("Like Push Response:", response.data);
+            // console.log("Like Push Response:", response.data);
             const ticketMap = {};
             response.data.data.forEach((item,index)=>{
               if(item.status==="ok"){
@@ -563,7 +560,7 @@ const repeatCompleteObj=completeObj
                   ids: ticketIds
                 }
               );
-              console.log("Receipt Response",receiptRes.data);
+              // console.log("Receipt Response",receiptRes.data);
               const invalidTokens=[];
               Object.entries(receiptRes.data.data)
               .forEach(([ticketId,receipt])=>{
@@ -574,7 +571,7 @@ const repeatCompleteObj=completeObj
                   );
                 }
               });
-              console.log("Invalid Tokens",invalidTokens);
+              // console.log("Invalid Tokens",invalidTokens);
               // invalid token delete API call
               if(invalidTokens.length > 0){
                 await axios.post(
@@ -585,7 +582,7 @@ const repeatCompleteObj=completeObj
                     }
                   
                 );
-                console.log("Invalid token deleted");
+                // console.log("Invalid token deleted");
               }
             }
         
@@ -600,7 +597,7 @@ const repeatCompleteObj=completeObj
 
         const sendNotificationOnline = async () => {
           if (!filterNotifyOnline || filterNotifyOnline.length === 0) {
-            console.log("Notification token not found");
+            // console.log("Notification token not found");
             return;
           }
         
@@ -628,7 +625,7 @@ const repeatCompleteObj=completeObj
               }
             );
         
-            console.log("Like Push Response online:", response.data);
+            // console.log("Like Push Response online:", response.data);
             const ticketMap = {};
     response.data.data.forEach((item,index)=>{
       if(item.status==="ok"){
@@ -645,7 +642,7 @@ const repeatCompleteObj=completeObj
           ids: ticketIds
         }
       );
-      console.log("Receipt Response",receiptRes.data);
+      // console.log("Receipt Response",receiptRes.data);
       const invalidTokens=[];
       Object.entries(receiptRes.data.data)
       .forEach(([ticketId,receipt])=>{
@@ -656,7 +653,7 @@ const repeatCompleteObj=completeObj
           );
         }
       });
-      console.log("Invalid Tokens",invalidTokens);
+      // console.log("Invalid Tokens",invalidTokens);
       // invalid token delete API call
       if(invalidTokens.length > 0){
         await axios.post(
@@ -667,7 +664,7 @@ const repeatCompleteObj=completeObj
             }
           
         );
-        console.log("Invalid token deleted");
+        // console.log("Invalid token deleted");
       }
     }
         
@@ -920,12 +917,10 @@ const repeatCompleteObj=completeObj
             fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
             You Like this profile</Text>}
            
-            {selfVisitorLikeMatch===false  &&<Text style={{ color:`white`
-            ,fontSize:16,textAlign:'center',paddingTop:18,paddingBottom:8}}>
-            You Like this profile</Text>}
+    
 
        {commonVisitorLikeSkip===false || likeMatch===false ||
-       selfLikeMatch===false || selfVisitorLikeMatch===false  ?null:<View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
+       selfLikeMatch===false  ?null:<View style={{flexDirection:"row",justifyContent:'space-between',position:'fixed',marginTop:12,marginLeft:8}} >
             <Pressable onPress={()=>skipUserHandler(likeContent,newAndOnlineContent)}>
             <View style={{flexDirection:"row",gap:12,marginLeft:25}} >
                 <View style={{width:47 ,height:47,borderRadius:30,backgroundColor:'grey'}}>

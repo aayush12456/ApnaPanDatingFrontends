@@ -6,7 +6,6 @@ import io from "socket.io-client";
 import { getAllUserData } from "../../Redux/Slice/getAllUserSlice/getAllUserSlice";
 import AddChat from "../common/addChat/addChat";
 import NewAndOnlineCard from "../newAndOnlineCard/newAndOnlineCard";
-import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -14,10 +13,10 @@ const NewAndOnline = ({route,completeObj}) => {
     const BASE_URL = "http://192.168.29.169:4000";
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const { formData = {} } = route.params || {}; // Fallback to an empty object
-  console.log('form data in new ', formData);
+  // console.log('form data in new ', formData);
 
   const dispatch = useDispatch();
-console.log('complete objs online',completeObj)
+// console.log('complete objs online',completeObj)
   const completeLoginObjData=completeObj
   const getAllUserArray = useSelector(
     (state) => state.getAllUserData.getAllUserArray.users
@@ -40,7 +39,7 @@ const loginId=completeObj.userId
   
 // console.log('login id in new and online',loginId)
 const onlinSkipUserSelector=useSelector((state)=>state.onlineSkipUser.addOnlineSkipData.skipUserId)
-console.log('online skip user select',onlinSkipUserSelector)
+// console.log('online skip user select',onlinSkipUserSelector)
   useEffect(()=>{
     if(onlinSkipUserSelector){
       let updateArray=allUser?.filter((filterItem)=>filterItem?._id!==onlinSkipUserSelector)
@@ -51,7 +50,7 @@ console.log('online skip user select',onlinSkipUserSelector)
     }
     
     },[onlinSkipUserSelector,getAllUserArray])
-console.log('all user array',allUser)
+// console.log('all user array',allUser)
     useEffect(() => {
       const fetchOnlineLikeUsers = async () => {
         try {
@@ -122,90 +121,7 @@ console.log('all user array',allUser)
       };
     }, [loginId]);
 
-    // useEffect(() => {
-    //   const fetchVisitorUsers = async () => {
-    //     try {
-    //       if (loginId) {
-    //         const response = await axios.get(
-    //           `${BASE_URL}/user/getVisitorUser/${loginId}`
-    //         );
-    //         // console.log('visitor user in new and online response',response?.data)
-    //         setVisitorArray(response?.data?.visitors || []);
-    //       }
-    //     } catch (error) {
-    //       // console.error("Error fetching visitors:", error);
-    //     }
-    //   };
     
-    //   fetchVisitorUsers();
-    
-    //   socket.on("getVisitorUser", (newUser) => {
-    
-    //     setVisitorArray(newUser)
-    //   });
-    
-    //   return () => {
-    //     socket.off("getVisitorUser");
-    //   };
-    // }, [loginId]);
-
-// console.log('visitor user in new and online',visitorArray)
-  //   useEffect(() => {
-  //     if (visitorArray?.length > 0 && allUser?.length > 0) {
-  //       const updatedArray = allUser.filter(
-  //         (user) =>
-  //           !visitorArray.some(
-  //             (filterUser) => filterUser.visitor._id === user._id
-  //           )
-  //       );
-  //       setAllUser(updatedArray);
-  //     } else {
-  //       setAllUser(getAllUserArray);
-  //     }
-  //   }, [visitorArray, getAllUserArray]);
-  // console.log('final visitor array',visitorArray)
-    // useEffect(() => {
-    //   const fetchVisitorLikeUsers = async () => {
-    //     try {
-    //       if (loginId) {
-    //         const response = await axios.get(
-    //           `${BASE_URL}/user/getVisitorLikeUser/${loginId}`
-    //         );
-    //         // setLikesArray(response?.data?.anotherMatchUser || []);
-    //         // console.log('get visitor like user is',response?.data)
-    //         setVisitorLikeUserObj(response?.data);
-    //       }
-    //     } catch (error) {
-    //       // console.error("Error fetching visitor like user:", error);
-    //     }
-    //   };
-    
-    //   fetchVisitorLikeUsers();
-    
-    //   socket.on("getVisitorLikeUser", (newUser) => {
-    
-    //     setVisitorLikeUserObj(newUser)
-    //   });
-    
-    //   return () => {
-    //     socket.off("getVisitorLikeUser");
-    //   };
-    // }, [loginId]);
-    // console.log('visitor like user obj',visitorLikeUserObj)
-
-    // useEffect(() => {
-    //   if (visitorLikeUserObj?.likes?.length > 0 && allUser?.length > 0) {
-    //     const updatedArray = allUser.filter(
-    //       (user) =>
-    //         !visitorLikeUserObj?.likes.some(
-    //           (filterUser) => filterUser._id === user._id
-    //         )
-    //     );
-    //     setAllUser(updatedArray);
-    //   } else {
-    //     setAllUser(getAllUserArray);
-    //   }
-    // }, [visitorArray, getAllUserArray]);
 
     useEffect(() => {
       const fetchDeactivateUser = async () => {
@@ -253,7 +169,7 @@ console.log('all user array',allUser)
       };
     }, [loginId, getAllUserArray]); // Re-run effect whenever loginId or getAllUserArray changes
     
-    console.log('get deactivate user obj in likes',deactivateUserObj)
+    // console.log('get deactivate user obj in likes',deactivateUserObj)
     
     const handleRefresh = () => {
       setRefreshing(true); // Show loading spinner

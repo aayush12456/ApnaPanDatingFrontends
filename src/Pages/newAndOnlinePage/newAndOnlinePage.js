@@ -1,7 +1,7 @@
 import NewAndOnline from "../../components/newAndOnline/newAndOnline"
 import {View} from 'react-native'
 
-const NewAndOnlinePage=({route,loginId,finalCompleteObj})=>{
+const NewAndOnlinePage=({route,finalCompleteObj})=>{
 
    
     const completeLoginObjData=finalCompleteObj || {}

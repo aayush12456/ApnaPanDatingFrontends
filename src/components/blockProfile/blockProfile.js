@@ -5,7 +5,7 @@ import { Card, Button } from "react-native-paper";
 import io from "socket.io-client";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const BlockProfile=({blockProfileUser,loginId,completeObj})=>{
+const BlockProfile=({blockProfileUser,loginId})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const getProfile = () => blockProfileUser;

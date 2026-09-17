@@ -25,9 +25,9 @@ const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
   const BASE_URL = "http://192.168.29.169:4000";
-  console.log('logins id',loginId)
-  console.log('notifys',notifyArray)
-  console.log('match obj matches',matchObj)
+  // console.log('logins id',loginId)
+  // console.log('notifys',notifyArray)
+  // console.log('match obj matches',matchObj)
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
@@ -75,7 +75,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
 
       const sendNotification = async () => {
         if (!filterNotify || filterNotify.length === 0) {
-          console.log("Notification token not found");
+          // console.log("Notification token not found");
           return;
         }
       
@@ -104,7 +104,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
             }
           );
     
-          console.log("Like Push Response:", response.data);
+          // console.log("Like Push Response:", response.data);
 
           const ticketMap = {};
     response.data.data.forEach((item,index)=>{
@@ -122,7 +122,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
           ids: ticketIds
         }
       );
-      console.log("Receipt Response",receiptRes.data);
+      // console.log("Receipt Response",receiptRes.data);
       const invalidTokens=[];
       Object.entries(receiptRes.data.data)
       .forEach(([ticketId,receipt])=>{
@@ -133,7 +133,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
           );
         }
       });
-      console.log("Invalid Tokens",invalidTokens);
+      // console.log("Invalid Tokens",invalidTokens);
       // invalid token delete API call
       if(invalidTokens.length > 0){
         await axios.post(
@@ -144,7 +144,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
             }
           
         );
-        console.log("Invalid token deleted");
+        // console.log("Invalid token deleted");
       }
     }
       
@@ -280,7 +280,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
       setFilterNotify([]);
     }
   }, [notifyArray, matchObj?._id]);
-  console.log('arrays notify',filterNotify)
+  // console.log('arrays notify',filterNotify)
 
 
 

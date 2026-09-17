@@ -12,7 +12,7 @@ return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
     <CommonHeader commonHeaderName={formData.headerName} completeObj={completeLoginObjData}/>
-    <DeleteAccount loginId={loginId} completeObj={completeLoginObjData}/>
+    <DeleteAccount loginId={loginId} />
     </View>
     </>
 )

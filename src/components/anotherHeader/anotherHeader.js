@@ -12,7 +12,7 @@ const AnotherHeader = ({ editObj, navigation, completeObj }) => {
     (state) => state.passMatchData.passMatchData
   );
 
-  console.log("another obj in another header", anotherObjSelector);
+  // console.log("another obj in another header", anotherObjSelector);
 
   const backArrowHandler = (name) => {
     if (name === "Edit Profile") {

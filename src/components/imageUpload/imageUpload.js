@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import axios from 'axios';
 import { userRegisterAsync } from "../../Redux/Slice/registerSlice/registerSlice";
 import { useNavigation } from '@react-navigation/native';
-import { ALERT_TYPE, Dialog, AlertNotificationRoot } from 'react-native-alert-notification';
+import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { showToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
 import { ActivityIndicator } from "react-native";
 const ImageUpload = ({ imageUpload }) => {
@@ -17,8 +17,6 @@ const ImageUpload = ({ imageUpload }) => {
   const [uploadedImages, setUploadedImages] = useState(uploadImages); // Track uploaded images to be shown
   const [imgFileType,setImgFileType]=useState([])
   const [fileUploadError,setFileUploadError]=useState('')
-  const [error,setError]=useState(''
-  )
   const [loading, setLoading] = useState(false);
   // console.log('image upload is', imageUpload);
 

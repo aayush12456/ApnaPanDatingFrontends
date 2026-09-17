@@ -8,7 +8,7 @@ import pause from '../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
 const AnotherMatchCard=({anotherMatch,songs})=>{
   // console.log('songs is',songs)
-  console.log('another match board',anotherMatch)
+  // console.log('another match board',anotherMatch)
     const navigation = useNavigation();
     const [active, setActive] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);

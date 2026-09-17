@@ -18,8 +18,8 @@ const Login=({navigation})=>{
 
   const loginObj=useSelector((state)=>state.loginData.loginObj)
   const errorObj=useSelector((state)=>state.loginData)
-  console.log('error objs',errorObj)
-  console.log(' login response data in login',loginObj)
+  // console.log('error objs',errorObj)
+  // console.log(' login response data in login',loginObj)
 
  
 useEffect(() => {
@@ -52,7 +52,7 @@ return (
       onSubmit={(values,action) => {
         setLoading(true);
         setErrorBack('');
-        console.log('value is',values)
+        // console.log('value is',values)
        
   if (values.phone === "9479918217") {
     setLoading(false);
@@ -69,7 +69,7 @@ return (
           text: "Admin Login",
           onPress: () => {
             // Admin login logic
-            console.log("Admin Login clicked");
+            // console.log("Admin Login clicked");
             navigation.navigate("verifyOtpPage",{
               formData:{name:"admin"}
                })

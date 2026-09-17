@@ -1,10 +1,10 @@
 import Matches from "../../components/matches/matches"
 import {View} from 'react-native'
-import { useState } from "react";
+
 
 const MatchesPage=({loginId,finalCompleteObj,onlineUserArray,notifyArray})=>{
 
-    console.log('logins is id',loginId)
+    // console.log('logins is id',loginId)
    
     const completeLoginObjData=finalCompleteObj || {}
    

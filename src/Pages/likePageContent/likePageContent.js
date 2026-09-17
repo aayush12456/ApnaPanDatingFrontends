@@ -1,8 +1,6 @@
 import LargeCard from "../../components/common/largeCard/largeCard"
 import axios from 'axios'
 import io from "socket.io-client";
-import * as SecureStore from 'expo-secure-store';
-import {useSelector} from 'react-redux'
 import { useState,useEffect } from "react";
 import { View } from "react-native";
 const socket = io.connect("http://192.168.29.169:4000")

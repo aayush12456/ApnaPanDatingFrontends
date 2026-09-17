@@ -6,7 +6,7 @@ const AccountSettingsPage=({route})=>{
 
     const { formData } = route?.params;
     const completeLoginObjData=formData?.loginDetails || {}
-console.log('complete obj',completeLoginObjData)
+// console.log('complete obj',completeLoginObjData)
 const notifyToken=formData.token
    
 

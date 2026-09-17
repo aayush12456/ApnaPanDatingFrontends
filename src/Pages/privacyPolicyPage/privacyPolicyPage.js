@@ -4,7 +4,7 @@ import { View } from "react-native";
 const PrivacyPolicyPage=({route})=>{
     const { formData } = route?.params;
     const completeLoginObjData=formData?.loginDetails || {}
-console.log('complete obj',completeLoginObjData)
+// console.log('complete obj',completeLoginObjData)
 return (
     <>
         <View style={{backgroundColor:`black`,height:"100%"}}>

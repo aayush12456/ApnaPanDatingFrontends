@@ -5,7 +5,7 @@ import {getAllPhoneMailData } from '../../Redux/Slice/getAllPhoneMailSlice/getAl
 const SignUpPage=({navigation})=>{
     const dispatch=useDispatch()
     const allUserSelector=useSelector((state)=>state?.getAllPhoneMail?.getAllPhoneMailObj)
-    console.log('all User selector',allUserSelector)
+    // console.log('all User selector',allUserSelector)
     const id='1'
     useEffect(()=>{
         if(id){

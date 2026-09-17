@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+
 import { useEffect, useState } from "react";
 import { View, ScrollView,Text,RefreshControl  } from "react-native";
 import io from "socket.io-client";
@@ -10,14 +10,14 @@ const socket = io.connect("http://192.168.29.169:4000");
 const Likes = ({completeObj,loginId}) => {
     const BASE_URL = "http://192.168.29.169:4000";
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
-console.log('complete obj likes',completeObj)
+// console.log('complete obj likes',completeObj)
   const [likesArray, setLikesArray] = useState([]);
   const [likeMatchUser, setLikeMatchUser] = useState({});
   const [onlineLikeUserObj, setOnlineLikeUserObj] = useState({});
   const [blockUserObj,setBlockUserObj]=useState({})
   const [deactivateUserObj,setDeactivateUserObj]=useState({})
   const [refreshing, setRefreshing] = useState(false); 
-  const dispatch = useDispatch();
+ 
 
   
   const completeLoginObjData=completeObj
@@ -219,9 +219,9 @@ console.log('complete obj likes',completeObj)
         )
       : [];
 
-  console.log("final like array", finalLikesArray);
-  console.log("another match like array", anotherMatchLikesArray);
-  console.log("online like array", onlineLikeUserArray);
+  // console.log("final like array", finalLikesArray);
+  // console.log("another match like array", anotherMatchLikesArray);
+  // console.log("online like array", onlineLikeUserArray);
   
   const blockUserIds = [
     ...(blockUserObj?.blockUserArray || []),
@@ -264,9 +264,9 @@ const handleRefresh=async()=>{
             axios.get(`${BASE_URL}/user/getDeactivateUser/${loginId}`)
         ]);
 
-        console.log("New Like Match Data:", likeMatchResponse?.data);
-        console.log("New Block User Data:", blockUserResponse?.data);
-        console.log("New Deactivate User Data:", deactivateUserResponse?.data);
+        // console.log("New Like Match Data:", likeMatchResponse?.data);
+        // console.log("New Block User Data:", blockUserResponse?.data);
+        // console.log("New Deactivate User Data:", deactivateUserResponse?.data);
 
         // Updating the states with new fetched data
         setLikesArray(getMatchUserResponse?.data?.likesArray || []);

@@ -3,7 +3,6 @@ import axios from 'axios'
 import io from "socket.io-client";
 import { useState,useEffect } from "react";
 import {View} from 'react-native'
-import ScreenShotCapture from "../../components/screenshotCapture/screenshotCapture";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsPageContent=({route})=>{
@@ -15,12 +14,12 @@ const MessageDetailsPageContent=({route})=>{
     const [filterNotify,setFilterNotify]=useState([])
     const [chatUsersArray, setChatUsersArray] = useState([])
     const [notifyChecks,setNotifyChecks]=useState(null)
-    console.log('online users in details',onlineUsers)
+    // console.log('online users in details',onlineUsers)
 
     
     const completeLoginObjData=completeObj ||  {}
     const loginId=completeLoginObjData?.userId
-  console.log('login id message',loginId)
+  // console.log('login id message',loginId)
     useEffect(()=>{
       const fetchDeactivateUser = async () => {
         try {
@@ -63,7 +62,7 @@ const MessageDetailsPageContent=({route})=>{
   
   useEffect(() => {
     socket.on("getNotifyId", (data) => {
-      console.log("notify socket", data);
+      // console.log("notify socket", data);
       setNotifyObj(data);
     });
   
@@ -71,8 +70,8 @@ const MessageDetailsPageContent=({route})=>{
       socket.off("getNotifyId");
     };
   }, []);
-  console.log('notify onj',notifyObj)
-  console.log('forms datas',formData)
+  // console.log('notify onj',notifyObj)
+  // console.log('forms datas',formData)
   
   useEffect(() => {
     if (notifyObj?.length > 0 && formData?._id) {
@@ -92,7 +91,7 @@ const MessageDetailsPageContent=({route})=>{
     socket.emit('requestChatUsers');
 
     socket.on("getChatUsers", (data) => {
-      console.log("getChatUsers socket data (array of obj):", data);
+      // console.log("getChatUsers socket data (array of obj):", data);
       setChatUsersArray(data || []);
     });
 
@@ -100,9 +99,9 @@ const MessageDetailsPageContent=({route})=>{
       socket.off("getChatUsers");
     };
   }, []);
-  console.log('chatUsersArray from socket:', chatUsersArray)
+  // console.log('chatUsersArray from socket:', chatUsersArray)
 
-  console.log('forms data in messafe contrn',formData)
+  // console.log('forms data in messafe contrn',formData)
   
   useEffect(() => {
     const checks = chatUsersArray.filter(
@@ -111,7 +110,7 @@ const MessageDetailsPageContent=({route})=>{
     setNotifyChecks(checks);
   }, [chatUsersArray, loginId, formData?._id]);
 
-  console.log('checks data',notifyChecks)
+  // console.log('checks data',notifyChecks)
 return (
     <>
     {/* <ScreenShotCapture/> */}

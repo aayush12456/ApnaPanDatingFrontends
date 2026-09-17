@@ -1,7 +1,6 @@
 import { Text, Image, View,Modal,StatusBar} from "react-native";
 import splashScreenImg from '../../../assets/splash.png'
 import holdingHands from '../../../assets/frontImages/holdingHands.png';
-import love from '../../../assets/frontImages/love.png';
 import { FrontImages } from "../../utils/frontImages";
 import { Button } from "react-native-paper";
 import { useEffect,useState } from "react";

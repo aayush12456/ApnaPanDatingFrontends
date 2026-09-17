@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  Platform,
 } from "react-native";
 import ZegoExpressEngine, {
   ZegoScenario,
@@ -33,7 +32,7 @@ export default function CallScreen() {
   const dispatch=useDispatch()
   const id=1
   const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
-  console.log('get cred select',getCredSelector)
+  // console.log('get cred select',getCredSelector)
 
 
   useEffect(()=>{
@@ -44,8 +43,8 @@ export default function CallScreen() {
 
       const ZegoAppID=getCredSelector?.zegoAppId
       const ZegoAppSign=getCredSelector?.zegoAppSign
-      console.log('zego id',ZegoAppID)
-      console.log('zego sign',ZegoAppSign)
+      // console.log('zego id',ZegoAppID)
+      // console.log('zego sign',ZegoAppSign)
 
   const {
     roomID,
@@ -249,26 +248,7 @@ await engine.enableANS(true);     // Background noise kam karne ke liye
   };
 
 
-  // const cleanup = async () => {
-  //   try {
-  //     const engine = engineRef.current;
-  //     if (engine) {
-  //       try {
-  //         await engine.stopPublishingStream();
-  //       } catch (e) {}
-    
-  //       try {
-  //         await engine.logoutRoom(roomID);
-  //       } catch (e) {}
-  //       try {
-  //         await ZegoExpressEngine.destroyEngine();
-  //       } catch (e) {}
-  //       engineRef.current = null;
-  //     }
-  //   } catch (e) {
-  //     console.log("cleanup error:", e);
-  //   }
-  // };
+
 
   const cleanup = async () => {
     try {

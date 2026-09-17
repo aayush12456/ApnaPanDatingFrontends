@@ -1,4 +1,4 @@
-import { Image, View, TouchableOpacity, Text,Pressable,ScrollView,KeyboardAvoidingView, Platform,StatusBar } from "react-native";
+import { Image, View, TouchableOpacity, Text,ScrollView,KeyboardAvoidingView, Platform,StatusBar } from "react-native";
 import { Button } from "react-native-paper";
 import back from '../../../assets/signUpFormIcon/back.png';
 import { TextInput } from 'react-native-paper';

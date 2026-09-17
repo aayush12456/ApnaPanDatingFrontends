@@ -1,6 +1,6 @@
 import Message from "../../components/message/message"
 import {View} from 'react-native'
-const MessagePage=({loginId,finalCompleteObj,onlineUserArray,route})=>{
+const MessagePage=({loginId,finalCompleteObj,onlineUserArray})=>{
     const completeLoginObjData=finalCompleteObj || {}
   
 return (

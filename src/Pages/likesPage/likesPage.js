@@ -4,7 +4,7 @@ const LikesPage=({loginId,finalCompleteObj})=>{
 
    
     const completeLoginObjData=finalCompleteObj|| {}
-    console.log('login id like',loginId)
+    // console.log('login id like',loginId)
 
 return (
     <>

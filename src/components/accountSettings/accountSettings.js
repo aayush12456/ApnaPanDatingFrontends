@@ -7,7 +7,7 @@ import axios from 'axios'
 import io from "socket.io-client";
 const socket = io.connect("http://192.168.29.169:4000")
 const AccountSettings=({completeObj,notifyToken})=>{
-  console.log('complete obj account',completeObj)
+  // console.log('complete obj account',completeObj)
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const navigation = useNavigation();
@@ -16,7 +16,7 @@ const AccountSettings=({completeObj,notifyToken})=>{
       const completeLoginObjData=completeObj
     
 const loginId=completeLoginObjData.userId
-console.log('login id setting',loginId)
+// console.log('login id setting',loginId)
    
 const removeLoginData = async () => {
   try {

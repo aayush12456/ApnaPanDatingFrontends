@@ -11,7 +11,7 @@ import * as SecureStore from 'expo-secure-store';
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const DeactivateAccount=({loginId,deactivateObj,completeObj})=>{
-  console.log('login id in deact',loginId)
+  // console.log('login id in deact',loginId)
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const navigation = useNavigation();

@@ -12,11 +12,11 @@ const DeactivateAccountPage=({route})=>{
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const { formData} = route?.params;
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
-   console.log('forms datas',formData)
+  //  console.log('forms datas',formData)
   
     const completeLoginObjData=formData?.loginDetails|| {}
 
-   console.log('complete login obj data deactu',completeLoginObjData)
+  //  console.log('complete login obj data deactu',completeLoginObjData)
     
    
    const loginId=completeLoginObjData?.userId

@@ -3,7 +3,7 @@ import { Card, Button } from "react-native-paper";
 import { useDispatch } from "react-redux";
 import axios from 'axios'
 import { passSkipProfileSliceActions } from "../../Redux/Slice/passSkipProfileSlice/passSkipProfileSlice";
-const SkipProfile=({skipProfileUser,loginId,completeObj})=>{
+const SkipProfile=({skipProfileUser,loginId})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const dispatch=useDispatch()

@@ -7,7 +7,7 @@ import back from '../../../../assets/signUpFormIcon/back.png'
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import { replyUserAsync, replyUserData } from "../../../Redux/Slice/replyUserSlice/replyUserSlice";
 const ReportLargeCard=({user})=>{
-    console.log('report user obj',user)
+    // console.log('report user obj',user)
     const [loading,setLoading]=useState(false)
 const [messageReply,setMessageReply]=useState('')
     const navigation=useNavigation()

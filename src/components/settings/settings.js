@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native"
 
 const Settings=({completeObj,notifyToken})=>{
     const navigation = useNavigation();
-    console.log('setting commplete',completeObj)
+    // console.log('setting commplete',completeObj)
     const skippedProfileHandler=()=>{
         const skipProfileObj={
             headerName:'Skipped Profiles',

@@ -6,8 +6,8 @@ import { View } from "react-native";
 const AnotherMatchCardPage=({route})=>{
     const { formData } = route.params;
     const [songObj,setSongObj]=useState(null)
-    const [completeObj,setCompleteObj]=useState({})
-    console.log('form data in another match card',formData)
+ 
+    // console.log('form data in another match card',formData)
     const dispatch=useDispatch()
     const getAllSongsSelector=useSelector((state)=>state?.getBollyWoodSong?.getBollywoodSongUserObj?.uploadSongsData)
     // console.log('get all song in another',getAllSongsSelector)
@@ -34,7 +34,7 @@ const AnotherMatchCardPage=({route})=>{
 return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
-    <AnotherMatchCard anotherMatch={formData} songs={songObj} completeObj={completeObj} />
+    <AnotherMatchCard anotherMatch={formData} songs={songObj}  />
     </View>
     </>
 )

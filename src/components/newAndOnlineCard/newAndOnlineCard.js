@@ -16,13 +16,11 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     // console.log('online like user obj in new and online card',onlineLikeUserObj)
     // console.log('login id',loginId)
-    console.log('online like user',onlineLikeUserObj)
-    console.log('all user',allUser)
+    // console.log('online like user',onlineLikeUserObj)
+    // console.log('all user',allUser)
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selfLikeMatch,setSelfLikeMatch]=useState(false)
-    const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
-    const [loginIdUserArray, setLoginIdUserArray] = useState([])
     const [deactivateUserObj,setDeactivateUserObj]=useState({})
     const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
     const [openDailog,setOpenDialog]=useState(false)
@@ -34,45 +32,7 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
     let currentYear = currentDate.getFullYear();
     const age = year ? currentYear - parseInt(year) : "";
 
-    // useEffect(()=>{
-    //   const fetchAllLoginIdUser = async () => {
-    //     try {
-    //       if (loginId) {
-    //         const response = await axios.get(
-    //           `${BASE_URL}/user/getAllLoginIdUser/${loginId}`,
-    //         );
-    //         // setLikesArray(response?.data?.anotherMatchUser || []);
-    //         // console.log('get all login id user is', response?.data?.loginIdUserArray)
-    //         setLoginIdUserArray(response?.data?.loginIdUserArray)
-    //       }
-    //     } catch (error) {
-    //       console.error("Error fetching in chat id obj:", error);
-    //     }
-    //   };
-    //   fetchAllLoginIdUser();
-  
-    //   socket.on("getLoginUser", (newUser) => {
-  
-    //     setLoginIdUserArray(newUser)
-    //   });
-    //   socket.on("deleteLoginIdUser", (newUser) => {
-    //     setLoginIdUserArray(newUser)
-    //   });
-    //   return () => {
-    //     socket.off("getLoginUser");
-    //     socket.off("deleteLoginIdUser");
-    //   };
-    // },[loginId])
-  
-    // // console.log('login id user array is',loginIdUserArray)
-    // useEffect(() => {
-    //   if (loginId) {
-    //     const getActiveLoginId = loginIdUserArray?.some(
-    //       (item) => item === allUser?._id
-    //     );
-    //     setActiveLoginIdResponse(getActiveLoginId)
-    //   }
-    // }, [loginId, loginIdUserArray, allUser]);
+    
 
     useEffect(()=>{
       const fetchDeactivateUser = async () => {
@@ -120,27 +80,7 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
           id: loginId,
           visitorOnlineId: allUser?._id,
         };
-        // try {
-        //   // Execute both API calls in parallel
-        //   const [visitorResponse, countResponse] = await Promise.all([
-        //     axios.post(
-        //       `${BASE_URL}/user/addVisitorUser/${addVisitorObj.id}`,
-        //       addVisitorObj
-        //     ),
-        //     axios.post(
-        //       `${BASE_URL}/user/addVisitorCount/${visitorCountObj.id}`,
-        //       visitorCountObj
-        //     ),
-        //   ]);
-    
-        //   // console.log("Visitor added:", visitorResponse.data);
-        //   // console.log("Visitor count updated:", countResponse.data);
-        //   // Emit socket events after both API calls succeed
-        //   socket.emit("addVisitorUser", visitorResponse?.data?.visitors);
-        //   socket.emit("addVisitorCountUser", countResponse?.data?.userObj);
-        // } catch (error) {
-        //   console.error("Error in cardClickHandler:", error.response?.data || error.message);
-        // }
+       
       }
     };
     
@@ -150,19 +90,13 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
         dispatch(passDataSliceActions.passDatas(name));
       };
       
-  // useEffect(()=>{
-  //   const selfOnlineLike= onlineLikeUserObj?.selfOnlineLikeUser?.some((onlineLike)=>onlineLike?.firstName===allUser?.firstName)
-  //   console.log('self online like useEffect',selfOnlineLike)
-  //   if(selfOnlineLike){
-  //     setSelfLikeMatch(false)
-  //   }
-  //    },[onlineLikeUserObj?.selfOnlineLikeUser,allUser])
+ 
   useEffect(() => {
     // Check if the user is liked
     const isLiked = onlineLikeUserObj?.selfOnlineLikeUser?.some(
         (onlineLike) => onlineLike?.firstName === allUser?.firstName
     );
-    console.log('is like',isLiked)
+    // console.log('is like',isLiked)
     setSelfLikeMatch(isLiked);
 }, [onlineLikeUserObj?.selfOnlineLikeUser, allUser]);
     //  console.log('self online like',selfLikeMatch)
@@ -193,19 +127,7 @@ return (
                       source={{ uri: allUser?.images[0] }}
                       style={{ width: 65, height: 65, borderRadius: 70 }}
                     />
-                     {activeLoginIdResponse===true?<View
-      style={{
-        width: 15, 
-        height: 15,
-        backgroundColor: 'rgba(74, 222, 128,1)',
-        borderRadius: 15 / 2,
-        position: 'absolute',
-        bottom: 5, 
-        right: 0, 
-        borderWidth: 2,
-        borderColor: 'white',
-      }}
-    />:null}
+                    
                   </View>
                   <View style={{ paddingTop: 1 }}>
                     <Text style={{  color:`white`, fontWeight: "500" }}>
@@ -217,9 +139,7 @@ return (
                     </View>
                     <Text style={{ paddingTop: 2,color:`white` }}>{allUser?.relationship}</Text>
                   </View>
-                  {/* {selfLikeMatch==true?null:<View>
-                    <Text style={{color:'black',paddingTop:8,fontWeight:"600"}}>Liked!</Text>
-                  </View>} */}
+                
                       {selfLikeMatch && (
                         <View>
                             <Text style={{ color: 'black', paddingTop: 8, fontWeight: "600",

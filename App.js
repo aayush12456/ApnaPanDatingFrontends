@@ -38,13 +38,11 @@ import NewAndOnlinePageContent from './src/Pages/newAndOnlinePageContent/newAndO
 import AnotherMatchCardPage from './src/Pages/anotherMatchCardPage/anotherMatchCardPage';
 import { LogBox } from 'react-native';
 import LikePageContent from './src/Pages/likePageContent/likePageContent';
-import VisitorPageContent from './src/Pages/visitorPageContent/visitorPageContent';
 import MessageDetailsPageContent from './src/Pages/messageDetailsPageContent/messageDetailsPageContent';
 import MessageProfilePage from './src/Pages/messageProfilePage/messageProfilePage';
 import SkipProfilePage from './src/Pages/skipProfilePage/skipProfilePage';
 import BlockProfilePage from './src/Pages/blockProfilePage/blockProfilePage';
 import AccountSettingsPage from './src/Pages/accountSettingsPage/accountSettingsPage';
-import ChangePasswordPage from './src/Pages/changePasswordPage/changePasswordPage';
 import MannageAccountPage from './src/Pages/manageAccountPage/manageAccountPage';
 import DeactivateAccountPage from './src/Pages/deactivateAccountPage/deactivateAccountPage';
 import DeleteAccountPage from './src/Pages/deleteAccountPage/deleteAccountPage';
@@ -53,7 +51,6 @@ import EditSongsPage from './src/Pages/editSongsPage/editSongsPage';
 import CaptureImagePage from './src/Pages/captureImagePage/captureImagePage';
 import EditBasicInfoPage from './src/Pages/editBasicInfoPage/editBasicInfoPage';
 import CompareFacePage from './src/Pages/compareFacePage/compareFacePage';
-import AppearancePage from './src/Pages/appearancePage/appearancePage';
 import SettingsPage from './src/Pages/settingsPage/settingsPage';
 import VerifyOtpPage from './src/Pages/verifyOtpPage/verifyOtpPage';
 import NewAndOnlinePage from './src/Pages/newAndOnlinePage/newAndOnlinePage';
@@ -105,7 +102,7 @@ const [flag, setFlag] = useState(null);
       try {
         const token = await SecureStore.getItemAsync("loginObj");
   
-        console.log("Login Token:", token);
+        // console.log("Login Token:", token);
         setLoginDetails(JSON.parse(token))
 
         if (token) {
@@ -251,7 +248,6 @@ const [flag, setFlag] = useState(null);
           component={StayControlPage}
           options={{ headerShown: false }}
         />
-          {/* {isAuthenticated ? <AuthenticatedStack /> : <UnauthenticatedStack />} */}
         <Stack.Screen
           name="SignUpPage"
           component={SignUpPage}
@@ -408,11 +404,7 @@ const [flag, setFlag] = useState(null);
           component={LikePageContent}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
-          name="VisitorPageContent"
-          component={VisitorPageContent}
-          options={{ headerShown: false }}
-        />
+       
           <Stack.Screen
           name="MessagePage"
           component={MessagePage}
@@ -443,11 +435,7 @@ const [flag, setFlag] = useState(null);
           component={AccountSettingsPage}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="ChangePasswordPage"
-          component={ChangePasswordPage}
-          options={{ headerShown: false }}
-        />
+     
             <Stack.Screen
           name="ManageAccountPage"
           component={MannageAccountPage}
@@ -468,11 +456,7 @@ const [flag, setFlag] = useState(null);
           component={ExpertChatPage}
           options={{ headerShown: false }}
         />
-          <Stack.Screen
-          name="AppearancePage"
-          component={AppearancePage}
-          options={{ headerShown: false }}
-        />
+          
         <Stack.Screen
           name="SettingsPage"
           component={SettingsPage}

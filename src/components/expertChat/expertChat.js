@@ -15,7 +15,6 @@ import {
   Pressable,
   ScrollView,
   Image,
-  Alert,
 } from "react-native";
 
 
@@ -29,7 +28,7 @@ const ExpertChat = ({ obj }) => {
 const dispatch=useDispatch()
   const id=1
   const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
-  console.log('get cred select',getCredSelector)
+  // console.log('get cred select',getCredSelector)
 
 
   useEffect(()=>{
@@ -38,7 +37,7 @@ const dispatch=useDispatch()
     }
       },[dispatch,id])
 
-
+     
 
   const [queryText, setQueryText] = useState("");
   const [responseExpertObj, setResponseExpertObj] = useState(null);
@@ -128,7 +127,7 @@ const dispatch=useDispatch()
 
       const response =
         result.response;
-console.log('response of model',response)
+// console.log('response of model',response)
       const text =
         response.text();
 
@@ -165,10 +164,10 @@ console.log('response of model',response)
   
         const data = await response.json();
   
-        console.log(
-          "AVAILABLE GEMINI MODELS:",
-          JSON.stringify(data.models, null, 2)
-        );
+        // console.log(
+        //   "AVAILABLE GEMINI MODELS:",
+        //   JSON.stringify(data.models, null, 2)
+        // );
   
       } catch (error) {
         console.log("MODEL LIST ERROR:", error);

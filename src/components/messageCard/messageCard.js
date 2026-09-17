@@ -12,7 +12,7 @@ const socket = io.connect("http://192.168.29.169:4000")
 const MessageCard=({finalMessageUser,completeObj,loginId,onlineUsers})=>{
     const BASE_URL = "http://192.168.29.169:4000";
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
-console.log('complete obj message',completeObj)
+// console.log('complete obj message',completeObj)
     const [chatIdArray, setChatIdArray] = useState([])
     const [filteredMessages, setFilteredMessages] = useState([])
     const [fetchMessages,setFetchMessages]=useState([])
@@ -83,7 +83,7 @@ useEffect(() => {
 
 
     const messageCardClickHandler=async(finalMessageUser)=>{
-    console.log('final message user',finalMessageUser)
+    // console.log('final message user',finalMessageUser)
     if(finalMessageUser){
       
       const chatUserObj = {
@@ -91,7 +91,7 @@ useEffect(() => {
         anotherId: finalMessageUser?._id
       };
       socket.emit('addChatUsers', chatUserObj);
-      console.log('emitted addChatUsers', chatUserObj);
+      // console.log('emitted addChatUsers', chatUserObj);
 
       const addChatIdObj={
      id:loginId,
@@ -122,7 +122,7 @@ useEffect(() => {
   }
       try {
         const response = await axios.post(`${BASE_URL}/chat/addChatId`, addChatIdObj);
-        console.log('response in add chat id user is',response?.data?.chatIdUser)
+        // console.log('response in add chat id user is',response?.data?.chatIdUser)
         navigation.navigate('MessageDetailsPageContent', {
           formData: finalMessageUser,
           completeObj,
@@ -177,42 +177,8 @@ useEffect(() => {
   }, [loginId])
   
   
-console.log('fetch messages',fetchMessages)
-//   useEffect(() => {
-//     if (fetchMessages.length && chatIdArray.length) {
-//         const currentTime = new Date();
+// console.log('fetch messages',fetchMessages)
 
-//         // Map through chatIdArray to find the closest message for each chatId
-//         const closestMessagesArray = chatIdArray.map(chatItem => {
-//             // Filter messages matching the current chatId
-//             const matchingMessages = fetchMessages.filter(messageItem => messageItem.chatId === chatItem?._id);
-
-//             // Find the message with the closest timestamp to the current time
-//             if (matchingMessages.length > 0) {
-//                 return matchingMessages.reduce((closest, currentMessage) => {
-//                     const currentMessageTime = new Date(currentMessage.timestamp);
-//                     const closestMessageTime = new Date(closest.timestamp);
-
-//                     // Calculate time differences
-//                     const currentTimeDiff = Math.abs(currentTime - currentMessageTime);
-//                     const closestTimeDiff = Math.abs(currentTime - closestMessageTime);
-
-//                     // Return the message with the smaller time difference
-//                     return currentTimeDiff < closestTimeDiff ? currentMessage : closest;
-//                 }, matchingMessages[0]);
-                
-//             }
-//             return null;
-//         }).filter(message => message !== null); // Filter out any nulls
-
-//         // console.log('Array of closest messages for each chatId:', closestMessagesArray);
-//         setFilteredMessages(closestMessagesArray)
-//     }
-// }, [fetchMessages, chatIdArray]);
-// // console.log('fetch message in message card',filteredMessages)
-
-
-// console.log('filter messages',filteredMessages)
 
 useEffect(() => {
 
@@ -342,21 +308,7 @@ return (
                     </Text>
                   </View>
                   <View>
-                    {/* {showTypingResponse===true?null:
-                      filteredMessages.map((filterMessage)=>{
                     
-                        return (
-               
-                          <FilteredChatMessage key={filterMessage?._id} filterMessage={filterMessage} filterUser={finalMessageUser} loginObj={completeObj}
-                           recordMessageId={recordMessageId} completeObj={completeObj} />
-                    
-                        )
-                      })
-                    }
-                 {checkMessages===false && <Text style={{ color:`white`,
-                  fontWeight: "500",paddingTop:2 }}>
-           You have both paired
-                    </Text>} */}
                     {showTypingResponse ? null : (() => {
 
 const currentUserMessages = filteredMessages.filter(

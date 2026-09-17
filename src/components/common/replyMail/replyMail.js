@@ -61,7 +61,7 @@ return (
         replyMessage:'Thank you for reaching out to ApnaPan Support. We have reviewed your request and are getting back to you with an update.',
         email:replyObj.email,
      }
-     console.log('contact us data detail',replyUserData)
+    //  console.log('contact us data detail',replyUserData)
      dispatch(replyUserAsync(replyUserData))
     }}
       >

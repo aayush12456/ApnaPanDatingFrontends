@@ -28,7 +28,7 @@ const VideoRecord = ({navigation,videoRecord}) => {
         }
       }
     } catch (error) {
-      // console.log('Error during video recording', error);
+      console.log('Error during video recording', error);
     }
   };
   

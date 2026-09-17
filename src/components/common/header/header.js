@@ -3,7 +3,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import matches from '../../../../assets/sidebarIcons/profileMatch.png'
 import girl from '../../../../assets/sidebarIcons/girl.png'
 import boy from '../../../../assets/sidebarIcons/boy.png'
-// import search from '../../../../assets/sidebarIcons/search.png'
 import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
 import settings from '../../../../assets/sidebarIcons/settings.png'
@@ -31,19 +30,13 @@ const Header=()=>{
     const navigation = useNavigation();
     const [loginDetails, setLoginDetails] = useState(null);
     const [notifyObjData, setNotifyObjData] = useState([]);
-    // const [loginId,setLoginId]=useState('')
     const [likeCountObj,setLikeCountObj]=useState('')
-    const [visitorCountObj,setVisitorCountObj]=useState('')
     const [recordMessage, setRecordMessage] = useState([])
     const [onlineUsers,setOnlineUsers]=useState([]);
     const [notifyToken,setNotifyToken]=useState('')
     const [allUserArray,setAllUserArray]=useState({})
    
-    // const completeLoginObjForOtp=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.completeLoginData)
-    // const completeLoginObj = useSelector(
-    //   (state) => state?.loginData?.loginData?.completeLoginData
-    // );
-    // const completeLoginObjData=completeLoginObj || completeLoginObjForOtp || {}
+  
     useEffect(()=>{
       const getLoginData = async () => {
           const data = await SecureStore.getItemAsync('loginObj');
@@ -54,15 +47,15 @@ const Header=()=>{
 
 
     const finalCompleteObj=loginDetails?.loginData
-console.log('final complete header',finalCompleteObj)
+// console.log('final complete header',finalCompleteObj)
 
 
 
    
-        console.log('data of login in obj',loginDetails)
+        // console.log('data of login in obj',loginDetails)
  const newIcon=finalCompleteObj?.gender === 'Female' ? boy : girl
  const loginId=finalCompleteObj?.userId
- console.log('login is',loginId)
+//  console.log('login is',loginId)
  const loginObj=finalCompleteObj
  
 //  const loginResponse=useSelector((state)=>state?.loginData?.loginData?.token)
@@ -149,7 +142,7 @@ useEffect(() => {
 
 // console.log('record message obj',recordMessage)
 const { width, height } = Dimensions.get('window')
-const count=parseInt(likeCountObj?.counter || 0)+parseInt(visitorCountObj?.visitorCounter || 0)
+const count=parseInt(likeCountObj?.counter || 0)
 
 useEffect(()=>{
 
@@ -177,7 +170,7 @@ return ()=>{
 
 },[]);
 
-console.log('online user array',onlineUsers)
+// console.log('online user array',onlineUsers)
 
 
 
@@ -197,7 +190,7 @@ useEffect(() => {
 
 useEffect(() => {
   socket.on("getNotifyId", (data) => {
-    console.log("notify socket", data);
+    // console.log("notify socket", data);
     setNotifyObjData(data);
   });
 
@@ -212,7 +205,7 @@ useEffect(() => {
   const subscription = Notifications.addNotificationResponseReceivedListener(response => {
     const data = response.notification.request.content.data;
     
-    console.log("Notification Data Received:", data);
+    // console.log("Notification Data Received:", data);
 
     if (!data?.type) return;
 
@@ -250,7 +243,7 @@ const requestPermissions = async () => {
     const token = await registerForPushNotificationsAsync();
 
     if (token && loginId) {
-      console.log("tokens expo", token);
+      // console.log("tokens expo", token);
       setNotifyToken(token);
 
       await axios.post(
@@ -303,7 +296,7 @@ useEffect(() => {
     };
   }, [loginId]);
 
-  console.log('all user header',allUserArray)
+  // console.log('all user header',allUserArray)
 
   useEffect(() => {
     if (!loginId || !allUserArray?.users) return;
@@ -312,7 +305,7 @@ useEffect(() => {
       (user) => user._id == loginId
     );
   
-    console.log("match id header", matchId);
+    // console.log("match id header", matchId);
   
     if (matchId === false) {
       Alert.alert(
@@ -397,7 +390,6 @@ return (
   {(props) => (
     <MyProfilePage
       {...props}
-      loginId={loginId}
       loginObj={finalCompleteObj}
     />
   )}
@@ -448,8 +440,7 @@ return (
 
     headerRight: () => {
       if (
-        likeCountObj?._id === loginId ||
-        visitorCountObj?._id === loginId
+        likeCountObj?._id === loginId 
       ) {
         return (
           <View
@@ -540,8 +531,7 @@ return (
 
     headerRight: () => {
       if (
-        likeCountObj?._id === loginId ||
-        visitorCountObj?._id === loginId
+        likeCountObj?._id === loginId 
       ) {
         return (
           <View
@@ -587,22 +577,11 @@ return (
   {(props) => (
     <NewAndOnlinePage
       {...props}
-      loginId={loginId}
       finalCompleteObj={finalCompleteObj}
     />
   )}
 </Drawer.Screen>
-       {/* <Drawer.Screen
-        name="Search"
-        component={NewAndOnline}
-        options={{ 
-            drawerLabel: 'Search',
-            drawerIcon:()=>(
-                <Image  source={search}
-                style={{ width: 28, height:28 }}/>
-            ),
-         }}
-      /> */}
+     
 <Drawer.Screen
   name="Likes"
   options={{
@@ -654,8 +633,7 @@ return (
 
     headerRight: () => {
       if (
-        likeCountObj?._id === loginId ||
-        visitorCountObj?._id === loginId
+        likeCountObj?._id === loginId 
       ) {
         return (
           <View
@@ -758,8 +736,7 @@ return (
 
     headerRight: () => {
       if (
-        (likeCountObj?._id === loginId ||
-          visitorCountObj?._id === loginId) &&
+        (likeCountObj?._id === loginId) &&
         recordMessage.id === loginId
       ) {
         return (
@@ -812,83 +789,6 @@ return (
     />
   )}
 </Drawer.Screen>
-
-      {/* <Drawer.Screen
-  name="Visitors"
-  component={VisitorPage}
-  options={{
-    drawerLabel: ({ focused }) => (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: focused ? `${completeObj?.appearanceMode === 'Dark Mode' ? '#87CEEB' : 'blue'}` :`${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}` ,fontWeight:'500' }}>Visitors</Text>
-        {visitorCountObj?.visitorCounter && visitorCountObj?._id === loginId && visitorCountObj?.visitorCounter!==null && visitorCountObj?.visitorCounter!==""? (
-          <View
-            style={{
-              marginLeft: 8, // Adjust space between "Likes" and the badge
-              borderRadius: 20,
-              width: 20,
-              height: 20,
-              backgroundColor: 'red',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ color: 'white', textAlign: 'center' }}>{visitorCountObj?.visitorCounter}</Text>
-          </View>
-        ) : null}
-      </View>
-    ),
-    drawerIcon: () => (
-      <Image
-        source={visitors}
-        style={{ width: 25, height: 25,tintColor:`${completeObj?.appearanceMode === 'Dark Mode' ? 'white' : 'black'}` }}
-      />
-    ),
-    headerRight: () => {
-      if (likeCountObj?._id === loginId || visitorCountObj?._id === loginId  ) {
-        return (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'left',
-              marginRight:90,
-             justifyContent:'flex-start',
-             right:'100%'
-            }}
-          >
-            {count > 0 && (
-              <View
-                style={{
-                  borderRadius: 10,
-                  backgroundColor: 'red',
-                  width: width * 0.05,
-                  height: width * 0.05,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: width * 0.03,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {count}
-                </Text>
-              </View>
-            )}
-          </View>
-        );
-      }
-      return null; // Return null if the condition is not met
-    },
-  }}
-  listeners={{
-    focus: () => {
-      deleteVisitorFunction();
-    },
-  }}
-/> */}
           
           <Drawer.Screen
   name="Settings"

@@ -6,7 +6,7 @@ import { deleteProfileUserAsync } from '../../Redux/Slice/deleteProfileUserSlice
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
-const DeleteAccount=({loginId,completeObj})=>{
+const DeleteAccount=({loginId})=>{
   const dispatch=useDispatch()
   const navigation = useNavigation();
   const deleteProfileResponse=useSelector((state)=>state.deleteProfileData.deleteProfileUserObj.msg)

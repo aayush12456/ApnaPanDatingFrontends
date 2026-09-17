@@ -80,7 +80,7 @@ return (
       combineSkipUserArray.length>0?  combineSkipUserArray.map((skipUserData,index)=>{
             // console.log('skip user data',skipUserData)
             return (
-                <SkipProfile skipProfileUser={skipUserData} key={skipUserData?._id} loginId={loginId} completeObj={completeLoginObjData}/>
+                <SkipProfile skipProfileUser={skipUserData} key={skipUserData?._id} loginId={loginId} />
 
             )
         }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'30%',

@@ -6,7 +6,7 @@ const SettingsPage=({finalCompleteObj,notify})=>{
 
    
     const completeLoginObjData=finalCompleteObj|| {}
-  console.log('complet login data',completeLoginObjData)
+  // console.log('complet login data',completeLoginObjData)
 
     
 return (

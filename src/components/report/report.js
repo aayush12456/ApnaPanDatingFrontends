@@ -20,12 +20,12 @@ const Report=({reportObj})=>{
     const dispatch=useDispatch()
     const navigation = useNavigation();
     const reportSelector=useSelector((state)=>state.report.userReportObj)
-    console.log('report selector',reportSelector)
-    console.log('report obj',reportObj)
+    // console.log('report selector',reportSelector)
+    // console.log('report obj',reportObj)
     const messageTypeHandler=(text)=>{
 setMessageText(text)
     }
-    console.log('select image uri',selectedImage)
+    // console.log('select image uri',selectedImage)
 
   const selectImageHandler = async () => {
     try {
@@ -114,7 +114,7 @@ setMessageText(text)
         });
       }
 
-      console.log("REPORT FORM DATA READY",formData);
+      // console.log("REPORT FORM DATA READY",formData);
 
       dispatch(userReportAsync(formData))
     } catch (error) {
