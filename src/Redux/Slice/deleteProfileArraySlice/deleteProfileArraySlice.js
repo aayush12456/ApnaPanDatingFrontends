@@ -14,7 +14,7 @@ export const deleteProfileArrayAsync = createAsyncThunk(
     
 
       const Responedata = response.data;
-      console.log( 'delete profile data',Responedata)
+      // console.log( 'delete profile data',Responedata)
       return Responedata
       
     } catch (error) {

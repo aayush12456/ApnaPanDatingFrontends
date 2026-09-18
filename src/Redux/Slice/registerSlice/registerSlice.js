@@ -15,27 +15,7 @@ export const userRegisterAsync = createAsyncThunk(
 
       const Responedata = response.data;
       // console.log( 'register response data ',Responedata)
-            const token = response.data.token;
-         const personalSignUpData={
-          firstName:response.data.user.firstName,
-          DOB:response.data.user.DOB,
-          aboutUser:response.data.user.aboutUser,
-          city:response.data.user.city,
-          drinking:response.data.user.drinking,
-          eating:response.data.user.eating,
-          education:response.data.user.education,
-          phone:response.data.user.phone,
-          gender:response.data.user.gender,
-          profession:response.data.user.profession,
-          smoking:response.data.user.smoking,
-          images:response.data.user.images,
-          interest:response.data.user.interest,
-          looking:response.data.user.looking,
-          relationship:response.data.user.relationship,
-          zodiac:response.data.user.zodiac,
-          language:response.data.user.language,
-          videoUrl:response.data.user.videoUrl
-        }
+         
         // sessionStorage.setItem('signupObject',JSON.stringify(personalSignUpData))
       return Responedata
       
@@ -49,10 +29,13 @@ const userRegisterSlice = createSlice({
   name: 'userRegister',
   initialState: {
     registerDataObj: {}, // Initialize responseData in the state
-
-
   },
-  reducers: {},
+  reducers: {
+    registerProfileResponse: (state) => {
+      state.registerDataObj = {};
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(userRegisterAsync.fulfilled, (state, action) => {
       state.registerDataObj = action.payload; // Update responseData in the state after successful login
@@ -67,3 +50,4 @@ const userRegisterSlice = createSlice({
 
 export default userRegisterSlice.reducer;
 export const userRegisterSliceAction = userRegisterSlice.actions;
+export const {  registerProfileResponse } = userRegisterSlice.actions;

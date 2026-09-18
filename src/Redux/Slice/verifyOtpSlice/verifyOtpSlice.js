@@ -14,7 +14,7 @@ export const verifyOtpAsync = createAsyncThunk(
     
 
       const Responedata = response.data;
-      console.log( 'login response data in loginSlice',Responedata)
+      // console.log( 'login response data in loginSlice',Responedata)
      
       
       return Responedata;

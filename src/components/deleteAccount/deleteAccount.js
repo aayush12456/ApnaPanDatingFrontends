@@ -2,7 +2,7 @@ import deleteIcon from '../../../assets/AllIcons/deletePerson.png';
 import { Button, Text } from "react-native-paper"
 import { View, Image } from 'react-native'
 import {useDispatch,useSelector} from 'react-redux'
-import { deleteProfileUserAsync } from '../../Redux/Slice/deleteProfileUserSlice/deleteProfileUserSlice';
+import { clearProfileResponse, deleteProfileUserAsync } from '../../Redux/Slice/deleteProfileUserSlice/deleteProfileUserSlice';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
@@ -14,8 +14,6 @@ const DeleteAccount=({loginId})=>{
   const deleteAccountHandler=async()=>{
 dispatch(deleteProfileUserAsync(loginId))
 await SecureStore.deleteItemAsync('loginObj')
-
-
   }
   useEffect(() => {
     if (deleteProfileResponse === "User deleted successfully") {

@@ -14,7 +14,7 @@ export const userReportAsync = createAsyncThunk(
     
 
       const Responedata = response.data;
-      console.log( 'report response data ',Responedata)
+      // console.log( 'report response data ',Responedata)
            
         // sessionStorage.setItem('signupObject',JSON.stringify(personalSignUpData))
       return Responedata

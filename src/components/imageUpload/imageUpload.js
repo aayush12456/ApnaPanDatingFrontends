@@ -3,7 +3,7 @@ import { Button } from "react-native-paper";
 import { uploadImages } from "../../utils/uploadImageData";
 import bulb from '../../../assets/signUpFormIcon/bulb.png';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from 'axios';
 import { userRegisterAsync } from "../../Redux/Slice/registerSlice/registerSlice";
@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { showToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
 import { ActivityIndicator } from "react-native";
-const ImageUpload = ({ imageUpload }) => {
+const ImageUpload = ({ imageUpload,registerMssg }) => {
   const navigation = useNavigation();
   const dispatch=useDispatch()
   const [uploadedImages, setUploadedImages] = useState(uploadImages); // Track uploaded images to be shown
@@ -20,41 +20,7 @@ const ImageUpload = ({ imageUpload }) => {
   const [loading, setLoading] = useState(false);
   // console.log('image upload is', imageUpload);
 
-  // const uploadImageData = async (index) => {
-  //   try {
-  //     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //     console.log('Permissions: ', permissionResult);
-
-  //     if (!permissionResult.granted) {
-  //       alert("Permission to access media library is required!");
-  //       return;
-  //     }
-
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //       allowsMultipleSelection: true,
-  //       allowsEditing: true,
-  //       aspect: [1, 1],
-  //       quality: 1,
-  //     });
-  //     console.log('result images',result)
-  //     setImgFileType((prevImageFile)=>[...prevImageFile,result.assets[0]])
-  //     if (!result.canceled && result.assets && result.assets.length > 0) {
-  //       const imgURI = result.assets[0].uri;
-  //       console.log('Selected Image URI:', imgURI);
-
-  //       // Update the image in the array with the selected one
-  //       const updatedImages = [...uploadedImages];
-  //       updatedImages[index].img = { uri: imgURI }; // Replace the image at the clicked index
-
-  //       setUploadedImages(updatedImages); // Update the state to reflect the change
-  //     } else {
-  //       console.log('No image selected or operation canceled.');
-  //     }
-  //   } catch (error) {
-  //     console.log('Error during media picking:', error);
-  //   }
-  // };
+ 
   const uploadImageData = async (index) => {
     try {
       let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -147,53 +113,7 @@ const ImageUpload = ({ imageUpload }) => {
     }
   };
   
-  // const imageSubmitHandler=async()=>{
-  //   if(imgFileType.length===0){
-  //     setFileUploadError('please upload images')
-  //     return
-  //   }
-  //   console.log('update images',imgFileType)
-
-  //   const formData = new FormData();
-  // formData.append('firstName', imageUpload.firstName);
-  // formData.append('email', imageUpload.email);
-  // formData.append('phone', imageUpload.phone);
-  // formData.append('password', imageUpload.password);
-  // formData.append('gender', imageUpload.gender);
-  // formData.append('DOB', imageUpload.date);
-  // formData.append('city', imageUpload.city);
-  // formData.append('aboutUser', imageUpload.AboutMe);
-  // // formData.append('videoUrl', {uri:imageUpload.videoUrl.uri,name:imageUpload.videoUrl.fileName,type:imageUpload.videoUrl.type});
-  // formData.append('interest', JSON.stringify(imageUpload.interest))
-  // formData.append('education', imageUpload.education);
-  // formData.append('drinking', imageUpload.drinking);
-  // formData.append('smoking', imageUpload.smoking);
-  // formData.append('eating', imageUpload.eating);
-  // formData.append('profession', imageUpload.profession);
-  // formData.append('looking', imageUpload.looking);
-  // formData.append('relationship', imageUpload.relation);
-  // formData.append('zodiac', imageUpload.zodiac);
-  // formData.append('songId', imageUpload.selectedSong);
-  // imgFileType.forEach((image, index) => {
-  //   formData.append(images, {
-  //     uri: image.uri,
-  //     name: image_${index}.jpg, // Provide a unique name for each image
-  //     type: "image/jpeg", // Ensure correct MIME type
-  //   });
-  // });
-  // if (imageUpload.videoUrl?.uri) {
-  //   formData.append("videoUrl", {
-  //     uri: imageUpload.videoUrl.uri,
-  //     name: "video.mp4", // Default name if not provided
-  //     type:  "video/mp4", // Ensure correct MIME type
-  //   });
-  // } else {
-  //   console.log("No video URL provided");
-  // }
-  // console.log(' complete obj data',formData)
-  // dispatch(userRegisterAsync(formData))
   
-  // }
   const imageSubmitHandler = async () => {
     if (imgFileType.length === 0) {
       setFileUploadError('Please upload images');
@@ -208,80 +128,7 @@ const ImageUpload = ({ imageUpload }) => {
       return;
     }
   
-    // console.log('Uploaded images:', imgFileType);
-    // Call Face++ API for comparison
-  //   const faceComparisonResult = await compareFaces(imgFileType[0], imgFileType[1]);
-  //   let proceedWithRegistration = false;
-
-  // if (faceComparisonResult?.confidence >= 60) {
-  //   // console.log('Face comparison passed with confidence:', faceComparisonResult.confidence);
-  //   proceedWithRegistration = true;
-  // } else if (faceComparisonResult?.expiredApi) {
-  //   // console.warn('Proceeding with registration as Face++ API key is expired.');
-  //   proceedWithRegistration = true;
-  // }
-
-  // if (proceedWithRegistration) {
-  //   const selectedSong=imageUpload.selectedSong?imageUpload.selectedSong:'none'
-  //   const formData = new FormData();
-  //   formData.append('firstName', imageUpload.firstName);
-  //   formData.append('email', imageUpload.email);
-  //   formData.append('phone', imageUpload.phone);
-  //   formData.append('password', imageUpload.password);
-  //   formData.append('gender', imageUpload.gender);
-  //   formData.append('DOB', imageUpload.date);
-  //   formData.append('city', imageUpload.city);
-  //   formData.append('aboutUser', imageUpload.AboutMe);
-  //   formData.append('interest', imageUpload.interest);
-  //   formData.append('language', imageUpload.language);
-  //   formData.append('education', imageUpload.education);
-  //   formData.append('drinking', imageUpload.drinking);
-  //   formData.append('smoking', imageUpload.smoking);
-  //   formData.append('eating', imageUpload.eating);
-  //   formData.append('profession', imageUpload.profession);
-  //   formData.append('looking', imageUpload.looking);
-  //   formData.append('relationship', imageUpload.relation);
-  //   formData.append('zodiac', imageUpload.zodiac);
-  //   formData.append('songId', selectedSong);
-
-  //   imgFileType.forEach((image, index) => {
-  //     formData.append(`images`, {
-  //       uri: image.uri,
-  //       name: `image_${index}.jpg`,
-  //       type: 'image/jpeg',
-  //     });
-  //   });
-
-  //   if (imageUpload.videoUrl?.uri) {
-  //     formData.append('videoUrl', {
-  //       uri: imageUpload.videoUrl.uri,
-  //       name: 'video.mp4',
-  //       type: 'video/mp4',
-  //     });
-  //   }
-
-  //   // console.log('Complete FormData:', formData);
-  //   dispatch(userRegisterAsync(formData));
-  //   dispatch(
-  //     showToasts({
-  //       types: 'SUCCESS',
-  //       titles: 'Thank You!',
-  //       textBodys: 'You have successfully registered on ApnaPan. Please login to check.',
-  //     })
-  //   );
-  //   navigation.navigate('FrontPage');
-  // } else {
-  //   const errorMessage = faceComparisonResult?.errorMessage
-  //     ? faceComparisonResult.errorMessage
-  //     : 'Your captured image and uploaded image do not match. Make sure both images are the same, especially the face.To Understand How to make it similar please click on bulb button';
-
-  //   Dialog.show({
-  //     type: ALERT_TYPE.WARNING,
-  //     title: 'Warning',
-  //     textBody: errorMessage,
-  //     button: 'Close',
-  //   });
-  // }
+   
   try{
     const selectedSong=imageUpload.selectedSong?imageUpload.selectedSong:'none'
     const formData = new FormData();
@@ -323,14 +170,8 @@ const ImageUpload = ({ imageUpload }) => {
   
     // console.log('Complete FormData:', formData);
     dispatch(userRegisterAsync(formData));
-    dispatch(
-      showToasts({
-        types: 'SUCCESS',
-        titles: 'Thank You!',
-        textBodys: 'You have successfully registered on ApnaPan. Please login to check.',
-      })
-    );
-    navigation.navigate('FrontPage');
+  
+    
   } catch (error) {
     console.log(error);
   } finally {
@@ -341,6 +182,19 @@ const ImageUpload = ({ imageUpload }) => {
   const guideImagesHandler=()=>{
     navigation.navigate('CompareFacePage')
   }
+
+  useEffect(() => {
+    if (registerMssg === "Data registered Successfully") {
+    dispatch(
+      showToasts({
+        types: 'SUCCESS',
+        titles: 'Thank You!',
+        textBodys: 'You have successfully registered on ApnaPan. Please login to check.',
+      })
+    );
+      navigation.navigate("FrontPage"); // Navigate to 'frontPage'
+    }
+  }, [registerMssg, navigation]);
   return (
     <>
       <StatusBar

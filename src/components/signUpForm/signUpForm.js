@@ -169,6 +169,7 @@ keyboardShouldPersistTaps="handled"
                   label="Phone"
                   style={{ marginLeft: 12, marginRight: 20, marginTop: 9 }}
                   mode="outlined"
+                  keyboardType="number-pad"
                   onChangeText={handleChange('phone')}
                   onBlur={handleBlur('phone')}
                   value={values.phone}

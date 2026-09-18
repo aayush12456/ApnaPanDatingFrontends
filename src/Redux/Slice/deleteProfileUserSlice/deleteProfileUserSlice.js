@@ -23,7 +23,12 @@ const deleteProfileUserSlice = createSlice({
     isLoading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearProfileResponse: (state) => {
+      state.deleteProfileUserObj = {};
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(deleteProfileUserAsync.pending, (state) => {
       state.isLoading = true;
@@ -44,3 +49,4 @@ const deleteProfileUserSlice = createSlice({
 
 export default deleteProfileUserSlice.reducer;
 export const deleteProfileUserSliceActions = deleteProfileUserSlice.actions;
+export const { clearProfileResponse } = deleteProfileUserSlice.actions;

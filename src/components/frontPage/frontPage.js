@@ -1,6 +1,5 @@
 import { Text, Image, View,Modal,StatusBar} from "react-native";
 import splashScreenImg from '../../../assets/splash.png'
-import holdingHands from '../../../assets/frontImages/holdingHands.png';
 import { FrontImages } from "../../utils/frontImages";
 import { Button } from "react-native-paper";
 import { useEffect,useState } from "react";
@@ -8,6 +7,8 @@ import { useSelector,useDispatch } from "react-redux";
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
 import { hideToast } from "../../Redux/Slice/toastSlice/toastSlice";
 import { hideToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
+import { clearProfileResponse } from "../../Redux/Slice/deleteProfileUserSlice/deleteProfileUserSlice";
+import { registerProfileResponse } from "../../Redux/Slice/registerSlice/registerSlice";
 
 const FrontPage = ({navigation,route}) => {
   const formData=route?.params?.formData
@@ -37,7 +38,6 @@ useEffect(() => {
         type: ALERT_TYPE[type],
         title: title,
         textBody: textBody,
-        button:'close'
       });
 
       // Automatically hide toast after 3 seconds
@@ -52,7 +52,7 @@ useEffect(() => {
     if (visibles === true ) {
       // Show custom modal instead of default Alert
       setModalVisible(true);
-
+      dispatch(registerProfileResponse())
       // Automatically hide modal after 3 seconds
       setTimeout(() => {
         setModalVisible(false);
@@ -62,14 +62,15 @@ useEffect(() => {
   }, [visibles, dispatch, types, titles, textBodys]);
 
   useEffect(()=>{
-if(deleteProfileResponse){
+if(deleteProfileResponse=="User deleted successfully"){
 setModalVisible(true);
 setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your account on ApnaPan'})
+dispatch(clearProfileResponse())
 // Automatically hide modal after 3 seconds
-// setTimeout(() => {
-//   setModalVisible(false);
-//   dispatch(hideToasts());
-// }, 10000);
+setTimeout(() => {
+  setModalVisible(false);
+  dispatch(hideToasts());
+}, 5000);
 }
   },[deleteProfileResponse])
 
@@ -77,8 +78,14 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
     if(formData){
     setModalVisible(true);
     setDeleteToastObj({title:'Success',textBody:'You have Successfully deactivate your account on ApnaPan now you can check it is working or not'})
+    setTimeout(() => {
+      setModalVisible(false);
+      dispatch(hideToasts());
+    }, 5000);
     }
       },[formData])
+
+    
   return (
     <>
        <StatusBar
@@ -157,13 +164,13 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <View style={{ width: 300, padding: 20, backgroundColor: '#fff', borderRadius: 10, alignItems: 'center' }}>
-            <Image source={holdingHands} style={{ width: 50, height: 50, marginBottom: 10 }} />
+            <Image source={splashScreenImg} style={{ width: 50, height: 50, marginBottom: 10 }} />
             <Text style={{ fontSize: 19, fontWeight: 'bold', marginBottom: 10 }}>{titles ||deleteToastObj.title} </Text>
             <Text style={{ fontSize: 16, textAlign: 'center' }}>{textBodys||deleteToastObj.textBody} </Text>
   
-             <Button
+             {/* <Button
                       mode="contained"
-                      onPress={() => setModalVisible(false)}
+                      onPress={() => closeModalHandler()}
                       style={{
                         height: 50, // Set the desired height
                         borderRadius:25,
@@ -176,7 +183,7 @@ setDeleteToastObj({title:'Success',textBody:'You have Successfully deleted your 
                       buttonColor="#28a745"
                     >
              Close
-                    </Button>
+                    </Button> */}
           </View>
         </View>
       </Modal>
