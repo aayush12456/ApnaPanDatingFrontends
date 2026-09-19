@@ -206,17 +206,6 @@ const [flag, setFlag] = useState(null);
   //   };
   // }, [completeLoginObj?._id,completeLoginObjForOtp?._id]);
 
-
-  
-
-
-
-
-
-
-
-
-
   return (
     <AlertNotificationRoot colors={[darkColors]}>
     <NavigationContainer>

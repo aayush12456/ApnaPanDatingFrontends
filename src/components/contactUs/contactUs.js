@@ -128,36 +128,61 @@ keyboardShouldPersistTaps="handled">
                   </Text>
                 )}
       </View>
-      <View style={{ width: '100%', overflow: 'hidden' }}>
-<Button
-  mode="contained"
-  disabled={loading}
+     <View
   style={{
-    height: 50,
-    borderRadius: 11,
-    justifyContent: 'center',
+    width: "100%",
     marginTop: 20,
-    marginLeft: 12,
-    fontSize: 16,
-    marginRight: 20,
-    backgroundColor: "#6D21FF", // force color
-    // opacity:loading ? 0.8 : 1, // disabled feel
+    paddingHorizontal: 12,
   }}
-  contentStyle={{ height: 50 }}
-  onPress={handleSubmit}
 >
-  {loading ? (
-    <View style={{ flexDirection: "row", alignItems: "center",gap:4 }}>
-<ActivityIndicator size="small" color="#ffffff" style={{marginLeft:-12}} />
-      <Text style={{ color: "#ffffff",textAlign:'center',fontWeight:'600' }}>sending...</Text>
+  <Button
+    mode="contained"
+    disabled={loading}
+    style={{
+      height: 50,
+      borderRadius: 11,
+      backgroundColor: "#6D21FF",
+    }}
+    contentStyle={{
+      height: 50,
+    }}
+    onPress={handleSubmit}
+  >
+    {loading ? "" : "Send Message"}
+  </Button>
+
+  {loading && (
+    <View
+      pointerEvents="none"
+      style={{
+        position: "absolute",
+        left: 12,
+        right: 12,
+        top: 0,
+        height: 50,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <ActivityIndicator
+        size="small"
+        color="#FFFFFF"
+        style={{ marginRight: 8 }}
+      />
+
+      <Text
+        style={{
+          color: "#FFFFFF",
+          fontSize: 15,
+          fontWeight: "600",
+        }}
+      >
+        Sending...
+      </Text>
     </View>
-  ) : (
-    "Send Message"
   )}
-
-</Button>
-
-      </View>
+</View>
          </View>
             </ScrollView>
          

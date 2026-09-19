@@ -11,8 +11,8 @@ import { bottomSheetOpenModalToggleActions } from "../../Redux/Slice/bottomSheet
 const socket = io.connect("http://192.168.29.169:4000")
 const ChatTheme = forwardRef((props, ref) => {
   const { loginId, recieverId ,loginTheme,recieverTheme} = props;
-  console.log('loginTHeme',loginTheme)
-  console.log('reciever theme',recieverTheme)
+  // console.log('loginTHeme',loginTheme)
+  // console.log('reciever theme',recieverTheme)
 const dispatch=useDispatch()
   const BASE_URL = "http://192.168.29.169:4000";
   const [selectTheme,setSelectTheme]=useState({})

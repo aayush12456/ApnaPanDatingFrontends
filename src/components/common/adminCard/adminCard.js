@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 const socket = io.connect("http://192.168.29.169:4000")
 const AdminCard=({userObj})=>{
 const BASE_URL = "http://192.168.29.169:4000";
-console.log('user obj card',userObj)
+// console.log('user obj card',userObj)
 const navigation = useNavigation();
 const [deleteLoading, setDeleteLoading] = useState(false);
 const cardClickHandler=(userObj)=>{

@@ -119,14 +119,12 @@ setMessageText(text)
       dispatch(userReportAsync(formData))
     } catch (error) {
       console.log("Submit report error:", error);
-
+      setLoading(false);
       Alert.alert(
         "Error",
         "Something went wrong while submitting the report."
       );
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const viewProfileBlockHandler=async()=>{
@@ -153,6 +151,7 @@ const finishedHandler=()=>{
 
 useEffect(() => {
   if (reportSelector?.mssg === "Report submitted successfully") {
+    setLoading(false);
     setSelectedImage(null);
     setMessageText('')
   }
@@ -298,36 +297,57 @@ value={messageText}
           )}
 
 
-      <View style={{ width: '100%', overflow: 'hidden' }}>
-<Button
-  mode="contained"
-  disabled={loading}
+<View
   style={{
-    height: 50,
-    borderRadius: 11,
-    justifyContent: 'center',
+    width: "100%",
     marginTop: 20,
-    marginLeft: 12,
-    fontSize: 16,
-    marginRight: 20,
-    backgroundColor: "#007BFF", // force color
-    // opacity:loading ? 0.8 : 1, // disabled feel
+    paddingHorizontal: 12,
   }}
-  onPress={submitReportHandler}
-  contentStyle={{ height: 50 }}
 >
-  {loading ? (
-    <View style={{ flexDirection: "row", alignItems: "center",gap:4 }}>
-<ActivityIndicator size="small" color="#ffffff" style={{marginLeft:-12}} />
-      <Text style={{ color: "#ffffff",textAlign:'center',fontWeight:'600' }}>sending...</Text>
-    </View>
-  ) : (
-    "Submit"
-  )}
+  <Pressable
+    disabled={loading}
+    onPress={submitReportHandler}
+    style={{
+      height: 50,
+      borderRadius: 11,
+      backgroundColor: "#007BFF",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "row",
+      opacity: loading ? 0.8 : 1,
+    }}
+  >
+    {loading ? (
+      <>
+        <ActivityIndicator
+          size="small"
+          color="#FFFFFF"
+          style={{ marginRight: 8 }}
+        />
 
-</Button>
-
-      </View>
+        <Text
+          style={{
+            color: "#FFFFFF",
+            fontSize: 16,
+            fontWeight: "600",
+          }}
+        >
+          Sending...
+        </Text>
+      </>
+    ) : (
+      <Text
+        style={{
+          color: "#FFFFFF",
+          fontSize: 16,
+          fontWeight: "600",
+        }}
+      >
+        Submit
+      </Text>
+    )}
+  </Pressable>
+</View>
     </View>
       </View>}
 
