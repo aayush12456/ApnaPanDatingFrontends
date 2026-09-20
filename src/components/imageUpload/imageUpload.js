@@ -10,7 +10,6 @@ import { userRegisterAsync } from "../../Redux/Slice/registerSlice/registerSlice
 import { useNavigation } from '@react-navigation/native';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { showToasts } from "../../Redux/Slice/changePasswordToastSlice/changePasswordToastSlice";
-import { ActivityIndicator } from "react-native";
 const ImageUpload = ({ imageUpload,registerMssg }) => {
   const navigation = useNavigation();
   const dispatch=useDispatch()
@@ -169,7 +168,7 @@ const ImageUpload = ({ imageUpload,registerMssg }) => {
     }
   
     // console.log('Complete FormData:', formData);
-   await dispatch(userRegisterAsync(formData));
+   await dispatch(userRegisterAsync(formData)).unwrap();
   
     
   } catch (error) {
@@ -234,7 +233,8 @@ borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
       <View style={{ width: '100%', overflow: 'hidden' }}>
       <Button
   mode="contained"
-  onPress={loading ? undefined : imageSubmitHandler}
+  onPress={imageSubmitHandler}
+  disabled={loading}
   style={{
     height: 50,
     borderRadius: 11,
@@ -244,34 +244,9 @@ borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
     marginRight: 20,
   }}
   buttonColor="#6D21FF"
+  
 >
-  {loading ? (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <ActivityIndicator
-        size="small"
-        color="#fff"
-        style={{ marginRight: 10 }}
-      />
-
-      <Text
-        style={{
-          color: '#fff',
-          fontSize: 16,
-          fontWeight: '600',
-        }}
-      >
-        CREATING...
-      </Text>
-    </View>
-  ) : (
-    "CREATE PROFILE"
-  )}
+  {loading ? "CREATING..." : "CREATE PROFILE"}
 </Button>
       </View>
       </View>
