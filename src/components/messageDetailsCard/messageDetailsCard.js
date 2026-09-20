@@ -1357,7 +1357,7 @@ const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
 
   {/* Text Bubble */}
 
-  {!isCallMessage? (
+  {!isCallMessage && finalMessage.message!==""? (
   <View
     style={{
       // backgroundColor:
