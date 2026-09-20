@@ -7,7 +7,7 @@ import { loginSchema } from '../../schemas';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import back from '../../../assets/signUpFormIcon/back.png';
-import { userLoginAsync} from '../../Redux/Slice/loginSlice/loginSlice';
+import { clearLoginResponse, userLoginAsync} from '../../Redux/Slice/loginSlice/loginSlice';
 import { useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -38,6 +38,7 @@ useEffect(() => {
   else if(errorObj.error=="No account found with this phone number."){
     setErrorBack(errorObj.error)
     setLoading(false)
+    dispatch(clearLoginResponse())
   }
 }, [loginObj, errorObj.error, navigation, dispatch]);
 

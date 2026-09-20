@@ -115,19 +115,19 @@ const ImageUpload = ({ imageUpload,registerMssg }) => {
   
   
   const imageSubmitHandler = async () => {
+    if (loading) return;
     if (imgFileType.length === 0) {
       setFileUploadError('Please upload images');
       return;
     }
-    if (loading) return;
-
-  setLoading(true);
+   
     // Check if at least 2 images are uploaded for comparison
     if (imgFileType.length < 2) {
       setFileUploadError('Please upload at least two images for comparison');
       return;
     }
-  
+    setFileUploadError('');
+    setLoading(true);
    
   try{
     const selectedSong=imageUpload.selectedSong?imageUpload.selectedSong:'none'
@@ -169,7 +169,7 @@ const ImageUpload = ({ imageUpload,registerMssg }) => {
     }
   
     // console.log('Complete FormData:', formData);
-    dispatch(userRegisterAsync(formData));
+   await dispatch(userRegisterAsync(formData));
   
     
   } catch (error) {
@@ -232,27 +232,47 @@ borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
       </View>
       </Pressable>
       <View style={{ width: '100%', overflow: 'hidden' }}>
-         <Button
-                      mode="contained"
-                      onPress={loading ? undefined : imageSubmitHandler}
-                      style={{
-                        height: 50, // Set the desired height
-                        borderRadius:11,
-                        color: '#FFFFFF',
-                         fontSize: 16, 
-                         justifyContent:'center',
-                         marginTop: 20,
-                         marginLeft: 12,
-                         marginRight: 20,
-                      }}
-                      buttonColor="#6D21FF"
-                    >
-       {loading ? (
-    <ActivityIndicator color="#fff" />
+      <Button
+  mode="contained"
+  onPress={loading ? undefined : imageSubmitHandler}
+  style={{
+    height: 50,
+    borderRadius: 11,
+    justifyContent: 'center',
+    marginTop: 20,
+    marginLeft: 12,
+    marginRight: 20,
+  }}
+  buttonColor="#6D21FF"
+>
+  {loading ? (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <ActivityIndicator
+        size="small"
+        color="#fff"
+        style={{ marginRight: 10 }}
+      />
+
+      <Text
+        style={{
+          color: '#fff',
+          fontSize: 16,
+          fontWeight: '600',
+        }}
+      >
+        CREATING...
+      </Text>
+    </View>
   ) : (
     "CREATE PROFILE"
   )}
-                    </Button>
+</Button>
       </View>
       </View>
     </AlertNotificationRoot>

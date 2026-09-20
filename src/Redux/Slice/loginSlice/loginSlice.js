@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from '../../axios/axios'
-import * as SecureStore from 'expo-secure-store';
 export const userLoginAsync = createAsyncThunk(
   'userLogin/userLoginAsync',
   async (loginObj, { rejectWithValue }) => {
