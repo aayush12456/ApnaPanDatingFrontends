@@ -12,7 +12,7 @@ import RBSheet from "@lunalee/react-native-raw-bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 const ReportSheet = forwardRef((props, ref) => {
     const navigation=useNavigation()
-    console.log('report obj detail',props)
+    // console.log('report obj detail',props)
 
   const [selectedReport, setSelectedReport] = useState("");
 
