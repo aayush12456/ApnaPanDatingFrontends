@@ -1,5 +1,5 @@
 import {Image,Text,View,Dimensions,PermissionsAndroid,Platform,StatusBar,Alert} from 'react-native'
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator,  DrawerContentScrollView,DrawerItemList, } from '@react-navigation/drawer';
 import matches from '../../../../assets/sidebarIcons/profileMatch.png'
 import girl from '../../../../assets/sidebarIcons/girl.png'
 import boy from '../../../../assets/sidebarIcons/boy.png'
@@ -19,6 +19,7 @@ import MatchesPage from '../../../Pages/matchesPage/matchesPage.js';
 import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
 import { registerForPushNotificationsAsync } from '../../notificationToken/notificationToken';
 import * as Notifications from "expo-notifications";
+import TrialCountDown from '../../trialCountDown/trialCountDown';
 
 
 const socket = io.connect("http://192.168.29.169:4000")
@@ -35,6 +36,8 @@ const Header=()=>{
     const [onlineUsers,setOnlineUsers]=useState([]);
     const [notifyToken,setNotifyToken]=useState('')
     const [allUserArray,setAllUserArray]=useState({})
+    const [isLast24Hours, setIsLast24Hours] = useState(false);
+    const [timeEnd,setTimeEnd]=useState({})
    
   
     useEffect(()=>{
@@ -342,6 +345,26 @@ return (
       barStyle="light-content"
     />
  <Drawer.Navigator 
+  drawerContent={(props) => (
+    <DrawerContentScrollView
+      {...props}
+      contentContainerStyle={{
+        paddingTop: 0,
+      }}
+    >
+
+      {/* Trial Countdown - Profile ke upar */}
+      <TrialCountDown
+        loginId={loginId}
+        onLast24HoursChange={setIsLast24Hours}
+        setTimeEnd={setTimeEnd}
+      />
+
+      {/* Existing drawer items */}
+      <DrawerItemList {...props} />
+
+    </DrawerContentScrollView>
+  )}
   screenOptions={{
     drawerStyle: {
       backgroundColor: `#343434`
