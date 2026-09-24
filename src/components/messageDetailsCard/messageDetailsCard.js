@@ -35,9 +35,11 @@ import { bottomSheetOpenModalToggleActions } from "../../Redux/Slice/bottomSheet
 import ChatTheme from "../chatTheme/chatTheme";
 import { anotherBottomSheetModalToggleActions } from "../../Redux/Slice/anotherBottomSheetModalSlice/anotherBottomSheetModalSlice";
 import ReportSheet from "../reportSheet/reportSheet";
+import { LargePlanScreenActions } from "../../Redux/Slice/largePlanScreenSlice/largePlanScreenSlice";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,notifyUser,notifyChecks }) => {
+const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,
+  notifyUser,notifyChecks,plan,status }) => {
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [getChatDetailObj, setGetChatDetailObj] = useState({})
@@ -372,6 +374,10 @@ const submitHandler = async () => {
   // Agar na text hai na image, to kuch mat karo
   if (!messageText.trim() && !selectedImage) {
     return;
+  }
+  if (plan==="expired" && status==="ended") {
+    dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
+    return
   }
 
   const deleteTypingObj = {

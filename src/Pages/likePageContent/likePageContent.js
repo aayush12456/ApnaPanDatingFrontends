@@ -3,6 +3,8 @@ import axios from 'axios'
 import io from "socket.io-client";
 import { useState,useEffect } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
+import PlanScreen from "../../components/planScreen/planScreen";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const LikePageContent=({route})=>{
@@ -17,6 +19,7 @@ const LikePageContent=({route})=>{
     const completeLoginObjData=completeObj || {}
  const loginId=completeLoginObjData?.userId
 
+ const largePlanSlice=useSelector((state)=>state.largePlanScreen.LargePlanScreenToggle )
 
     useEffect(()=>{
       const fetchDeactivateUser = async () => {
@@ -46,7 +49,15 @@ const LikePageContent=({route})=>{
 return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
-    <LargeCard likeContent={formData} deactivateUserObj={deactivateUserObj} completeObj={completeLoginObjData}/>
+    {largePlanSlice === false ?
+      (
+        <LargeCard likeContent={formData} deactivateUserObj={deactivateUserObj} completeObj={completeLoginObjData}/>
+      ):
+       (
+        // Plan Screen
+        <PlanScreen loginId={loginId} />
+    )
+    }
     </View>
     </>
 )

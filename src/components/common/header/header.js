@@ -20,6 +20,9 @@ import MyProfilePage from '../../../Pages/myProfilePage/myProfilePage';
 import { registerForPushNotificationsAsync } from '../../notificationToken/notificationToken';
 import * as Notifications from "expo-notifications";
 import TrialCountDown from '../../trialCountDown/trialCountDown';
+import { useDispatch,useSelector } from 'react-redux';
+import PlanScreen from '../../planScreen/planScreen';
+import { planCheckAsync } from '../../../Redux/Slice/planCheckSlice/planCheckSlice';
 
 
 const socket = io.connect("http://192.168.29.169:4000")
@@ -29,6 +32,7 @@ const Header=()=>{
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     const Drawer = createDrawerNavigator();
     const navigation = useNavigation();
+    const dispatch=useDispatch()
     const [loginDetails, setLoginDetails] = useState(null);
     const [notifyObjData, setNotifyObjData] = useState([]);
     const [likeCountObj,setLikeCountObj]=useState('')
@@ -60,20 +64,10 @@ const Header=()=>{
  const loginId=finalCompleteObj?.userId
 //  console.log('login is',loginId)
  const loginObj=finalCompleteObj
- 
-//  const loginResponse=useSelector((state)=>state?.loginData?.loginData?.token)
-//  const loginOtpResponse=useSelector((state)=>state?.finalLoginWithOtpData?.finalLoginWithOtpData?.token) // otp login token
 
-//  useEffect(()=>{
-//     if(loginResponse || loginOtpResponse){
-//       const getLoginId = async () => {
-//         const loginIdData = await SecureStore.getItemAsync('loginId');
-//         setLoginId(loginIdData)
-//       };
-//       getLoginId()
-//     }
-//   },[loginResponse,loginOtpResponse])
-  // console.log('login id in header',loginId)
+ const planSlice=useSelector((state)=>state.planScreen.planScreenToggle)
+//  console.log('plan slice',planSlice)
+
  useEffect(() => {
     const fetchLikeCountId = async () => {
       try {
@@ -337,6 +331,8 @@ useEffect(() => {
       console.error("Error removing login obj:", error);
     }
   };
+
+
 return (
     <>
         <StatusBar
@@ -344,12 +340,13 @@ return (
       backgroundColor="#343434"
       barStyle="light-content"
     />
- <Drawer.Navigator 
+ {planSlice==false?<Drawer.Navigator 
   drawerContent={(props) => (
     <DrawerContentScrollView
       {...props}
       contentContainerStyle={{
         paddingTop: 0,
+        marginTop:`${isLast24Hours==false?50:0}`
       }}
     >
 
@@ -512,6 +509,7 @@ return (
       finalCompleteObj={finalCompleteObj}
       onlineUserArray={onlineUsers}
       notifyArray={notifyObjData}
+    
     />
   )}
 </Drawer.Screen>
@@ -601,6 +599,7 @@ return (
     <NewAndOnlinePage
       {...props}
       finalCompleteObj={finalCompleteObj}
+      planStatus={planSlice}
     />
   )}
 </Drawer.Screen>
@@ -847,6 +846,10 @@ return (
   )}
 </Drawer.Screen>
      </Drawer.Navigator>
+     :
+     <PlanScreen loginId={loginId}/>
+    
+    }
     </>
 )
 }

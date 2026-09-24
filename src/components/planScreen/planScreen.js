@@ -1,0 +1,294 @@
+import React from "react";
+import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useDispatch,useSelector } from "react-redux";
+// import { Video } from "expo-av";
+// import YoutubePlayer from "react-native-youtube-iframe";
+import { useNavigation } from "@react-navigation/native";
+
+import premiumImg from '../../../assets/premiumIcons/premiumService.png'
+// import RazorpayCheckout from "react-native-razorpay";
+import { useState } from "react";
+import axios from "axios";
+import { planScreenActions } from "../../Redux/Slice/planScreenSlice/planScreenSlice";
+import { LargePlanScreenActions } from "../../Redux/Slice/largePlanScreenSlice/largePlanScreenSlice";
+const PlanScreen=({loginId})=>{
+const dispatch=useDispatch()
+const navigation=useNavigation()
+const [selectedPlan, setSelectedPlan] = useState(999);
+const [planType,setPlanType]=useState('')
+const BASE_URL = "http://192.168.29.169:4000"; 
+const largePlanSlice=useSelector((state)=>state.largePlanScreen.LargePlanScreenToggle )
+// const BASE_URL = "https://roommanagementsystembackend-1.onrender.com"; 
+// const BASE_URL = "http://16.16.224.95:4000"; 
+//test key
+// plan_RziUw1NAukBSo5 ->1 Rs plan
+// plan_Rzu3d5Zlg3vI3A ->50 Rs plan
+// plan_S2Vj0VT1CEKM5a -> 299 Rs plan
+// plan_S2VjYWmEsj8Buc -> 699 Rs plan
+// plan_SZlNb6a8dqJ2BG -->999 Rs plan 6 month
+
+//live key
+// plan_S9OCXHRMG6W5ng --> 1 Rs plan
+// plan_S9mmQLUPh0YRcc --> 20 Rs plan
+// plan_S9mz77K7uN4Mhm -->299 Rs plan monthly
+// plan_S9mzyclsUgcKX8 -->699 Rs plan 6 months
+//plan_SZkCMWZR7eGAUo -->999 Rs plan 6 month
+
+let plan=""
+//   const subscribe = async (planType) => {
+// //live
+// // if(planType=="single"){
+// //   plan="plan_S9mz77K7uN4Mhm"
+// // }
+// // else{
+// //   plan="plan_SZkCMWZR7eGAUo"
+// // }
+//    //test
+//     if(planType=="single"){
+//       plan="plan_S2Vj0VT1CEKM5a"
+//     }
+//     else{
+//       plan="plan_SZlNb6a8dqJ2BG"
+//     }
+//     try {
+//       const res = await axios.post(
+//         `${BASE_URL}/hotel/create/${hotelId}`,
+//         { planId:plan,amount:`₹${selectedPlan}` },
+//       );
+// // console.log('respose razor',res)
+//       const options = {
+//         key: "rzp_test_RzIR2c4u7D5T00", // Test  key
+//         // key: "rzp_live_S9NrL4vhEbFG4M",            //Live key
+//         subscription_id: res.data.subscription.id ,  
+//         name: "Hotel App",
+//         description: "Weekly subscription",
+//         prefill: { email: "aayushtapadia28@example.com" }
+//       };
+
+//  RazorpayCheckout.open(options)
+//         .then((data) => {
+//           // console.log('data pay',data)
+//           dispatch(planScreenActions.planScreenVisibleToggle())
+//           // Alert.alert(
+//           //   "Payment Success",
+//           //   "Invoice & subscription will be updated automatically via webhook."
+//           // );
+//           navigation.navigate("PaymentSuccessPage", {
+//             formData: {
+//               obj: data,          // Razorpay response
+//               amount: selectedPlan // Selected amount
+//             }
+//           });
+//         })
+//         .catch((err) => {
+//           // Alert.alert("Payment failed", err.description);
+//           if (err.code === 2) {
+//             // console.log("⚠️ Payment Cancelled by User");
+//             return; // No Alert
+//           }
+          
+//         });
+    
+//     } catch (err) {
+//       // console.log(err);
+//       Alert.alert("Error creating subscription");
+//     }
+//   }  
+
+const cancelClickHandler=()=>{
+  if(largePlanSlice==true){
+    dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
+  }
+  else{
+    dispatch(planScreenActions.planScreenVisibleToggle())
+  }
+}
+        
+
+return (
+    <>
+     <View style={{ flex: 1, backgroundColor: "#000" }}>
+<TouchableOpacity
+  onPress={() =>cancelClickHandler()}
+  style={{
+    position: "absolute",
+    top: 40,
+    right: 20,
+    zIndex: 10,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 20,
+    padding: 6,
+  }}
+>
+  <Ionicons name="close" size={22} color="#fff" />
+</TouchableOpacity>
+
+{/* 💳 SUBSCRIPTION SECTION */}
+<ImageBackground
+  source={premiumImg}
+  style={{
+    flex: 1,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    overflow: "hidden",
+  }}
+>
+
+  
+  {/* Dark overlay */}
+  <View
+    style={{
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.65)",
+      padding: 20,
+      justifyContent: "center",
+    }}
+  >
+{/* <View style={{ marginBottom: 20 }}>
+  <YoutubePlayer
+    height={220}
+    play={false}
+    videoId="BdZjE1i1lVc"
+  />
+</View> */}
+
+
+    <Text
+      style={{
+        color: "#fff",
+        fontSize: 22,
+        fontWeight: "700",
+        textAlign: "center",
+        marginBottom: 6,
+      }}
+    >
+Your access has ended
+    </Text>
+
+    <Text
+      style={{
+        color: "#ccc",
+        fontSize: 14,
+        textAlign: "center",
+        marginBottom: 20,
+      }}
+    >
+Recharge now to continue enjoying premium features.
+    </Text>
+
+    {/* PLANS */}
+   { <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 20,
+      }}
+    >
+      {/* 1 Month */}
+      <TouchableOpacity
+onPress={() => {
+    setSelectedPlan(299);
+    setPlanType("single"); // ya jo bhi value
+  }}
+  
+        style={{
+          width: "48%",
+          backgroundColor:
+          selectedPlan === 299
+            ? "rgba(245,197,66,0.15)"
+            : "rgba(255,255,255,0.1)",
+          borderRadius: 16,
+          paddingVertical: 20,
+          alignItems: "center",
+          borderWidth: 1,
+          borderColor:selectedPlan === 299 ? "#F5C542" : "#444",
+        }}
+      >
+        <Text
+          style={{
+            color: "#F5C542",
+            fontSize: 24,
+            fontWeight: "800",
+          }}
+        >
+          ₹299
+        </Text>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 14,
+            marginTop: 4,
+          }}
+        >
+          1 Month
+        </Text>
+      </TouchableOpacity>
+
+      {/* 6 Month */}
+      <TouchableOpacity
+        onPress={() => {
+            setSelectedPlan(999);
+            setPlanType("Six"); // ya jo bhi value
+          }}
+        style={{
+          width: "48%",
+          backgroundColor:
+          selectedPlan === 999
+            ? "rgba(245,197,66,0.15)"
+            : "rgba(255,255,255,0.1)",
+          borderRadius: 16,
+          paddingVertical: 20,
+          alignItems: "center",
+          borderWidth: 1,
+          borderColor:selectedPlan === 999 ? "#F5C542" : "#444",
+        }}
+      >
+        <Text
+          style={{
+            color: "#F5C542",
+            fontSize: 24,
+            fontWeight: "800",
+          }}
+        >
+          ₹999
+        </Text>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 14,
+            marginTop: 4,
+          }}
+        >
+          6 Months
+        </Text>
+      </TouchableOpacity>
+    </View>}
+
+    {/* PAY BUTTON */}
+    {<TouchableOpacity
+       onPress={() => subscribe(planType)}
+      style={{
+        backgroundColor: "#6D21FF",
+        paddingVertical: 14,
+        borderRadius: 30,
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          color: "#fff",
+          fontSize: 16,
+          fontWeight: "700",
+        }}
+      >
+      Continue with ₹{selectedPlan}
+      </Text>
+    </TouchableOpacity>}
+  </View>
+</ImageBackground>
+</View>
+    </>
+)
+}
+export default PlanScreen

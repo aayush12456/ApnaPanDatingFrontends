@@ -19,6 +19,8 @@ import Notification from "../../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import pause from '../../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
+import { LargePlanScreenActions } from "../../../Redux/Slice/largePlanScreenSlice/largePlanScreenSlice";
+import { planCheckAsync } from "../../../Redux/Slice/planCheckSlice/planCheckSlice";
 
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -26,6 +28,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   // console.log('like contenct card',likeContent)
+  // console.log('plan status large',planStatus)
   const dispatch = useDispatch()
   const navigation=useNavigation()
   const [active, setActive] = useState(0); // Move useState outside of change function
@@ -130,12 +133,16 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
 
 
  const loginId=completeObj.userId
-const repeatCompleteObj=completeObj
+
 
    const skipUserHandler=async(likeContent,newOnline)=>{
     // console.log('new online',newOnline)
     // console.log('user is skipped',likeContent)
     if(likeContent){
+      if (plan==="expired" && status==="ended") {
+        dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
+        return
+      }
       const likeSkipUserObj={
         id:loginId,
         likeSkipUserId:likeContent?._id
@@ -213,6 +220,10 @@ const repeatCompleteObj=completeObj
    const likeUserHandler=async(likeUser,newOnline)=>{
     // console.log('new user handler',newOnline)
     if(likeUser){
+      if (plan==="expired" && status==="ended") {
+        dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
+        return
+      }
       const likeMatchUserObj={
         id:loginId,
         likeMatchId:likeUser?._id
@@ -252,6 +263,10 @@ const repeatCompleteObj=completeObj
     }
     }
     else if(newOnline){
+      if (plan==="expired" && status==="ended") {
+        dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
+        return
+      }
       const onlineLikeUserObj={
         id:loginId,
         onlinePersonLikeUserId:newOnline?._id
@@ -675,6 +690,17 @@ const repeatCompleteObj=completeObj
             );
           }
         };
+
+        useEffect(()=>{
+if(loginId){
+dispatch(planCheckAsync(loginId))
+}
+        },[loginId,dispatch])
+      
+   const planCheckObj=useSelector((state)=>state.planCheck.planCheckObj)   
+  //  console.log('plans checks',planCheckObj)  
+   const status=planCheckObj?.status
+   const plan=planCheckObj?.plan
   return (
     <>
      <AlertNotificationRoot>

@@ -37,6 +37,9 @@ import replyUserSlice from "../Slice/replyUserSlice/replyUserSlice"
 import addCredSlice from "../Slice/addCredSlice/addCredSlice"
 import getCredSlice from "../Slice/getCredSlice/getCredSlice"
 import getAllPhoneMailSlice from "../Slice/getAllPhoneMailSlice/getAllPhoneMailSlice"
+import planScreenSlice from "../Slice/planScreenSlice/planScreenSlice"
+import largePlanScreenSlice from "../Slice/largePlanScreenSlice/largePlanScreenSlice"
+import planCheckSlice from "../Slice/planCheckSlice/planCheckSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -64,7 +67,8 @@ const store=configureStore({
         passwordUpdate:passwordUpdateSlice,
         toastData:toastSlice,
         deleteProfileData:deleteProfileUserSlice,
-
+        planScreen:planScreenSlice,
+        largePlanScreen:largePlanScreenSlice,
         getAllPhoneMail:getAllPhoneMailSlice,
         getBollyWoodSong:getBollywoodSongSlice,
         toasts:changePasswordToastSlice,
@@ -77,7 +81,8 @@ const store=configureStore({
         profileDeleteArray:deleteProfileArraySlice,
         replyUser:replyUserSlice,
         credential:addCredSlice,
-        getCred:getCredSlice
+        getCred:getCredSlice,
+        planCheck:planCheckSlice
 
     },
     middleware: (getDefaultMiddleware) =>

@@ -11,7 +11,8 @@ const MatchesPage=({loginId,finalCompleteObj,onlineUserArray,notifyArray})=>{
 return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
-    <Matches completeObj={completeLoginObjData} loginId={loginId} onlineUsers={onlineUserArray} notifyArray={notifyArray}/>
+    <Matches completeObj={completeLoginObjData} loginId={loginId} onlineUsers={onlineUserArray} 
+    notifyArray={notifyArray} />
     </View>
     </>
 )

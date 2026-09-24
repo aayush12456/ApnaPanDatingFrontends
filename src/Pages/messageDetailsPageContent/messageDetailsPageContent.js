@@ -3,6 +3,9 @@ import axios from 'axios'
 import io from "socket.io-client";
 import { useState,useEffect } from "react";
 import {View} from 'react-native'
+import { planCheckAsync } from "../../Redux/Slice/planCheckSlice/planCheckSlice";
+import { useDispatch,useSelector } from "react-redux";
+import PlanScreen from "../../components/planScreen/planScreen";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsPageContent=({route})=>{
@@ -15,8 +18,9 @@ const MessageDetailsPageContent=({route})=>{
     const [chatUsersArray, setChatUsersArray] = useState([])
     const [notifyChecks,setNotifyChecks]=useState(null)
     // console.log('online users in details',onlineUsers)
+    const dispatch=useDispatch()
+    const largePlanSlice=useSelector((state)=>state.largePlanScreen.LargePlanScreenToggle )
 
-    
     const completeLoginObjData=completeObj ||  {}
     const loginId=completeLoginObjData?.userId
   // console.log('login id message',loginId)
@@ -111,12 +115,29 @@ const MessageDetailsPageContent=({route})=>{
   }, [chatUsersArray, loginId, formData?._id]);
 
   // console.log('checks data',notifyChecks)
+  useEffect(()=>{
+    if(loginId){
+    dispatch(planCheckAsync(loginId))
+    }
+            },[loginId,dispatch])
+                  
+   const planCheckObj=useSelector((state)=>state.planCheck.planCheckObj)   
+   //  console.log('plans checks',planCheckObj)  
+    const status=planCheckObj?.status
+    const plan=planCheckObj?.plan
 return (
     <>
     {/* <ScreenShotCapture/> */}
     <View style={{backgroundColor:`black`,height:"100%"}}>
-    <MessageDetailsCard messageDetails={formData} deactivateUserObj={deactivateUserObj}
-     completeObj={completeObj} onlineUserArray={onlineUsers} notifyUser={filterNotify} notifyChecks={notifyChecks}/>
+      {
+        largePlanSlice === false ?
+    (<MessageDetailsCard messageDetails={formData} deactivateUserObj={deactivateUserObj}
+     completeObj={completeObj} onlineUserArray={onlineUsers}
+      notifyUser={filterNotify} notifyChecks={notifyChecks} plan={plan} status={status}/>)
+      :(
+        <PlanScreen loginId={loginId} />
+      )
+}
     </View>
     </>
 )

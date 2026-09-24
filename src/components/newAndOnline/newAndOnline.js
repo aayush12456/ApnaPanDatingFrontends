@@ -9,7 +9,7 @@ import NewAndOnlineCard from "../newAndOnlineCard/newAndOnlineCard";
 import axios from "axios";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const NewAndOnline = ({route,completeObj}) => {
+const NewAndOnline = ({route,completeObj,planStatus}) => {
     const BASE_URL = "http://192.168.29.169:4000";
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const { formData = {} } = route.params || {}; // Fallback to an empty object
@@ -188,7 +188,8 @@ const onlinSkipUserSelector=useSelector((state)=>state.onlineSkipUser.addOnlineS
         
           return (
            
-            <NewAndOnlineCard allUser={allUser} key={allUser?._id}  onlineLikeUserObj={onlineLikeUserObj} loginId={loginId} completeObj={completeObj}/>
+            <NewAndOnlineCard allUser={allUser} key={allUser?._id}  onlineLikeUserObj={onlineLikeUserObj} 
+            loginId={loginId} completeObj={completeObj} planStatus={planStatus}/>
           );
         }):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
         color:`white`}}>No New Profile is there</Text>}

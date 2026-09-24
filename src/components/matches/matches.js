@@ -6,6 +6,7 @@ import { getMatchesData } from '../../Redux/Slice/getMatchesSlice/getMatchesSlic
 import io from "socket.io-client";
 import MatchCard from '../MatchCard/MatchCard';
 import axios from 'axios'
+import { planCheckAsync } from '../../Redux/Slice/planCheckSlice/planCheckSlice';
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const Matches=({completeObj,loginId,onlineUsers,notifyArray})=>{
@@ -148,6 +149,17 @@ const handleRefresh = () => {
   );
 
 };
+
+useEffect(()=>{
+  if(loginId){
+  dispatch(planCheckAsync(loginId))
+  }
+          },[loginId,dispatch])
+                
+ const planCheckObj=useSelector((state)=>state.planCheck.planCheckObj)   
+ //  console.log('plans checks',planCheckObj)  
+  const status=planCheckObj?.status
+  const plan=planCheckObj?.plan
 return (
     <>
   <ScrollView
@@ -156,7 +168,8 @@ return (
       }
     >
       {matchArray && matchArray.length > 0 ? (
-        <MatchCard matchObj={matchArray[0]} completeObj={completeObj} loginId={loginId} onlineUserArray={onlineUsers} notifyArray={notifyArray} />
+        <MatchCard matchObj={matchArray[0]} completeObj={completeObj} loginId={loginId} 
+        onlineUserArray={onlineUsers} notifyArray={notifyArray}  plan={plan} status={status} />
       ):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
       color:`white`}}>No Match Profile is there</Text> }
     </ScrollView>

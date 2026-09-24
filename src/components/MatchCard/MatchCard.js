@@ -21,9 +21,10 @@ import { passDataSliceActions } from "../../Redux/Slice/passDataSlice/passDataSl
 import axios from 'axios'
 import Notification from "../notification/notification";
 import { AlertNotificationRoot } from "react-native-alert-notification";
+import { planScreenActions } from "../../Redux/Slice/planScreenSlice/planScreenSlice";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
+const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray,plan,status})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   // console.log('logins id',loginId)
   // console.log('notifys',notifyArray)
@@ -231,6 +232,10 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray})=>{
       }, 700);
         }
         const addLikeMatchHandler=async(id)=>{
+          if (plan==="expired" && status==="ended") {
+            dispatch(planScreenActions.planScreenVisibleToggle())
+            return
+          }
           const addLikeObj={
             id:loginId,
             matchLikeId:id

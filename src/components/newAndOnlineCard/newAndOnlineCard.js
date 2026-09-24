@@ -11,7 +11,7 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import Notification from "../notification/notification";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
+const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj,planStatus})=>{
     const BASE_URL = "http://192.168.29.169:4000";
     // const BASE_URL = "https://apnapandatingbackend.onrender.com";
     // console.log('online like user obj in new and online card',onlineLikeUserObj)
@@ -70,7 +70,7 @@ const NewAndOnlineCard=({allUser,onlineLikeUserObj,loginId,completeObj})=>{
         setNotifyDeactivateObj(obj)
         return
       }
-      navigation.navigate('NewAndOnlinePageContent', { formData: allUser,  completeObj, });
+      navigation.navigate('NewAndOnlinePageContent', { formData: allUser,  completeObj});
       if (allUser) {
         const addVisitorObj = {
           id: loginId,
