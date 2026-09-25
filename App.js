@@ -74,6 +74,7 @@ import DisoverNewConnectPage from './src/Pages/discoverNewConnectPage/discoverNe
 import ConnectYourWayPage from './src/Pages/connectYourWayPage/connectYourWayPage';
 import StayControlPage from './src/Pages/stayControlPage/stayControlPage';
 import SplashScreen from './src/components/splashScreen/splashScreen';
+import PaymentPage from './src/Pages/paymentPage/paymentPage';
 
 
 
@@ -515,6 +516,11 @@ const [flag, setFlag] = useState(null);
            <Stack.Screen
           name="ReportPageContent"
           component={ReportPageContent}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="PaymentPage"
+          component={PaymentPage}
           options={{ headerShown: false }}
         />
      

@@ -20,7 +20,6 @@ return (
                 <LargeCard
                     newAndOnlineContent={formData}
                     completeObj={completeLoginObjData}
-                    planStatus={planStatus}
                 />
             ) : (
                 // Plan Screen

@@ -6,6 +6,7 @@ import boy from '../../../../assets/sidebarIcons/boy.png'
 import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
 import settings from '../../../../assets/sidebarIcons/settings.png'
+import premiumImg from '../../../../assets/sidebarIcons/premium.png'
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import { useEffect, useState } from 'react';
@@ -23,6 +24,7 @@ import TrialCountDown from '../../trialCountDown/trialCountDown';
 import { useDispatch,useSelector } from 'react-redux';
 import PlanScreen from '../../planScreen/planScreen';
 import { planCheckAsync } from '../../../Redux/Slice/planCheckSlice/planCheckSlice';
+import PaymentPage from '../../../Pages/paymentPage/paymentPage';
 
 
 const socket = io.connect("http://192.168.29.169:4000")
@@ -843,6 +845,36 @@ return (
       finalCompleteObj={finalCompleteObj}
       notify={notifyToken}
     />
+  )}
+</Drawer.Screen>
+
+<Drawer.Screen
+  name="Premium"
+  options={{
+    drawerLabel: ({ focused }) => (
+      <Text
+        style={{
+          color: focused ? "white" : "white",
+          fontWeight: focused ? "bold" : "500",
+        }}
+      >
+       Premium
+      </Text>
+    ),
+    drawerIcon: ({ focused }) => (
+      <Image
+        source={premiumImg}
+        style={{
+          width: 28,
+          height: 28,
+          tintColor: focused ? "white" : "white",
+        }}
+      />
+    ),
+  }}
+>
+  {(props) => (
+   <PaymentPage/>
   )}
 </Drawer.Screen>
      </Drawer.Navigator>

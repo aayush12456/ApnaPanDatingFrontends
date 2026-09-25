@@ -1,0 +1,282 @@
+import RazorpayCheckout from "react-native-razorpay";
+import {View,Alert,Image, ScrollView,Pressable} from 'react-native'
+import { Card, Text, Button } from "react-native-paper";
+import axios from "axios";
+import io from "socket.io-client";
+import { premiumDetails } from "../../utils/premiumData";
+import { useState,useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+
+//test key
+// plan_RziUw1NAukBSo5 ->1 Rs plan
+// plan_Rzu3d5Zlg3vI3A ->50 Rs plan
+// plan_S2Vj0VT1CEKM5a -> 299 Rs plan
+// plan_S2VjYWmEsj8Buc -> 699 Rs plan
+//plan_SAq2J4tJf4cKLh -->50 Rs plan monthly
+//plan_SAsLiBomqZqf5r -->100 Rs plan 6 month
+//plan_SZlNb6a8dqJ2BG -->999 Rs plan 6 month
+
+//live key
+// plan_S9OCXHRMG6W5ng --> 1 Rs plan
+// plan_S9mmQLUPh0YRcc --> 20 Rs plan
+// plan_SZkU4c3g5WbN4e-->21 Rs plan
+// plan_S9mz77K7uN4Mhm -->299 Rs plan monthly
+// plan_S9mzyclsUgcKX8 -->699 Rs plan 6 months
+//plan_SZkCMWZR7eGAUo -->999 Rs plan 6 month
+const socket = io.connect("http://192.168.29.169:4000")
+// const socket = io.connect("https://roommanagementsystembackend-1.onrender.com")
+// const socket = io.connect("http://16.16.224.95:4000")
+const Payment=({hotelId,profile})=>{
+  // console.log('pto',profile)
+  // console.log('hotels',hotelId)
+const BASE_URL = "http://192.168.29.169:4000";
+// const BASE_URL = "https://roommanagementsystembackend-1.onrender.com";
+// const BASE_URL = "http://16.16.224.95:4000";
+const navigation=useNavigation()
+const [planType,setPlanType]=useState('')
+const [planAmount,setPlanAmount]=useState('')
+const [accessObj,setAccessObj]=useState({})
+const [checkStatus,setCheckStatus]=useState({})
+const planSelect=(type,amount)=>{
+setPlanType(type)
+setPlanAmount(amount)
+}
+
+let plan=""
+//   const subscribe = async () => {
+//     //live
+//     // if(planType=="single"){
+//     //   plan="plan_S9mz77K7uN4Mhm"
+//     // }
+//     // else if(planType=="sevenDays"){
+//     //   plan="plan_S9OCXHRMG6W5ng"
+//     // }
+//     // else if(planType=="monthPlan"){
+//     //   plan="plan_SZkU4c3g5WbN4e"
+//     // }
+//     // else{
+//     //   plan="plan_SZkCMWZR7eGAUo"
+//     // }
+
+//   //test
+//     if(planType=="single"){
+//       plan="plan_S2Vj0VT1CEKM5a"
+//     }
+//     else if(planType=="sevenDays"){
+//       plan="plan_RziUw1NAukBSo5"
+//     }
+//     else{
+//       plan="plan_SZlNb6a8dqJ2BG"
+//     }
+//     try {
+//       const res = await axios.post(
+//         `${BASE_URL}/hotel/create/${hotelId}`,
+//         { planId:plan,amount:planAmount },
+//       );
+// // console.log('respose razor',res)
+//       const options = {
+//         key: "rzp_test_RzIR2c4u7D5T00", // Test  key
+//         // key: "rzp_live_S9NrL4vhEbFG4M",            //Live key
+//         subscription_id: res.data.subscription.id ,  
+//         name: "Hotel App",
+//         description: "Monthly subscription",
+//         // prefill: { email: "aayushtapadia28@example.com" }
+//       };
+
+//       RazorpayCheckout.open(options)
+//         .then((data) => {
+//           // console.log('data pay',data)
+//           navigation.navigate("PaymentSuccessPage", {
+//             formData: {
+//               obj: data,          // Razorpay response
+//               amount: planAmount // Selected amount
+//             }
+//           });
+//         })
+//         .catch((err) => {
+//           if (err.code === 2) {
+//             // console.log("⚠️ Payment Cancelled by User");
+//             return; // No Alert
+//           }
+          
+//         });
+//     } catch (err) {
+//       // console.log(err);
+//       Alert.alert("Error creating subscription");
+//     }
+//   }
+
+//   useEffect(() => {
+//     const fetchAccessHandler = async () => {
+//       try {
+//         if (hotelId) {
+//           const response = await axios.get(
+//             `${BASE_URL}/hotel/getAccessAmount/${hotelId}`
+//           );
+//           setAccessObj(response?.data);
+//         }
+//       } catch (error) {}
+//     };
+
+//     fetchAccessHandler();
+
+//     socket.on("getAccessAmount", (newUser) => {
+//       setAccessObj(newUser);
+//     });
+
+//     return () => {
+//       socket.off("getAccessAmount");
+//     };
+//   }, [hotelId]);
+// console.log('Access obj',accessObj)
+// useEffect(() => {
+//   if (accessObj?.accessData?.length > 0) {
+//     const check = accessObj.accessData.find(
+//       (accessData) =>
+//         accessData.hotelId == hotelId &&
+//         accessData.phone == profile.phone
+//     );
+
+//     setCheckStatus(check || {});
+//   } else {
+//     setCheckStatus({});
+//   }
+// }, [accessObj?.accessData, hotelId, profile]); // 🔥 ONLY THIS
+// console.log('check state',checkStatus)
+return (
+    <>
+     <View style={{ flex: 1 }}>
+
+{/* MAIN CONTENT */}
+<ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+  
+
+{
+  premiumDetails.map((premium,index)=>{
+    // if (
+    //   premium.monthly.type === "sevenDays" &&
+    //   profile.phone !== "9479918217"
+    // ) {
+    //   return null;
+    // }
+//    if (
+//     premium.monthly.type =="sevenDays"  &&  premium.monthly.amount!==checkStatus?.amount || 
+//     premium.monthly.type =="monthPlan"  &&  premium.monthly.amount!==checkStatus?.amount
+//     ) {
+//       return null;
+//     }
+    return (
+     
+      <Card style={{ margin: 10, borderRadius: 10,backgroundColor:'#343434',}}   key={premium.id ?? index}>
+      <Card.Content>
+      {/* <ScrollView style={{ maxHeight: 200,}}   nestedScrollEnabled={true}> */}
+      <ScrollView style={{ maxHeight: 300,}}>
+        {
+          premium.premiumData.map((premiumSub) => (
+            <View
+              key={premiumSub.id}
+              style={{ flexDirection: "row", gap: 10, marginTop: 8 }}
+            >
+              <Image source={premiumSub.img} style={{ width: 25, height: 25 }} />
+              <Text style={{color:"white"}}>{premiumSub.name}</Text>
+            </View>
+          ))
+        }
+      </ScrollView>
+      <Pressable 
+        onPress={() =>planSelect(premium.monthly.type,premium.monthly.amount) }
+      >
+        <View
+          style={{
+            borderWidth: 2,
+            marginTop: 20,
+            padding: 15,
+            borderRadius: 10,
+            borderColor:planType === premium.monthly.type  ? "#2979FF" : "#ccc",
+            backgroundColor:planType === premium.monthly.type  ? "#E3F2FD" : null,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 20
+          }}
+        >
+          {/* CHECKBOX */}
+          <View
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: 4,
+              borderWidth: 2,
+              borderColor:"#999",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "transparent"
+            }}
+          >
+            {
+            planType === premium.monthly.type&&<Text style={{ color: "#fff", fontWeight: "bold",color:'blue' }}>✓</Text>
+            }
+          </View>
+
+          {/* TEXT */}
+          <View>
+            <Text style={{ fontSize: 16, fontWeight: "700",color:`${planType === premium.monthly.type?'black':'white'}` }}>
+           {premium.monthly.name}
+            </Text>
+            <Text style={{ fontSize: 14, marginTop: 5 ,color:`${planType === premium.monthly.type?'black':'white'}`}}>
+              {premium.monthly.plan}
+            </Text>
+          </View>
+        </View>
+      </Pressable>
+      </Card.Content>
+      </Card>
+
+    )
+  })
+}
+
+
+  
+</ScrollView>
+
+{/* BOTTOM FIXED PAYMENT BOX */}
+{
+ planType !="" && (
+    <View
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: 15,
+        backgroundColor: "black",
+        borderTopWidth: 1,
+        elevation: 15
+      }}
+    >
+      <Button
+        mode="contained"
+        style={{ borderRadius:20, backgroundColor: "#6D21FF" }}
+        // onPress={() => subscribe(planType)}
+      >
+   {/* {planType==="single"?"Pay ₹299":"Pay ₹699"} */}
+   {planType === "single"
+      ? "Pay ₹299"
+      : planType === "sevenDays"
+      ? "Pay ₹1"
+      :planType==="monthPlan"
+      ? "Pay ₹21"
+      : planType === "Six"
+      ? "Pay ₹999"
+      : "Pay"}
+      </Button>
+    </View>
+  )
+}
+
+</View>
+    </>
+)
+}
+export default Payment
