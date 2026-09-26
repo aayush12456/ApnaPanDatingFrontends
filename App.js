@@ -75,6 +75,7 @@ import ConnectYourWayPage from './src/Pages/connectYourWayPage/connectYourWayPag
 import StayControlPage from './src/Pages/stayControlPage/stayControlPage';
 import SplashScreen from './src/components/splashScreen/splashScreen';
 import PaymentPage from './src/Pages/paymentPage/paymentPage';
+import AccessPage from './src/Pages/accessPage/accessPage';
 
 
 
@@ -524,6 +525,11 @@ const [flag, setFlag] = useState(null);
           options={{ headerShown: false }}
         />
      
+     <Stack.Screen
+          name="AccessPage"
+          component={AccessPage}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
       )
 }

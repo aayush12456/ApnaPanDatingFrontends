@@ -26,8 +26,9 @@ import { useNavigation } from "@react-navigation/native";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://roommanagementsystembackend-1.onrender.com")
 // const socket = io.connect("http://16.16.224.95:4000")
-const Payment=({hotelId,profile})=>{
+const Payment=({loginId,profile})=>{
   // console.log('pto',profile)
+  // console.log('login id payment',loginId)
   // console.log('hotels',hotelId)
 const BASE_URL = "http://192.168.29.169:4000";
 // const BASE_URL = "https://roommanagementsystembackend-1.onrender.com";
@@ -106,42 +107,42 @@ let plan=""
 //     }
 //   }
 
-//   useEffect(() => {
-//     const fetchAccessHandler = async () => {
-//       try {
-//         if (hotelId) {
-//           const response = await axios.get(
-//             `${BASE_URL}/hotel/getAccessAmount/${hotelId}`
-//           );
-//           setAccessObj(response?.data);
-//         }
-//       } catch (error) {}
-//     };
+  useEffect(() => {
+    const fetchAccessHandler = async () => {
+      try {
+        if (loginId) {
+          const response = await axios.get(
+            `${BASE_URL}/user/getAccessAmount/${loginId}`
+          );
+          setAccessObj(response?.data);
+        }
+      } catch (error) {}
+    };
 
-//     fetchAccessHandler();
+    fetchAccessHandler();
 
-//     socket.on("getAccessAmount", (newUser) => {
-//       setAccessObj(newUser);
-//     });
+    socket.on("getAccessAmount", (newUser) => {
+      setAccessObj(newUser);
+    });
 
-//     return () => {
-//       socket.off("getAccessAmount");
-//     };
-//   }, [hotelId]);
+    return () => {
+      socket.off("getAccessAmount");
+    };
+  }, [loginId]);
 // console.log('Access obj',accessObj)
-// useEffect(() => {
-//   if (accessObj?.accessData?.length > 0) {
-//     const check = accessObj.accessData.find(
-//       (accessData) =>
-//         accessData.hotelId == hotelId &&
-//         accessData.phone == profile.phone
-//     );
+useEffect(() => {
+  if (accessObj?.accessData?.length > 0) {
+    const check = accessObj.accessData.find(
+      (accessData) =>
+        accessData.loginId == loginId &&
+        accessData.phone == profile.phone
+    );
 
-//     setCheckStatus(check || {});
-//   } else {
-//     setCheckStatus({});
-//   }
-// }, [accessObj?.accessData, hotelId, profile]); // 🔥 ONLY THIS
+    setCheckStatus(check || {});
+  } else {
+    setCheckStatus({});
+  }
+}, [accessObj?.accessData, loginId, profile]); // 🔥 ONLY THIS
 // console.log('check state',checkStatus)
 return (
     <>
@@ -153,18 +154,18 @@ return (
 
 {
   premiumDetails.map((premium,index)=>{
-    // if (
-    //   premium.monthly.type === "sevenDays" &&
-    //   profile.phone !== "9479918217"
-    // ) {
-    //   return null;
-    // }
-//    if (
-//     premium.monthly.type =="sevenDays"  &&  premium.monthly.amount!==checkStatus?.amount || 
-//     premium.monthly.type =="monthPlan"  &&  premium.monthly.amount!==checkStatus?.amount
-//     ) {
-//       return null;
-//     }
+    if (
+      premium.monthly.type === "sevenDays" &&
+      profile.phone !== "9479918217"
+    ) {
+      return null;
+    }
+   if (
+    premium.monthly.type =="sevenDays"  &&  premium.monthly.amount!==checkStatus?.amount || 
+    premium.monthly.type =="monthPlan"  &&  premium.monthly.amount!==checkStatus?.amount
+    ) {
+      return null;
+    }
     return (
      
       <Card style={{ margin: 10, borderRadius: 10,backgroundColor:'#343434',}}   key={premium.id ?? index}>

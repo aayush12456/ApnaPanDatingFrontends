@@ -874,7 +874,7 @@ return (
   }}
 >
   {(props) => (
-   <PaymentPage/>
+   <PaymentPage finalCompleteObj={finalCompleteObj} loginId={loginId}/>
   )}
 </Drawer.Screen>
      </Drawer.Navigator>

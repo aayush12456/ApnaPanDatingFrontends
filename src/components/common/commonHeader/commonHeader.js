@@ -61,6 +61,10 @@ const CommonHeader = ({ commonHeaderName }) => {
       navigation.goBack();
       return;
     }
+    if (commonHeaderName === "Access") {
+      navigation.goBack();
+      return;
+    }
   };
 
   return (

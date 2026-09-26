@@ -1,10 +1,10 @@
 import Payment from "../../components/payment/payment"
 import { View } from "react-native"
-const PaymentPage=()=>{
+const PaymentPage=({finalCompleteObj,loginId})=>{
 return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
-    <Payment/>
+    <Payment profile={finalCompleteObj} loginId={loginId}/>
     </View>
     </>
 )

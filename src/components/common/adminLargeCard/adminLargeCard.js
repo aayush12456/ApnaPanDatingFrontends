@@ -59,6 +59,16 @@ dispatch( getFieldRegisterUserData(userObj?._id))
         }
         navigation.navigate('ReplyMailPage',{formData:replyObj,headerName:'Reply Mail'})
       }
+      const accessHandler=(userObj)=>{
+        const accessObj={
+          name:userObj.firstName,
+          phone:userObj.phone,
+          email:userObj.email,
+          loginId:userObj._id,
+          image:userObj.images[0]
+        }
+        navigation.navigate('AccessPage',{formData:accessObj,headerName:'Access'})
+      }
 return (
     <>
       <Card style={{ marginLeft: 8, marginRight: 8, marginTop:45, marginBottom:10, 
@@ -334,7 +344,7 @@ return (
                         marginTop: 9,
                       }}
                       buttonColor="green"
-                 
+                      onPress={()=>accessHandler(userObj)}
                     >
                       Access
                     </Button>
