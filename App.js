@@ -76,6 +76,7 @@ import StayControlPage from './src/Pages/stayControlPage/stayControlPage';
 import SplashScreen from './src/components/splashScreen/splashScreen';
 import PaymentPage from './src/Pages/paymentPage/paymentPage';
 import AccessPage from './src/Pages/accessPage/accessPage';
+import PaymentSuccessPage from './src/Pages/paymentSuccessPage/paymentSuccessPage';
 
 
 
@@ -528,6 +529,11 @@ const [flag, setFlag] = useState(null);
      <Stack.Screen
           name="AccessPage"
           component={AccessPage}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="PaymentSuccessPage"
+          component={PaymentSuccessPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

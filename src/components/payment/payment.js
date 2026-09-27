@@ -27,9 +27,6 @@ const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://roommanagementsystembackend-1.onrender.com")
 // const socket = io.connect("http://16.16.224.95:4000")
 const Payment=({loginId,profile})=>{
-  // console.log('pto',profile)
-  // console.log('login id payment',loginId)
-  // console.log('hotels',hotelId)
 const BASE_URL = "http://192.168.29.169:4000";
 // const BASE_URL = "https://roommanagementsystembackend-1.onrender.com";
 // const BASE_URL = "http://16.16.224.95:4000";
@@ -44,68 +41,68 @@ setPlanAmount(amount)
 }
 
 let plan=""
-//   const subscribe = async () => {
-//     //live
-//     // if(planType=="single"){
-//     //   plan="plan_S9mz77K7uN4Mhm"
-//     // }
-//     // else if(planType=="sevenDays"){
-//     //   plan="plan_S9OCXHRMG6W5ng"
-//     // }
-//     // else if(planType=="monthPlan"){
-//     //   plan="plan_SZkU4c3g5WbN4e"
-//     // }
-//     // else{
-//     //   plan="plan_SZkCMWZR7eGAUo"
-//     // }
+  const subscribe = async () => {
+    //live
+    // if(planType=="single"){
+    //   plan="plan_S9mz77K7uN4Mhm"
+    // }
+    // else if(planType=="sevenDays"){
+    //   plan="plan_S9OCXHRMG6W5ng"
+    // }
+    // else if(planType=="monthPlan"){
+    //   plan="plan_SZkU4c3g5WbN4e"
+    // }
+    // else{
+    //   plan="plan_SZkCMWZR7eGAUo"
+    // }
 
-//   //test
-//     if(planType=="single"){
-//       plan="plan_S2Vj0VT1CEKM5a"
-//     }
-//     else if(planType=="sevenDays"){
-//       plan="plan_RziUw1NAukBSo5"
-//     }
-//     else{
-//       plan="plan_SZlNb6a8dqJ2BG"
-//     }
-//     try {
-//       const res = await axios.post(
-//         `${BASE_URL}/hotel/create/${hotelId}`,
-//         { planId:plan,amount:planAmount },
-//       );
-// // console.log('respose razor',res)
-//       const options = {
-//         key: "rzp_test_RzIR2c4u7D5T00", // Test  key
-//         // key: "rzp_live_S9NrL4vhEbFG4M",            //Live key
-//         subscription_id: res.data.subscription.id ,  
-//         name: "Hotel App",
-//         description: "Monthly subscription",
-//         // prefill: { email: "aayushtapadia28@example.com" }
-//       };
+  //test
+    if(planType=="single"){
+      plan="plan_S2Vj0VT1CEKM5a"
+    }
+    else if(planType=="sevenDays"){
+      plan="plan_RziUw1NAukBSo5"
+    }
+    else{
+      plan="plan_SZlNb6a8dqJ2BG"
+    }
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/user/create/${loginId}`,
+        { planId:plan,amount:planAmount },
+      );
 
-//       RazorpayCheckout.open(options)
-//         .then((data) => {
-//           // console.log('data pay',data)
-//           navigation.navigate("PaymentSuccessPage", {
-//             formData: {
-//               obj: data,          // Razorpay response
-//               amount: planAmount // Selected amount
-//             }
-//           });
-//         })
-//         .catch((err) => {
-//           if (err.code === 2) {
-//             // console.log("⚠️ Payment Cancelled by User");
-//             return; // No Alert
-//           }
+      const options = {
+        key: "rzp_test_RzIR2c4u7D5T00", // Test  key
+        // key: "rzp_live_S9NrL4vhEbFG4M",            //Live key
+        subscription_id: res.data.subscription.id ,  
+        name: "ApnaPan",
+        description: "Monthly subscription",
+        // prefill: { email: "aayushtapadia28@example.com" }
+      };
+
+      RazorpayCheckout.open(options)
+        .then((data) => {
+  
+          navigation.navigate("PaymentSuccessPage", {
+            formData: {
+              obj: data,          // Razorpay response
+              amount: planAmount // Selected amount
+            }
+          });
+        })
+        .catch((err) => {
+          if (err.code === 2) {
+            // console.log("⚠️ Payment Cancelled by User");
+            return; // No Alert
+          }
           
-//         });
-//     } catch (err) {
-//       // console.log(err);
-//       Alert.alert("Error creating subscription");
-//     }
-//   }
+        });
+    } catch (err) {
+      // console.log(err);
+      Alert.alert("Error creating subscription");
+    }
+  }
 
   useEffect(() => {
     const fetchAccessHandler = async () => {
@@ -259,9 +256,8 @@ return (
       <Button
         mode="contained"
         style={{ borderRadius:20, backgroundColor: "#6D21FF" }}
-        // onPress={() => subscribe(planType)}
+        onPress={() => subscribe(planType)}
       >
-   {/* {planType==="single"?"Pay ₹299":"Pay ₹699"} */}
    {planType === "single"
       ? "Pay ₹299"
       : planType === "sevenDays"
