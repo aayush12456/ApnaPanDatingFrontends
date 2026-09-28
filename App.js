@@ -77,6 +77,7 @@ import SplashScreen from './src/components/splashScreen/splashScreen';
 import PaymentPage from './src/Pages/paymentPage/paymentPage';
 import AccessPage from './src/Pages/accessPage/accessPage';
 import PaymentSuccessPage from './src/Pages/paymentSuccessPage/paymentSuccessPage';
+import PaymentHistoryPage from './src/Pages/paymentHistoryPage/paymentHistoryPage';
 
 
 
@@ -534,6 +535,11 @@ const [flag, setFlag] = useState(null);
          <Stack.Screen
           name="PaymentSuccessPage"
           component={PaymentSuccessPage}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="PaymentHistoryPage"
+          component={PaymentHistoryPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

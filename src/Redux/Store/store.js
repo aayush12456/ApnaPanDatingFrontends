@@ -40,6 +40,8 @@ import getAllPhoneMailSlice from "../Slice/getAllPhoneMailSlice/getAllPhoneMailS
 import planScreenSlice from "../Slice/planScreenSlice/planScreenSlice"
 import largePlanScreenSlice from "../Slice/largePlanScreenSlice/largePlanScreenSlice"
 import planCheckSlice from "../Slice/planCheckSlice/planCheckSlice"
+import getPaymentHistorySlice from "../Slice/getPaymentHistorySlice/getPaymentHistorySlice"
+import getPaymentActiveSlice from "../Slice/getPaymentActiveSlice/getPaymentActiveSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -82,7 +84,9 @@ const store=configureStore({
         replyUser:replyUserSlice,
         credential:addCredSlice,
         getCred:getCredSlice,
-        planCheck:planCheckSlice
+        planCheck:planCheckSlice,
+        getPaymentHistory:getPaymentHistorySlice,
+        getPaymentActive:getPaymentActiveSlice,
 
     },
     middleware: (getDefaultMiddleware) =>

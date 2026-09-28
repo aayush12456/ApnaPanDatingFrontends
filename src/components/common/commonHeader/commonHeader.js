@@ -65,6 +65,10 @@ const CommonHeader = ({ commonHeaderName }) => {
       navigation.goBack();
       return;
     }
+    if (commonHeaderName === "Payment History") {
+      navigation.goBack();
+      return;
+    }
   };
 
   return (

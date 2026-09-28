@@ -30,6 +30,15 @@ const Settings=({completeObj,notifyToken})=>{
         navigation.navigate('AccountSettingsPage', {formData:accountSettingsObj});
     }
   
+    const paymentHistoryHandler=()=>{
+        const paymentHistoryObj={
+            headerName:'Payment History',
+            loginDetails:completeObj,
+        }
+        navigation.navigate('PaymentHistoryPage', {formData:paymentHistoryObj});
+    }
+  
+
     const privacyPolicyHandler=()=>{
         const privacyPolicyObj={
             headerName:'Privacy Policy',
@@ -111,6 +120,22 @@ return (
     </Pressable>
     </View>
     
+
+    <View style={{marginTop:20}}>
+    <Text style={{paddingLeft:20,color:`white`}}>Billing</Text>
+    <Pressable onPress={paymentHistoryHandler}>
+    <View style={{backgroundColor:`#343434`
+    ,width:'90%',marginLeft:20,marginTop:7}}>
+     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+        <Text style={{paddingTop:10,paddingBottom:12,paddingLeft:10,
+        color:`white`}}>Payment History</Text>
+        <Image source={rightArrow} style={{ width:15, height:12,marginTop:14,marginRight:10,
+         tintColor:`white`}}/>
+     </View>
+    </View>
+    </Pressable>
+    </View>
+
     <View style={{marginTop:20}}>
     <Text style={{paddingLeft:20,color:`white`}}>Legal</Text>
 
