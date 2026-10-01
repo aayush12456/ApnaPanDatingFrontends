@@ -69,6 +69,14 @@ const CommonHeader = ({ commonHeaderName }) => {
       navigation.goBack();
       return;
     }
+    if (commonHeaderName === "Subscription") {
+      navigation.goBack();
+      return;
+    }
+    if (commonHeaderName === "Subscribe User") {
+      navigation.goBack();
+      return;
+    }
   };
 
   return (

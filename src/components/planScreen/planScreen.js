@@ -7,11 +7,12 @@ import { useDispatch,useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import premiumImg from '../../../assets/premiumIcons/premiumService.png'
-// import RazorpayCheckout from "react-native-razorpay";
+import RazorpayCheckout from "react-native-razorpay";
 import { useState } from "react";
 import axios from "axios";
 import { planScreenActions } from "../../Redux/Slice/planScreenSlice/planScreenSlice";
 import { LargePlanScreenActions } from "../../Redux/Slice/largePlanScreenSlice/largePlanScreenSlice";
+
 const PlanScreen=({loginId})=>{
 const dispatch=useDispatch()
 const navigation=useNavigation()
@@ -36,65 +37,65 @@ const largePlanSlice=useSelector((state)=>state.largePlanScreen.LargePlanScreenT
 //plan_SZkCMWZR7eGAUo -->999 Rs plan 6 month
 
 let plan=""
-//   const subscribe = async (planType) => {
-// //live
-// // if(planType=="single"){
-// //   plan="plan_S9mz77K7uN4Mhm"
-// // }
-// // else{
-// //   plan="plan_SZkCMWZR7eGAUo"
-// // }
-//    //test
-//     if(planType=="single"){
-//       plan="plan_S2Vj0VT1CEKM5a"
-//     }
-//     else{
-//       plan="plan_SZlNb6a8dqJ2BG"
-//     }
-//     try {
-//       const res = await axios.post(
-//         `${BASE_URL}/hotel/create/${hotelId}`,
-//         { planId:plan,amount:`₹${selectedPlan}` },
-//       );
-// // console.log('respose razor',res)
-//       const options = {
-//         key: "rzp_test_RzIR2c4u7D5T00", // Test  key
-//         // key: "rzp_live_S9NrL4vhEbFG4M",            //Live key
-//         subscription_id: res.data.subscription.id ,  
-//         name: "Hotel App",
-//         description: "Weekly subscription",
-//         prefill: { email: "aayushtapadia28@example.com" }
-//       };
+  const subscribe = async (planType) => {
+//live
+// if(planType=="single"){
+//   plan="plan_S9mz77K7uN4Mhm"
+// }
+// else{
+//   plan="plan_SZkCMWZR7eGAUo"
+// }
+   //test
+    if(planType=="single"){
+      plan="plan_S2Vj0VT1CEKM5a"
+    }
+    else{
+      plan="plan_SZlNb6a8dqJ2BG"
+    }
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/user/create/${loginId}`,
+        { planId:plan,amount:`₹${selectedPlan}` },
+      );
+// console.log('respose razor',res)
+      const options = {
+        key: "rzp_test_RzIR2c4u7D5T00", // Test  key
+        // key: "rzp_live_S9NrL4vhEbFG4M",            //Live key
+        subscription_id: res.data.subscription.id ,  
+        name: "ApnaPan",
+        description: "Weekly subscription",
+        // prefill: { email: "aayushtapadia28@example.com" }
+      };
 
-//  RazorpayCheckout.open(options)
-//         .then((data) => {
-//           // console.log('data pay',data)
-//           dispatch(planScreenActions.planScreenVisibleToggle())
-//           // Alert.alert(
-//           //   "Payment Success",
-//           //   "Invoice & subscription will be updated automatically via webhook."
-//           // );
-//           navigation.navigate("PaymentSuccessPage", {
-//             formData: {
-//               obj: data,          // Razorpay response
-//               amount: selectedPlan // Selected amount
-//             }
-//           });
-//         })
-//         .catch((err) => {
-//           // Alert.alert("Payment failed", err.description);
-//           if (err.code === 2) {
-//             // console.log("⚠️ Payment Cancelled by User");
-//             return; // No Alert
-//           }
+ RazorpayCheckout.open(options)
+        .then((data) => {
+          // console.log('data pay',data)
+          dispatch(planScreenActions.planScreenVisibleToggle())
+          // Alert.alert(
+          //   "Payment Success",
+          //   "Invoice & subscription will be updated automatically via webhook."
+          // );
+          navigation.navigate("PaymentSuccessPage", {
+            formData: {
+              obj: data,          // Razorpay response
+              amount: selectedPlan // Selected amount
+            }
+          });
+        })
+        .catch((err) => {
+          // Alert.alert("Payment failed", err.description);
+          if (err.code === 2) {
+            // console.log("⚠️ Payment Cancelled by User");
+            return; // No Alert
+          }
           
-//         });
+        });
     
-//     } catch (err) {
-//       // console.log(err);
-//       Alert.alert("Error creating subscription");
-//     }
-//   }  
+    } catch (err) {
+      // console.log(err);
+      Alert.alert("Error creating subscription");
+    }
+  }  
 
 const cancelClickHandler=()=>{
   if(largePlanSlice==true){

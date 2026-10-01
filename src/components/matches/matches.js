@@ -9,7 +9,7 @@ import axios from 'axios'
 import { planCheckAsync } from '../../Redux/Slice/planCheckSlice/planCheckSlice';
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const Matches=({completeObj,loginId,onlineUsers,notifyArray})=>{
+const Matches=({completeObj,loginId,onlineUsers,notifyArray,paymentActiveSelector})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   // const BASE_URL = "https://apnapandatingbackend.onrender.com";
   const [filterMatchArray,setFilterMatchArray]=useState([])
@@ -169,7 +169,7 @@ return (
     >
       {matchArray && matchArray.length > 0 ? (
         <MatchCard matchObj={matchArray[0]} completeObj={completeObj} loginId={loginId} 
-        onlineUserArray={onlineUsers} notifyArray={notifyArray}  plan={plan} status={status} />
+        onlineUserArray={onlineUsers} notifyArray={notifyArray}  plan={plan} status={status} paymentActiveSelector={paymentActiveSelector} />
       ):<Text style={{textAlign:'center',fontSize:17,fontWeight:"600",position:'relative',top:'100%',
       color:`white`}}>No Match Profile is there</Text> }
     </ScrollView>

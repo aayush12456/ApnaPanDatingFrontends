@@ -2,7 +2,7 @@ import Matches from "../../components/matches/matches"
 import {View} from 'react-native'
 
 
-const MatchesPage=({loginId,finalCompleteObj,onlineUserArray,notifyArray})=>{
+const MatchesPage=({loginId,finalCompleteObj,onlineUserArray,notifyArray,paymentActiveSelector})=>{
 
     // console.log('logins is id',loginId)
    
@@ -12,7 +12,7 @@ return (
     <>
     <View style={{backgroundColor:`black`,height:"100%"}}>
     <Matches completeObj={completeLoginObjData} loginId={loginId} onlineUsers={onlineUserArray} 
-    notifyArray={notifyArray} />
+    notifyArray={notifyArray} paymentActiveSelector={paymentActiveSelector} />
     </View>
     </>
 )

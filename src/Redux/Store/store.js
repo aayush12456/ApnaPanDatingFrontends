@@ -42,6 +42,7 @@ import largePlanScreenSlice from "../Slice/largePlanScreenSlice/largePlanScreenS
 import planCheckSlice from "../Slice/planCheckSlice/planCheckSlice"
 import getPaymentHistorySlice from "../Slice/getPaymentHistorySlice/getPaymentHistorySlice"
 import getPaymentActiveSlice from "../Slice/getPaymentActiveSlice/getPaymentActiveSlice"
+import deleteSubscribeSlice from "../Slice/deleteSubscribeSlice/deleteSubscribeSlice"
 const store=configureStore({
     reducer:{
         registerData:registerSlice,
@@ -87,6 +88,7 @@ const store=configureStore({
         planCheck:planCheckSlice,
         getPaymentHistory:getPaymentHistorySlice,
         getPaymentActive:getPaymentActiveSlice,
+        deleteSubscribe:deleteSubscribeSlice
 
     },
     middleware: (getDefaultMiddleware) =>

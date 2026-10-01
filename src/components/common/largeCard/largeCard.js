@@ -21,6 +21,7 @@ import pause from '../../../../assets/myProfileIcons/pause.png'
 import { Audio } from 'expo-av';
 import { LargePlanScreenActions } from "../../../Redux/Slice/largePlanScreenSlice/largePlanScreenSlice";
 import { planCheckAsync } from "../../../Redux/Slice/planCheckSlice/planCheckSlice";
+import { getPaymentActiveAsync } from "../../../Redux/Slice/getPaymentActiveSlice/getPaymentActiveSlice";
 
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
@@ -139,7 +140,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
     // console.log('new online',newOnline)
     // console.log('user is skipped',likeContent)
     if(likeContent){
-      if (plan==="expired" && status==="ended") {
+      if (plan==="expired" && status==="ended"&& paymentActiveSelector.activeSubscription==null) {
         dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
         return
       }
@@ -220,7 +221,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
    const likeUserHandler=async(likeUser,newOnline)=>{
     // console.log('new user handler',newOnline)
     if(likeUser){
-      if (plan==="expired" && status==="ended") {
+      if (plan==="expired" && status==="ended" && paymentActiveSelector.activeSubscription==null) {
         dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
         return
       }
@@ -263,7 +264,7 @@ const LargeCard = ({ newAndOnlineContent,likeContent,deactivateUserObj,completeO
     }
     }
     else if(newOnline){
-      if (plan==="expired" && status==="ended") {
+      if (plan==="expired" && status==="ended" && paymentActiveSelector.activeSubscription==null) {
         dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
         return
       }
@@ -701,6 +702,14 @@ dispatch(planCheckAsync(loginId))
   //  console.log('plans checks',planCheckObj)  
    const status=planCheckObj?.status
    const plan=planCheckObj?.plan
+
+   useEffect(()=>{
+    if(loginId){
+    dispatch(getPaymentActiveAsync(loginId))
+    }
+        },[loginId])
+        const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
+        console.log('pay skec large',paymentActiveSelector)
   return (
     <>
      <AlertNotificationRoot>

@@ -78,6 +78,7 @@ import PaymentPage from './src/Pages/paymentPage/paymentPage';
 import AccessPage from './src/Pages/accessPage/accessPage';
 import PaymentSuccessPage from './src/Pages/paymentSuccessPage/paymentSuccessPage';
 import PaymentHistoryPage from './src/Pages/paymentHistoryPage/paymentHistoryPage';
+import AdminSubscribePage from './src/Pages/adminSubscribePage/adminSubscribePage';
 
 
 
@@ -540,6 +541,11 @@ const [flag, setFlag] = useState(null);
           <Stack.Screen
           name="PaymentHistoryPage"
           component={PaymentHistoryPage}
+          options={{ headerShown: false }}
+        />
+            <Stack.Screen
+          name="AdminSubscribePage"
+          component={AdminSubscribePage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

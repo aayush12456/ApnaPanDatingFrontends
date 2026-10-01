@@ -11,6 +11,7 @@ import PlayVideo from "../playVideo/playVideo";
 import { getFieldRegisterUserData } from "../../../Redux/Slice/getFieldRegisterUserSlice/getFieldRegisterUserSlice";
 import AdminSmallCard from "../adminSmallCard/adminSmallCard";
 const AdminLargeCard=({userObj})=>{
+  console.log('userObjs',userObj)
     const [active, setActive] = useState(0);
     const width = Dimensions.get('window').width - 50;
     const height = width * 1.2;
@@ -68,6 +69,25 @@ dispatch( getFieldRegisterUserData(userObj?._id))
           image:userObj.images[0]
         }
         navigation.navigate('AccessPage',{formData:accessObj,headerName:'Access'})
+      }
+      const subscribeHandler=(userObj)=>{
+        const subscribeObj={
+          name:userObj.firstName,
+          phone:userObj.phone,
+          email:userObj.email,
+          loginId:userObj._id,
+        }
+        navigation.navigate('AdminSubscribePage',{formData:subscribeObj,headerName:'Subscribe User'})
+      }
+
+      const formatDate = (dateString) => {
+        const date = new Date(dateString)
+      
+        const day = date.getDate()
+        const month = date.toLocaleString("en-US", { month: "long" })
+        const year = date.getFullYear()
+      
+        return `${day} ${month} ${year}`
       }
 return (
     <>
@@ -309,6 +329,8 @@ return (
         </ScrollView>
       </View>:null}
 
+
+
       { fieldRegisterObj?.skipUser?.length>0?<View  style={{paddingLeft:10,paddingTop:18}}>
         <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Skip User</Text>
         <ScrollView>
@@ -324,6 +346,17 @@ return (
         </ScrollView>
       </View>:null}
 
+      <View style={{paddingLeft:12,paddingTop:12,paddingBottom:12}}>
+      <Text style={{fontSize:16 ,fontWeight:'semibold',color:'grey'}}>Free Subscription</Text>
+     <Text style={{paddingTop:10,color:"white"}}>
+Start Date : {formatDate(userObj?.freeSubscription?.startDate)}
+</Text>
+
+<Text style={{paddingTop:10,color:"white"}}>
+End Date : {formatDate(userObj?.freeSubscription?.endDate)}
+</Text>
+     </View>
+
               </ScrollView>
               <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:6}}>
               <Button
@@ -336,6 +369,17 @@ return (
                     onPress={()=>replyMailHandler(userObj)}
                     >
                       Reply
+                    </Button>
+                    <Button
+                      mode="contained"
+                      style={{
+                        borderRadius: 10,
+                        marginTop: 9,
+                      }}
+                      buttonColor="purple"
+                    onPress={()=>subscribeHandler(userObj)}
+                    >
+                      Subsribe
                     </Button>
                     <Button
                       mode="contained"

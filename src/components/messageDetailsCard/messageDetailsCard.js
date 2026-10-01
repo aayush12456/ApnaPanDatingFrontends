@@ -36,6 +36,7 @@ import ChatTheme from "../chatTheme/chatTheme";
 import { anotherBottomSheetModalToggleActions } from "../../Redux/Slice/anotherBottomSheetModalSlice/anotherBottomSheetModalSlice";
 import ReportSheet from "../reportSheet/reportSheet";
 import { LargePlanScreenActions } from "../../Redux/Slice/largePlanScreenSlice/largePlanScreenSlice";
+import { getPaymentActiveAsync } from "../../Redux/Slice/getPaymentActiveSlice/getPaymentActiveSlice";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlineUserArray,
@@ -375,7 +376,7 @@ const submitHandler = async () => {
   if (!messageText.trim() && !selectedImage) {
     return;
   }
-  if (plan==="expired" && status==="ended") {
+  if (plan==="expired" && status==="ended" && paymentActiveSelector.activeSubscription==null) {
     dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle())
     return
   }
@@ -990,6 +991,13 @@ const startVideoCall = () => {
 
 const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
   recieverName:messageDetails?.firstName,recieverEmail:messageDetails?.email,loginId:loginId,blockId:messageDetails?._id}
+
+  useEffect(()=>{
+    if(loginId){
+    dispatch(getPaymentActiveAsync(loginId))
+    }
+        },[loginId])
+        const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
 
   return (
     <>

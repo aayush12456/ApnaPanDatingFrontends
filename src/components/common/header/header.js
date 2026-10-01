@@ -7,6 +7,7 @@ import likes from '../../../../assets/sidebarIcons/heart.png'
 import messages from '../../../../assets/sidebarIcons/messenger.png'
 import settings from '../../../../assets/sidebarIcons/settings.png'
 import premiumImg from '../../../../assets/sidebarIcons/premium.png'
+
 import * as SecureStore from 'expo-secure-store';
 import io from "socket.io-client";
 import { useEffect, useState } from 'react';
@@ -25,6 +26,8 @@ import { useDispatch,useSelector } from 'react-redux';
 import PlanScreen from '../../planScreen/planScreen';
 import { planCheckAsync } from '../../../Redux/Slice/planCheckSlice/planCheckSlice';
 import PaymentPage from '../../../Pages/paymentPage/paymentPage';
+import { getPaymentActiveAsync } from '../../../Redux/Slice/getPaymentActiveSlice/getPaymentActiveSlice';
+
 
 
 const socket = io.connect("http://192.168.29.169:4000")
@@ -44,6 +47,7 @@ const Header=()=>{
     const [allUserArray,setAllUserArray]=useState({})
     const [isLast24Hours, setIsLast24Hours] = useState(false);
     const [timeEnd,setTimeEnd]=useState({})
+
    
   
     useEffect(()=>{
@@ -56,7 +60,7 @@ const Header=()=>{
 
 
     const finalCompleteObj=loginDetails?.loginData
-// console.log('final complete header',finalCompleteObj)
+console.log('final complete header',finalCompleteObj)
 
 
 
@@ -66,6 +70,7 @@ const Header=()=>{
  const loginId=finalCompleteObj?.userId
 //  console.log('login is',loginId)
  const loginObj=finalCompleteObj
+ console.log('loginOb',loginObj)
 
  const planSlice=useSelector((state)=>state.planScreen.planScreenToggle)
 //  console.log('plan slice',planSlice)
@@ -229,6 +234,9 @@ useEffect(() => {
   return () => subscription.remove();
 }, [navigation]);
 
+
+
+
 const requestPermissions = async () => {
   if (Platform.OS !== "android") {
     return;
@@ -334,7 +342,15 @@ useEffect(() => {
     }
   };
 
+  useEffect(()=>{
+    if(loginId){
+    dispatch(getPaymentActiveAsync(loginId))
+    }
+        },[loginId])
+        const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
+        // console.log('pay skec',paymentActiveSelector)
 
+       
 return (
     <>
         <StatusBar
@@ -511,6 +527,7 @@ return (
       finalCompleteObj={finalCompleteObj}
       onlineUserArray={onlineUsers}
       notifyArray={notifyObjData}
+      paymentActiveSelector={paymentActiveSelector}
     
     />
   )}
@@ -602,6 +619,7 @@ return (
       {...props}
       finalCompleteObj={finalCompleteObj}
       planStatus={planSlice}
+      
     />
   )}
 </Drawer.Screen>
@@ -848,7 +866,7 @@ return (
   )}
 </Drawer.Screen>
 
-<Drawer.Screen
+{loginObj?.freeStatus!=='free'&& paymentActiveSelector?.activeSubscription==null?<Drawer.Screen
   name="Premium"
   options={{
     drawerLabel: ({ focused }) => (
@@ -876,7 +894,7 @@ return (
   {(props) => (
    <PaymentPage finalCompleteObj={finalCompleteObj} loginId={loginId}/>
   )}
-</Drawer.Screen>
+</Drawer.Screen>:null}
      </Drawer.Navigator>
      :
      <PlanScreen loginId={loginId}/>

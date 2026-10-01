@@ -40,7 +40,7 @@ return (
         </Card>:<Text style={{paddingLeft:15,paddingTop:10,fontWeight:700,color:"white"}}>No active Subscription</Text>}
     </View>
 
-    {paymentHistory.length>0?<View style={{marginTop:20}}>
+    {paymentHistory?.length>0?<View style={{marginTop:20}}>
     <View style={{flexDirection:"row",gap:4}}>
     <Text style={{paddingLeft:16,fontSize:14,color:'white'}}>Payment History </Text>
     <Image source={infoIcon} style={{width:15,height:15,marginTop:4,tintColor:"white"}}/>

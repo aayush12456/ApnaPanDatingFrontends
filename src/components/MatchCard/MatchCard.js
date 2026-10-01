@@ -24,7 +24,7 @@ import { AlertNotificationRoot } from "react-native-alert-notification";
 import { planScreenActions } from "../../Redux/Slice/planScreenSlice/planScreenSlice";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
-const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray,plan,status})=>{
+const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray,plan,status,paymentActiveSelector})=>{
   const BASE_URL = "http://192.168.29.169:4000";
   // console.log('logins id',loginId)
   // console.log('notifys',notifyArray)
@@ -232,7 +232,7 @@ const MatchCard=({matchObj,completeObj,loginId,onlineUserArray,notifyArray,plan,
       }, 700);
         }
         const addLikeMatchHandler=async(id)=>{
-          if (plan==="expired" && status==="ended") {
+          if (plan==="expired" && status==="ended"  && paymentActiveSelector.activeSubscription==null) {
             dispatch(planScreenActions.planScreenVisibleToggle())
             return
           }
