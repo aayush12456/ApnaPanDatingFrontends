@@ -90,7 +90,7 @@ return (
         }}
       >
         <View>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>Hotel subscription </Text>
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>ApnaPan subscription </Text>
 
           <Text
             style={{ fontSize: 12, color: "#777" }}

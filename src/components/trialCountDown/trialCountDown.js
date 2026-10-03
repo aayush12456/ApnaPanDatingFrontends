@@ -3,6 +3,7 @@ import axios from "axios";
 import { Text } from 'react-native-paper';
 import { View } from 'react-native';
 import { useDispatch,useSelector } from 'react-redux';
+import { getPaymentActiveAsync } from '../../Redux/Slice/getPaymentActiveSlice/getPaymentActiveSlice';
 // import { getPaymentActiveAsync } from '../../Redux/Slice/getPaymentActiveSlice/getPaymentActiveSlice';
 const TrialCountDown=({loginId,onLast24HoursChange,setTimeEnd})=>{
   // console.log('hotel id tril',hotelId)
@@ -87,13 +88,14 @@ useEffect(() => {
 }, [loginId]);
 
 
-// useEffect(()=>{
-//   if(hotelId){
-//   dispatch(getPaymentActiveAsync(hotelId))
-//   }
-//       },[hotelId])
-    //   const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
+useEffect(()=>{
+  if(loginId){
+  dispatch(getPaymentActiveAsync(loginId))
+  }
+      },[loginId])
+      const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
       // console.log('pays active',paymentActiveSelector)
+   
 
       const parseCustomDate = (dateStr) => {
         if (!dateStr) return null;
@@ -120,60 +122,60 @@ useEffect(() => {
       };
       
 
-//   useEffect(() => {
-//     if (!paymentActiveSelector?.activeSubscription?.endDate) return;
+  useEffect(() => {
+    if (!paymentActiveSelector?.activeSubscription?.endDate) return;
   
-//     // ✅ Countdown sirf उसी hotel ke liye चले
-//     if (paymentActiveSelector?.activeSubscription?.hotelId !== hotelId) {
-//       setSubTimerMs(0);
-//       return;
-//     }
+    // ✅ Countdown sirf उसी hotel ke liye चले
+    if (paymentActiveSelector?.activeSubscription?.loginId !== loginId) {
+      setSubTimerMs(0);
+      return;
+    }
   
-//     const rawEndDate =
-//       paymentActiveSelector.activeSubscription.endDate;
+    const rawEndDate =
+      paymentActiveSelector.activeSubscription.endDate;
   
-//     const end = parseCustomDate(rawEndDate);
+    const end = parseCustomDate(rawEndDate);
   
-//     // console.log("📌 End Date String:", rawEndDate);
-//     // console.log("✅ Parsed Date Object:", end);
+    // console.log("📌 End Date String:", rawEndDate);
+    // console.log("✅ Parsed Date Object:", end);
   
-//     if (!end || isNaN(end.getTime())) {
-//       // console.log("❌ Invalid Date Format");
-//       setSubTimerMs(0);
-//       return;
-//     }
+    if (!end || isNaN(end.getTime())) {
+      // console.log("❌ Invalid Date Format");
+      setSubTimerMs(0);
+      return;
+    }
   
-//     const timer = setInterval(() => {
-//       const now = new Date();
-//       const diff = end - now;
+    const timer = setInterval(() => {
+      const now = new Date();
+      const diff = end - now;
   
-//       // 🔴 Expired
-//       if (diff <= 0) {
-//         setSubTimerMs(0);
-//         // console.log("❌ Subscription Expired");
-//         clearInterval(timer);
-//         return;
-//       }
+      // 🔴 Expired
+      if (diff <= 0) {
+        setSubTimerMs(0);
+        // console.log("❌ Subscription Expired");
+        clearInterval(timer);
+        return;
+      }
   
-//       // ⛔ Last 24 hours से ज्यादा बाकी है तो मत दिखाओ
-//       if (diff > ONE_DAY) {
-//         setSubTimerMs(0);
-//         return;
-//       }
+      // ⛔ Last 24 hours से ज्यादा बाकी है तो मत दिखाओ
+      if (diff > ONE_DAY) {
+        setSubTimerMs(0);
+        return;
+      }
   
-//       // ✅ Only last 24 hours me countdown चले
-//       setSubTimerMs(diff);
-//       // console.log("⏳ Subscription Countdown:", formatTime(diff));
+      // ✅ Only last 24 hours me countdown चले
+      setSubTimerMs(diff);
+      // console.log("⏳ Subscription Countdown:", formatTime(diff));
   
-//     }, 1000);
+    }, 1000);
   
-//     return () => clearInterval(timer);
+    return () => clearInterval(timer);
   
-//   }, [
-//     paymentActiveSelector?.activeSubscription?.endDate,
-//     paymentActiveSelector?.activeSubscription?.hotelId,
-//     hotelId
-//   ]);
+  }, [
+    paymentActiveSelector?.activeSubscription?.endDate,
+    paymentActiveSelector?.activeSubscription?.hotelId,
+    loginId
+  ]);
   
   
       

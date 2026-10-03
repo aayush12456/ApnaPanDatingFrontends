@@ -709,7 +709,7 @@ dispatch(planCheckAsync(loginId))
     }
         },[loginId])
         const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
-        console.log('pay skec large',paymentActiveSelector)
+        // console.log('pay skec large',paymentActiveSelector)
   return (
     <>
      <AlertNotificationRoot>

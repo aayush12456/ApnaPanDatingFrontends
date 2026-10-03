@@ -27,6 +27,7 @@ import PlanScreen from '../../planScreen/planScreen';
 import { planCheckAsync } from '../../../Redux/Slice/planCheckSlice/planCheckSlice';
 import PaymentPage from '../../../Pages/paymentPage/paymentPage';
 import { getPaymentActiveAsync } from '../../../Redux/Slice/getPaymentActiveSlice/getPaymentActiveSlice';
+import { getPersonalProfileAsync } from '../../../Redux/Slice/getPersonalProfileSlice/getPersonalProfileSlice';
 
 
 
@@ -348,7 +349,16 @@ useEffect(() => {
     }
         },[loginId])
         const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
-        // console.log('pay skec',paymentActiveSelector)
+        console.log('pay skec',paymentActiveSelector)
+
+        useEffect(()=>{
+          if(loginId){
+          dispatch(getPersonalProfileAsync(loginId))
+          }
+          },[loginId])
+          const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
+          )
+          // console.log('get personl',getPersonalInfoSelector)
 
        
 return (
@@ -866,7 +876,7 @@ return (
   )}
 </Drawer.Screen>
 
-{loginObj?.freeStatus!=='free'&& paymentActiveSelector?.activeSubscription==null?<Drawer.Screen
+{getPersonalInfoSelector?.freeSubscription?.plan!=='free'&& paymentActiveSelector?.activeSubscription==null?<Drawer.Screen
   name="Premium"
   options={{
     drawerLabel: ({ focused }) => (

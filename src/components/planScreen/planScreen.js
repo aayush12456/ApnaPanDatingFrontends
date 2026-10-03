@@ -38,6 +38,11 @@ const largePlanSlice=useSelector((state)=>state.largePlanScreen.LargePlanScreenT
 
 let plan=""
   const subscribe = async (planType) => {
+    if (largePlanSlice === true) {
+      dispatch(LargePlanScreenActions.LargePlanScreenVisibleToggle());
+    } else {
+      dispatch(planScreenActions.planScreenVisibleToggle());
+    }
 //live
 // if(planType=="single"){
 //   plan="plan_S9mz77K7uN4Mhm"
@@ -57,6 +62,7 @@ let plan=""
         `${BASE_URL}/user/create/${loginId}`,
         { planId:plan,amount:`₹${selectedPlan}` },
       );
+    
 // console.log('respose razor',res)
       const options = {
         key: "rzp_test_RzIR2c4u7D5T00", // Test  key
@@ -70,8 +76,7 @@ let plan=""
  RazorpayCheckout.open(options)
         .then((data) => {
           // console.log('data pay',data)
-          dispatch(planScreenActions.planScreenVisibleToggle())
-          // Alert.alert(
+            // Alert.alert(
           //   "Payment Success",
           //   "Invoice & subscription will be updated automatically via webhook."
           // );
