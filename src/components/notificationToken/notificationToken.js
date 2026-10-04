@@ -11,7 +11,7 @@ export async function registerForPushNotificationsAsync() {
     handleNotification: async () => ({
       shouldShowAlert: true,
       shouldPlaySound: true,
-      shouldSetBadge: true
+      shouldSetBadge: false,
     }),
   });
 

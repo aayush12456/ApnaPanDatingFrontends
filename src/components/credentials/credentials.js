@@ -1,5 +1,5 @@
 import React from "react"
-import { View,ScrollView,KeyboardAvoidingView, Platform,Text,ActivityIndicator} from "react-native"
+import { View,ScrollView,ActivityIndicator} from "react-native"
 import { TextInput,Button } from 'react-native-paper';
 import { useEffect, useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
@@ -47,7 +47,7 @@ try {
     },[dispatch,id,credSelector?._id])
 
     const getCredSelector=useSelector((state)=>state.getCred.getCredObj.creds)
-    console.log('get cred select',getCredSelector)
+    // console.log('get cred select',getCredSelector)
 
     useEffect(() => 
     { 

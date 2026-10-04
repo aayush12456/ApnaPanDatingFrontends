@@ -70,7 +70,7 @@ useEffect(() => {
 
 }, [id]);
 
-  console.log('all user array',allUserArray)
+  // console.log('all user array',allUserArray)
 return (
     <>
  <ScrollView

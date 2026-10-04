@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import ReportUserPages from "../../../Pages/reportUserPages/reportUserPages"
 import CredentialsPage from '../../../Pages/credentialsPage/credentialsPage';
-
+import ChatIdPage from "../../../Pages/ChatIdPage/chatIdPage"
 const AdminHeader = () => {
   const Drawer = createDrawerNavigator();
   const navigation = useNavigation();
@@ -148,6 +148,38 @@ const AdminHeader = () => {
     Credentials
   </Text>
 </View>
+
+<View 
+  style={{ 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingVertical: 12, 
+    paddingHorizontal: 20, 
+  }}
+>
+  <Image 
+    source={reportIcon} 
+    style={{ 
+      width: 28, 
+      height: 28, 
+      tintColor: 'white', 
+    }} 
+  />
+
+  <Text 
+    style={{ 
+      color: 'white', 
+      marginLeft: 15, 
+      fontSize: 15, 
+      fontWeight: '500', 
+    }}
+    onPress={() => {
+      props.navigation.navigate('ChatId');
+    }}
+  >
+    Chat Id
+  </Text>
+</View>
         </View>
 
 
@@ -242,6 +274,16 @@ const AdminHeader = () => {
   >
     {() => <CredentialsPage/>}
   </Drawer.Screen>
+    <Drawer.Screen
+    name="ChatId"
+    options={{
+      drawerItemStyle: {
+        display: "none",
+      },
+    }}
+  >
+    {() => <ChatIdPage/>}
+    </Drawer.Screen>
 </Drawer.Navigator>
     </>
   );
