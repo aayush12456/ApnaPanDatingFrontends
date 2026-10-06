@@ -5,6 +5,8 @@ import AdminPage from '../../../Pages/adminPage/adminPage';
 import registerIcon from "../../../../assets/adminIcon/register.png";
 import adminIcon from "../../../../assets/adminIcon/admin.png";
 import reportIcon from "../../../../assets/adminIcon/report.png";
+import credIcon from "../../../../assets/adminIcon/cred.png";
+import chatIcon from "../../../../assets/adminIcon/chat.png";
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import ReportUserPages from "../../../Pages/reportUserPages/reportUserPages"
@@ -126,7 +128,7 @@ const AdminHeader = () => {
   }}
 >
   <Image 
-    source={reportIcon} 
+    source={credIcon} 
     style={{ 
       width: 28, 
       height: 28, 
@@ -158,7 +160,7 @@ const AdminHeader = () => {
   }}
 >
   <Image 
-    source={reportIcon} 
+    source={chatIcon} 
     style={{ 
       width: 28, 
       height: 28, 

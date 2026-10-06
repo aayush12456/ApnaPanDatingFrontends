@@ -6,6 +6,7 @@ import {View} from 'react-native'
 import { planCheckAsync } from "../../Redux/Slice/planCheckSlice/planCheckSlice";
 import { useDispatch,useSelector } from "react-redux";
 import PlanScreen from "../../components/planScreen/planScreen";
+import ScreenShotCapture from "../../components/screenshotCapture/screenshotCapture";
 const socket = io.connect("http://192.168.29.169:4000")
 // const socket = io.connect("https://apnapandatingbackend.onrender.com")
 const MessageDetailsPageContent=({route})=>{
@@ -127,7 +128,7 @@ const MessageDetailsPageContent=({route})=>{
     const plan=planCheckObj?.plan
 return (
     <>
-    {/* <ScreenShotCapture/> */}
+    <ScreenShotCapture/>
     <View style={{backgroundColor:`black`,height:"100%"}}>
       {
         largePlanSlice === false ?

@@ -2,6 +2,7 @@ import { Text, Button, TextInput, Card,Divider } from "react-native-paper";
 import { View,  Pressable, ScrollView, Dimensions,KeyboardAvoidingView, Platform ,ActivityIndicator,Keyboard,Linking,Alert,PermissionsAndroid,} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import back from "../../../assets/signUpFormIcon/back.png";
 import dots from "../../../assets/chatIcons/dots.png";
 import send from "../../../assets/chatIcons/sendIcon.png";
@@ -54,7 +55,7 @@ const MessageDetailsCard = ({ messageDetails,deactivateUserObj,completeObj,onlin
   const [showTypingResponse,setShowTypingResponse]=useState(false)
   const [activeLoginIdResponse,setActiveLoginIdResponse]=useState(false)
   const [notifyDeactivateObj,setNotifyDeactivateObj]=useState({})
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [keyboardHeight, setKeyboardHeight] = useState(20);
   const [openDailog,setOpenDialog]=useState(false)
   const [openIndex, setOpenIndex] = useState('')
   const [messageStages, setMessageStages] = useState({});
@@ -72,6 +73,7 @@ const [cameraFacing, setCameraFacing] = useState("back");
 
 const themeSheetRef = useRef(null);
 const anotherthemeSheetRef=useRef(null)
+const insets = useSafeAreaInsets();
 
   const windowHeight = Dimensions.get('window').height;
   // console.log('window heigth', windowHeight)
@@ -745,11 +747,11 @@ const getTimeColor = (message) => {
 
   useEffect(() => {
     const show = Keyboard.addListener("keyboardDidShow", (e) => {
-      setKeyboardHeight(e.endCoordinates.height);
+      setKeyboardHeight(0);
     });
   
     const hide = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardHeight(0);
+      setKeyboardHeight(-20);
     });
   
     return () => {
@@ -1010,8 +1012,8 @@ const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
 
     <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : undefined}   // Android me thoda adjust kar sakte ho
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}   // Android me thoda adjust kar sakte ho
         
       >
     <View style={{ flex: 1 }}>
@@ -1274,7 +1276,7 @@ const reportObj={senderName:completeObj?.name,senderEmail:completeObj?.email,
           <ScrollView
            keyboardShouldPersistTaps="handled"
            contentContainerStyle={{ flexGrow: 1,  paddingBottom: 10, }}
-           style={{ marginBottom: scrollBottomMargin }}
+          //  style={{ marginBottom: scrollBottomMargin }}
           >
             
             {
@@ -1500,7 +1502,8 @@ deactivateUserObj.selfDeactivate === loginId ? (
   <View
     style={{
       position: "absolute",
-      bottom: 52,
+      // bottom: 52,
+      bottom: 72,
       left: 8,
       zIndex: 30,
 
@@ -1557,7 +1560,8 @@ deactivateUserObj.selfDeactivate === loginId ? (
         paddingHorizontal: 6,
         paddingVertical: 2,
         minHeight: 40,
-        paddingBottom: Platform.OS === "android" ? keyboardHeight : 0,
+        marginBottom: insets.bottom || keyboardHeight
+       
       }}
     >
       {/* Camera Icon (left side - blue circle) */}

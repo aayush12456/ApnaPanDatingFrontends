@@ -57,7 +57,7 @@ const videoSubmitHandler=()=>{
     videoUrl:fileType
   }
   // console.log('video complete data',videoSubmitData)
-  navigation.navigate('CaptureImagePage',{formData:videoSubmitData})
+  navigation.navigate('ImageUploadPage',{formData:videoSubmitData})
 }
   return (
     <>
