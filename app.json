@@ -47,7 +47,6 @@
           "icon": "./assets/notification.png"
         }
       ],
-      "expo-video",
       "expo-secure-store",
       "expo-audio",
       "expo-build-properties",

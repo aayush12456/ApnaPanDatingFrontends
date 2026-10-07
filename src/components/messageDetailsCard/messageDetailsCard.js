@@ -1502,8 +1502,8 @@ deactivateUserObj.selfDeactivate === loginId ? (
   <View
     style={{
       position: "absolute",
-      // bottom: 52,
-      bottom: 72,
+      bottom: 65,
+      // bottom: 72,
       left: 8,
       zIndex: 30,
 

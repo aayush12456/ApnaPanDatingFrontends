@@ -38,7 +38,7 @@ try {
 }
     }
     const credSelector=useSelector((state)=>state.credential.credObj.creds)
-    console.log('cred select',credSelector)
+    // console.log('cred select',credSelector)
 
     useEffect(()=>{
   if(id || credSelector?._id){

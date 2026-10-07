@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { deleteProfileArrayAsync } from "../../../Redux/Slice/deleteProfileArraySlice/deleteProfileArraySlice";
 const AdminSmallCard=({commonObj,id})=>{
     const dispatch = useDispatch()
-    console.log(' admin id is',id)
+    // console.log(' admin id is',id)
 // let firstName=likeFilter?.firstName||likes?.firstName||likeUser?.firstName||matchUser?.firstName
 // ||anotherMatch?.firstName||onlineLike?.firstName||selfOnline?.firstName||skipUser?.firstName
 
@@ -15,12 +15,12 @@ let firstName=commonObj?.firstName
 let image=commonObj?.images[0]
 
 const smallCardClickHander=(commonObj)=>{
-console.log('first name',commonObj?.firstName)
+// console.log('first name',commonObj?.firstName)
 const obj={
  id:id,
  deleteUserId:commonObj?._id   
 }
-console.log('delete obj',obj)
+// console.log('delete obj',obj)
 dispatch(deleteProfileArrayAsync(obj))
 }
 return (

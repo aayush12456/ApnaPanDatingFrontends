@@ -17,7 +17,7 @@ const ForgotPasswordData=({phone,otp})=>{
           setError(""); // Clear the error
           
         }
-        console.log('match otp is',otpData)
+        // console.log('match otp is',otpData)
         setOtpData('')
         navigation.navigate('ResetPasswordPage')
       }

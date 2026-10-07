@@ -26,7 +26,7 @@ const AdminSubscribe = ({ subscribeObj }) => {
   const paymentHistoryArray =
     paymentHistorySelector?.subscriptionArray || [];
 
-  console.log("payment history", paymentHistoryArray);
+  // console.log("payment history", paymentHistoryArray);
 
   // API response se local UI array update
   useEffect(() => {
@@ -41,16 +41,16 @@ const AdminSubscribe = ({ subscribeObj }) => {
       state.deleteSubscribe.deleteSubscribeUserObj?.deleteUser
   );
 
-  console.log("delete subscribe select", deleteSubscribeSelector);
+  // console.log("delete subscribe select", deleteSubscribeSelector);
 
   // Deleted item ko UI array se remove karo
   useEffect(() => {
     if (deleteSubscribeSelector?._id) {
 
-      console.log(
-        "Removing from UI:",
-        deleteSubscribeSelector._id
-      );
+      // console.log(
+      //   "Removing from UI:",
+      //   deleteSubscribeSelector._id
+      // );
 
       setUpdatedPaymentHistory((prevArray) =>
         prevArray.filter(
@@ -63,7 +63,7 @@ const AdminSubscribe = ({ subscribeObj }) => {
 
   const deleteSubscribeHandler = (pay) => {
 
-    console.log("pay delete", pay);
+    // console.log("pay delete", pay);
 
     dispatch(deleteSubscribeUserAsync(pay?._id));
   };

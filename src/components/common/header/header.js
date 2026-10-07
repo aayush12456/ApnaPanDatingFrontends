@@ -61,7 +61,7 @@ const Header=()=>{
 
 
     const finalCompleteObj=loginDetails?.loginData
-console.log('final complete header',finalCompleteObj)
+// console.log('final complete header',finalCompleteObj)
 
 
 
@@ -71,7 +71,7 @@ console.log('final complete header',finalCompleteObj)
  const loginId=finalCompleteObj?.userId
 //  console.log('login is',loginId)
  const loginObj=finalCompleteObj
- console.log('loginOb',loginObj)
+//  console.log('loginOb',loginObj)
 
  const planSlice=useSelector((state)=>state.planScreen.planScreenToggle)
 //  console.log('plan slice',planSlice)
@@ -349,7 +349,7 @@ useEffect(() => {
     }
         },[loginId])
         const paymentActiveSelector=useSelector((state)=>state.getPaymentActive.getPaymentActiveObj)
-        console.log('pay skec',paymentActiveSelector)
+        // console.log('pay skec',paymentActiveSelector)
 
         useEffect(()=>{
           if(loginId){

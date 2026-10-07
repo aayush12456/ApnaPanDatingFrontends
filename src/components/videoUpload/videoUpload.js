@@ -15,7 +15,7 @@ const VideoUpload = ({ VideoUpload,navigation }) => {
 
   const uploadVideoData = async () => {
     try {
-      const maxFileSize=15*1024*1024
+      const maxFileSize=30*1024*1024
       let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       // console.log('Permissions: ', permissionResult);
 

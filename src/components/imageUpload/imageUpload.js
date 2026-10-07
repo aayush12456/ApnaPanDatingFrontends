@@ -244,7 +244,13 @@ borderRadius: 8, width: '95%', marginLeft: 8, marginTop: 30,
     marginRight: 20,
   }}
   buttonColor="#6D21FF"
-  
+  textColor="white"
+  theme={{
+    colors: {
+      onSurfaceDisabled: 'white',
+      surfaceDisabled: '#6D21FF',
+    },
+  }}
 >
   {loading ? "CREATING..." : "CREATE PROFILE"}
 </Button>

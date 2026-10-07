@@ -14,7 +14,7 @@ const AMOUNT_OPTIONS = [
     { label: '₹21', value: '21' },
   ];
 const Access=({accessObjs})=>{
-    console.log('access objs detail',accessObjs)
+    // console.log('access objs detail',accessObjs)
     const BASE_URL = "http://192.168.29.169:4000";
     // const BASE_URL = "https://roommanagementsystembackend-1.onrender.com";
     // const BASE_URL = "http://16.16.224.95:4000";

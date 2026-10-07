@@ -15,7 +15,7 @@ navigation.navigate('ReportPageContent',{formData:user})
   }
 
   const deleteProfileHandler=async(user)=>{
-    console.log('user id',user)
+    // console.log('user id',user)
     try{
       setDeleteLoading(true);
       const response = await axios.post(`${BASE_URL}/user/deleteReportUser/${user?._id}`,user);

@@ -27,12 +27,12 @@ const submitThemeHandler=async()=>{
     return;
   }
   const finalSelectTheme={id:loginId,recieverId:recieverId,...selectTheme}
-  console.log('theme select',finalSelectTheme)
+  // console.log('theme select',finalSelectTheme)
   setLoading(true);
   try {
     const themeResponse = await axios.post(`${BASE_URL}/user/addChatTheme/${finalSelectTheme.id}`,finalSelectTheme);
     // console.log('response in another record message id user is',deleteAnotherResponseIdObj?.data?.anotherRecordMessageIdArray)
-    console.log('theme response in chat',themeResponse)
+    // console.log('theme response in chat',themeResponse)
     socket.emit('addColourTheme', themeResponse.data);
     if (themeResponse?.data) {
       ref?.current?.close();

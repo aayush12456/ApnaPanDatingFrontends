@@ -11,7 +11,7 @@ import PlayVideo from "../playVideo/playVideo";
 import { getFieldRegisterUserData } from "../../../Redux/Slice/getFieldRegisterUserSlice/getFieldRegisterUserSlice";
 import AdminSmallCard from "../adminSmallCard/adminSmallCard";
 const AdminLargeCard=({userObj})=>{
-  console.log('userObjs',userObj)
+  // console.log('userObjs',userObj)
     const [active, setActive] = useState(0);
     const width = Dimensions.get('window').width - 50;
     const height = width * 1.2;

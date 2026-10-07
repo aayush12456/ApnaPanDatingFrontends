@@ -161,7 +161,7 @@ await engine.enableANS(true);     // Background noise kam karne ke liye
 
       // Events
       engine.on("roomStateUpdate", (roomId, state, errorCode) => {
-        console.log("roomStateUpdate:", state, errorCode);
+        // console.log("roomStateUpdate:", state, errorCode);
         if (errorCode !== 0) {
           setStatusText(`Room error: ${errorCode}`);
         }
@@ -172,7 +172,7 @@ await engine.enableANS(true);     // Background noise kam karne ke liye
       });
 
       engine.on("roomStreamUpdate", async (roomId, updateType, streamList) => {
-        console.log("roomStreamUpdate:", updateType, streamList);
+        // console.log("roomStreamUpdate:", updateType, streamList);
         if (updateType === 0 && streamList?.length > 0) {
           for (const stream of streamList) {
             if (stream.streamID !== localStreamID) {

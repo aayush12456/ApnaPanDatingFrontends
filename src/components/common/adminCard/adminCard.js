@@ -18,7 +18,7 @@ const cardClickHandler=(userObj)=>{
     navigation.navigate('AdminPageContent',{formData:userObj})
 }
 const deleteProfileHandler=async(userObj)=>{
-console.log('obj',userObj._id)
+// console.log('obj',userObj._id)
 try{
   setDeleteLoading(true);
   const response = await axios.post(`${BASE_URL}/user/deleteAdminProfileUser/${userObj?._id}`,userObj);

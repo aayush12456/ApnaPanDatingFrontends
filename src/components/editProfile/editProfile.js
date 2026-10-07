@@ -47,7 +47,7 @@ const [songLoginObj,setSongLoginObj]=useState({})
     },[completeObj])
     const getPersonalInfoSelector=useSelector((state)=>state.getPersonalData.updatePersonalData?.personalDetail
     )
-    console.log('get personl',getPersonalInfoSelector)
+    // console.log('get personl',getPersonalInfoSelector)
 
     const completeLoginObjData=getPersonalInfoSelector
 
