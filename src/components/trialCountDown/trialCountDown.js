@@ -18,7 +18,7 @@ const TrialCountDown=({loginId,onLast24HoursChange,setTimeEnd})=>{
 
     const loadSubscription = async()=>{
       const res = await axios.get(`${BASE_URL}/user/free-trial/${loginId}`);
-      console.log('res load',res)
+      // console.log('res load',res)
       setTimeEnd(res.data)
       setSub(res.data);
       const end = new Date(res.data.endDate);   // 🔥 yeh missing tha

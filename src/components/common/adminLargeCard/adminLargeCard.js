@@ -45,6 +45,7 @@ const AdminLargeCard=({userObj})=>{
 dispatch( getFieldRegisterUserData(userObj?._id))
   }
       },[userObj?._id])
+      const openId=userObj?._id
 
       const fieldRegisterObj=useSelector((state)=>state.fieldReport.getFieldRegisterUser)
       // console.log('fied register admin',fieldRegisterObj)
@@ -227,7 +228,7 @@ return (
             fieldRegisterObj?.likes?.map((likes,index)=>{
               return (
                 
-<AdminSmallCard commonObj={likes} key={likes?._id||index}/>
+<AdminSmallCard commonObj={likes} key={likes?._id||index} id={openId}/>
           
               )
             })
@@ -243,7 +244,7 @@ return (
             fieldRegisterObj?.likeFilterUser?.map((likeFilter,index)=>{
               return (
                 
- <AdminSmallCard commonObj={likeFilter} key={likeFilter?._id||index}/>
+ <AdminSmallCard commonObj={likeFilter} key={likeFilter?._id||index} id={openId} />
                 
               )
             })
@@ -259,7 +260,7 @@ return (
             fieldRegisterObj?.likeUser?.map((likeUser,index)=>{
               return (
                 
- <AdminSmallCard commonObj={likeUser} key={likeUser?._id||index}/>
+ <AdminSmallCard commonObj={likeUser} key={likeUser?._id||index} id={openId}/>
                 
               )
             })
